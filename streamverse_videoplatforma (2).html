@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="sk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse - Zdieľanie Videí</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        },
+                        yt: {
+                            bg: '#0f0f0f',
+                            card: '#1f1f1f',
+                            hover: '#272727',
+                            border: '#383838'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0f0f;
+            color: #f1f1f1;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .glass-panel {
+            background: rgba(31, 31, 31, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-yt-bg text-gray-100 min-h-screen flex flex-col antialiased selection:bg-brand-600 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 w-full bg-yt-bg/95 border-b border-yt-border backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4">
+        <!-- Left: Logo & Sidebar Toggle -->
+        <div class="flex items-center gap-3 md:gap-4">
+            <button id="toggleSidebarBtn" class="p-2 text-gray-300 hover:text-white hover:bg-yt-hover rounded-full transition" title="Menu">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <a href="#" id="logoBtn" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-red-500 flex items-center justify-center shadow-lg shadow-brand-600/30 group-hover:scale-105 transition duration-200">
+                    <i class="fa-solid fa-play text-white text-sm ml-0.5"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tight hidden sm:inline">Stream<span class="text-brand-500">Verse</span></span>
+            </a>
+        </div>
+
+        <!-- Center: Search Bar -->
+        <div class="flex-1 max-w-2xl mx-2">
+            <div class="relative flex items-center w-full">
+                <input type="text" id="searchInput" placeholder="Hľadať videá, kanály, kategórie..." 
+                    class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-l-full py-2 px-4 pl-10 text-sm text-gray-100 placeholder-gray-400 focus:outline-none transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-gray-400 text-sm"></i>
+                <button id="searchBtn" class="bg-yt-hover hover:bg-[#333] border border-l-0 border-yt-border px-5 py-2 rounded-r-full text-gray-300 hover:text-white transition">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right: Actions & User Avatar -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="openUploadModalBtn" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2 rounded-full shadow-lg shadow-brand-600/20 hover:shadow-brand-600/40 transition active:scale-95">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span class="hidden sm:inline">Nahrať video</span>
+            </button>
+            
+            <button id="notificationBtn" class="relative p-2.5 text-gray-300 hover:text-white hover:bg-yt-hover rounded-full transition" title="Oznámenia">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full animate-pulse"></span>
+            </button>
+
+            <div class="relative">
+                <button id="userProfileBtn" class="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm ring-2 ring-brand-500/50 hover:ring-brand-500 transition">
+                    JA
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-yt-bg border-r border-yt-border flex-shrink-0 hidden md:flex flex-col justify-between py-3 px-2 overflow-y-auto transition-all duration-300">
+            <div class="space-y-6">
+                <!-- Navigation Links -->
+                <div class="space-y-1">
+                    <button id="navHome" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-white bg-yt-hover font-medium text-sm transition">
+                        <i class="fa-solid fa-house text-brand-500 text-base w-5"></i>
+                        <span>Domov</span>
+                    </button>
+                    <button id="navTrending" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
+                        <i class="fa-solid fa-fire text-base w-5"></i>
+                        <span>Populárne</span>
+                    </button>
+                    <button id="navSubscriptions" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
+                        <i class="fa-solid fa-layer-group text-base w-5"></i>
+                        <span>Odoberané</span>
+                    </button>
+                </div>
+
+                <hr class="border-yt-border opacity-60">
+
+                <!-- User Library -->
+                <div class="space-y-1">
+                    <div class="px-3 text-xs font-semibold text-gray-4 Mo uppercase tracking-wider mb-2">Moja Knižnica</div>
+                    <button id="navMyVideos" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
+                        <i class="fa-solid fa-circle-play text-base w-5"></i>
+                        <span>Moje videá</span>
+                    </button>
+                    <button id="navLiked" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
+                        <i class="fa-regular fa-thumbs-up text-base w-5"></i>
+                        <span>Páči sa mi</span>
+                    </button>
+                    <button id="navHistory" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
+                        <i class="fa-solid fa-clock-rotate-left text-base w-5"></i>
+                        <span>História</span>
+                    </button>
+                </div>
+
+                <hr class="border-yt-border opacity-60">
+
+                <!-- Categories -->
+                <div>
+                    <div class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Kategórie</div>
+                    <div class="space-y-1" id="sidebarCategories">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Stats Info -->
+            <div class="p-3 bg-yt-card rounded-2xl border border-yt-border text-xs text-gray-400 space-y-2 mt-6">
+                <div class="flex items-center justify-between text-gray-300 font-medium">
+                    <span>Verejný kanál</span>
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                </div>
+                <p>Každé nahrané video je ihneď verejné pre všetkých návštevníkov.</p>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6" id="mainScrollArea">
+
+            <!-- Category Pills Bar (Home Feed View) -->
+            <div id="categoryFilterBar" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                <!-- Javascript populated pills -->
+            </div>
+
+            <!-- Video Grid Section -->
+            <div id="videoGridView">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 id="sectionTitle" class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <span>Odporúčané videá</span>
+                    </h2>
+                    <span id="videoCountBadge" class="text-xs font-medium text-gray-400 bg-yt-card border border-yt-border px-3 py-1 rounded-full">
+                        0 videí
+                    </span>
+                </div>
+
+                <!-- Cards Grid -->
+                <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    <!-- Dynamic Video Cards inserted here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center space-y-4">
+                    <div class="w-20 h-20 rounded-full bg-yt-card flex items-center justify-center text-gray-500 text-3xl">
+                        <i class="fa-solid fa-film"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Nenašli sa žiadne videá</h3>
+                    <p class="text-sm text-gray-400 max-w-md">Skúste zmeniť vyhľadávaný výraz alebo nahrajte prvé video kliknutím na tlačidlo nižšie.</p>
+                    <button onclick="document.getElementById('openUploadModalBtn').click()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm px-5 py-2.5 rounded-full font-medium transition">
+                        Pridať nové video
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Player Detail View (Hidden by default) -->
+            <div id="videoDetailView" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Video Player & Info & Comments -->
+                <div class="lg:col-span-2 space-y-4">
+                    <!-- HTML5 Player Container -->
+                    <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-yt-border group">
+                        <video id="mainVideoPlayer" controls class="w-full h-full object-contain" poster="" autoplay>
+                            <source id="videoSource" src="" type="video/mp4">
+                            Váš prehliadač nepodporuje prehrávanie videí.
+                        </video>
+                    </div>
+
+                    <!-- Title & Stats Header -->
+                    <div class="space-y-3">
+                        <h1 id="activeVideoTitle" class="text-xl md:text-2xl font-bold text-white leading-snug">
+                            Názov videa sa načíta...
+                        </h1>
+
+                        <div class="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-yt-border">
+                            <!-- Channel / Author Info -->
+                            <div class="flex items-center gap-3">
+                                <div id="activeVideoAvatar" class="w-11 h-11 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white font-bold text-base shadow-md">
+                                    ?
+                                </div>
+                                <div>
+                                    <h4 id="activeVideoAuthor" class="font-bold text-sm text-white">Autor</h4>
+                                    <p id="activeVideoSubscribers" class="text-xs text-gray-400">12.4K odberateľov</p>
+                                </div>
+                                <button id="subscribeBtn" class="ml-2 bg-white hover:bg-gray-200 text-black font-semibold text-xs px-4 py-2 rounded-full transition active:scale-95">
+                                    Odoberať
+                                </button>
+                            </div>
+
+                            <!-- Action Buttons (Like, Share, Bookmark) -->
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center bg-yt-card border border-yt-border rounded-full overflow-hidden">
+                                    <button id="likeBtn" class="flex items-center gap-2 px-4 py-2 hover:bg-yt-hover text-sm font-medium text-gray-200 transition">
+                                        <i class="fa-regular fa-thumbs-up"></i>
+                                        <span id="likeCount">0</span>
+                                    </button>
+                                    <div class="w-[1px] h-5 bg-yt-border"></div>
+                                    <button id="dislikeBtn" class="px-3 py-2 hover:bg-yt-hover text-sm text-gray-400 transition">
+                                        <i class="fa-regular fa-thumbs-down"></i>
+                                    </button>
+                                </div>
+
+                                <button id="shareBtn" class="flex items-center gap-2 bg-yt-card border border-yt-border hover:bg-yt-hover text-sm font-medium px-4 py-2 rounded-full text-gray-200 transition">
+                                    <i class="fa-solid fa-share"></i>
+                                    <span>Zdieľať</span>
+                                </button>
+
+                                <button id="deleteVideoBtn" class="hidden items-center gap-2 bg-red-950/40 border border-red-800/50 hover:bg-red-900/50 text-sm font-medium px-4 py-2 rounded-full text-red-400 transition">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>Vymazať</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Expandable Description Box -->
+                        <div class="bg-yt-card/80 border border-yt-border rounded-2xl p-4 text-sm space-y-2">
+                            <div class="flex items-center gap-3 text-xs text-gray-400 font-medium">
+                                <span id="activeVideoViews">0 pozretí</span>
+                                <span>•</span>
+                                <span id="activeVideoDate">Pred nedávnom</span>
+                                <span id="activeVideoCategory" class="ml-auto bg-brand-500/20 text-brand-400 font-semibold px-2.5 py-0.5 rounded-full text-[10px]">
+                                    Všeobecné
+                                </span>
+                            </div>
+                            <p id="activeVideoDescription" class="text-gray-300 leading-relaxed whitespace-pre-line">
+                                Popis videa...
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Comment Section -->
+                    <div class="space-y-4 pt-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <span>Komentáre</span>
+                                <span id="commentCount" class="text-sm font-normal text-gray-400">(0)</span>
+                            </h3>
+                        </div>
+
+                        <!-- Add Comment Input Box -->
+                        <div class="flex gap-3 items-start bg-yt-card p-3 rounded-2xl border border-yt-border">
+                            <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs shrink-0">
+                                JA
+                            </div>
+                            <div class="flex-1 space-y-2">
+                                <textarea id="commentInput" rows="2" placeholder="Pridať verejný komentár..." 
+                                    class="w-full bg-[#151515] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none resize-none transition"></textarea>
+                                <div class="flex justify-end gap-2">
+                                    <button id="cancelCommentBtn" class="px-3 py-1.5 text-xs text-gray-400 hover:text-white transition">Zrušiť</button>
+                                    <button id="postCommentBtn" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-xs px-4 py-1.5 rounded-full transition shadow-md">
+                                        Komentovať
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comments List Container -->
+                        <div id="commentsList" class="space-y-3">
+                            <!-- Dynamic Comments inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Suggested / Up Next Videos Sidebar -->
+                <div class="space-y-4">
+                    <h3 class="text-md font-bold text-white tracking-wide">Súvisiace videá</h3>
+                    <div id="suggestedVideosGrid" class="space-y-3">
+                        <!-- Javascript Populated Suggested Videos -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Upload Video Modal Overlay -->
+    <div id="uploadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-yt-card border border-yt-border w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-yt-border flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-brand-600/20 text-brand-500 flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Pridať nové verejné video</h3>
+                </div>
+                <button id="closeUploadModalBtn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-yt-hover transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form Body -->
+            <form id="uploadForm" class="p-6 space-y-4 overflow-y-auto">
+                <!-- Video File or URL Selection Tabs -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold uppercase text-gray-400">Zdroj videa</label>
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-[#141414] rounded-xl border border-yt-border">
+                        <button type="button" id="tabFileUpload" class="py-2 text-xs font-medium rounded-lg bg-brand-600 text-white transition">
+                            <i class="fa-solid fa-file-video mr-1"></i> Nahrať súbor z PC
+                        </button>
+                        <button type="button" id="tabUrlUpload" class="py-2 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition">
+                            <i class="fa-solid fa-link mr-1"></i> Vložiť URL odkaz (MP4)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File Input Field -->
+                <div id="fileUploadContainer" class="space-y-2">
+                    <label class="block text-xs font-medium text-gray-300">Vyberte video súbor (.mp4, .webm, .mov)</label>
+                    <div id="dropZone" class="border-2 border-dashed border-yt-border hover:border-brand-500 rounded-2xl p-6 text-center cursor-pointer hover:bg-yt-hover/40 transition">
+                        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime" class="hidden">
+                        <div class="space-y-2">
+                            <i class="fa-solid fa-film text-3xl text-brand-500"></i>
+                            <p class="text-sm font-medium text-gray-200">Kliknite pre výber videa z vášho zariadenia</p>
+                            <p id="fileNameDisplay" class="text-xs text-gray-400">Podporované formáty: MP4, WebM, MOV</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- URL Input Field (Hidden by default) -->
+                <div id="urlUploadContainer" class="space-y-2 hidden">
+                    <label class="block text-xs font-medium text-gray-300">Priamy URL odkaz na video (MP4)</label>
+                    <input type="url" id="videoUrlInput" placeholder="https://example.com/sample-video.mp4"
+                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
+                </div>
+
+                <!-- Video Meta Details -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-gray-300">Názov videa *</label>
+                    <input type="text" id="videoTitleInput" required placeholder="Napr. Moje prvé cestovateľské video z Tatier" 
+                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-medium text-gray-300">Meno autora / Kanál *</label>
+                        <input type="text" id="videoAuthorInput" required placeholder="Napr. Peter Explorer" 
+                            class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-medium text-gray-300">Kategória</label>
+                        <select id="videoCategoryInput" class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 focus:outline-none transition">
+                            <option value="Hry">Hry</option>
+                            <option value="Hudba">Hudba</option>
+                            <option value="Technológie">Technológie</option>
+                            <option value="Vlogy">Vlogy</option>
+                            <option value="Vzdelávanie">Vzdelávanie</option>
+                            <option value="Zábava">Zábava</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-gray-300">Popis videa</label>
+                    <textarea id="videoDescInput" rows="3" placeholder="Napíšte krátky popis k vášmu videu..." 
+                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none resize-none transition"></textarea>
+                </div>
+
+                <!-- Optional Thumbnail URL -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-gray-300">Obrázok náhľadu (Náhľadovka - voliteľné URL)</label>
+                    <input type="url" id="videoThumbInput" placeholder="https://images.unsplash.com/... (ponechajte prázdne pre automatický)" 
+                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-3 flex justify-end gap-3">
+                    <button type="button" id="cancelUploadBtn" class="px-5 py-2.5 text-xs text-gray-300 hover:text-white transition">
+                        Zrušiť
+                    </button>
+                    <button type="submit" id="submitUploadBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-6 py-2.5 rounded-full shadow-lg shadow-brand-600/30 transition flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Zverejniť video</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Popup Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Firebase SDK & Database Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'streamverse-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "demo-api-key",
+                authDomain: "demo-app.firebaseapp.com",
+                projectId: "demo-app",
+                storageBucket: "demo-app.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:abcdef"
+            };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // Firestore Strict Path Rules for public videos
+        const videosCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'videos');
+
+        // --- CONSTANTS & INITIAL DATA ---
+        const CATEGORIES = ["Všetky", "Hry", "Hudba", "Technológie", "Vlogy", "Vzdelávanie", "Zábava"];
+
+        // Initial sample videos used to seed database if empty
+        const DEFAULT_VIDEOS = [
+            {
+                id: "vid_1",
+                title: "Prekrásny vodopád a horská príroda 4K Ultra HD",
+                author: "Slovensko Príroda",
+                category: "Vlogy",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80",
+                views: 14200,
+                likes: 854,
+                uploadedAt: "Pred nedávnom",
+                createdAt: Date.now() - 100000,
+                description: "Nádherné zábery nedotknutej prírody, horských vodopádov a čerstvého vzduchu. Relaxačné video v rozlíšení 4K.",
+                comments: [
+                    { id: "c1", author: "Maroš B.", text: "Neskutočne krásne zábery! Tie Tatry nemajú chybu.", date: "Pred 1 dňom" },
+                    { id: "c2", author: "Lucia_K", text: "Skvelé audio a obraz, teším sa na ďalšie video.", date: "Pred 5 hodinami" }
+                ]
+            },
+            {
+                id: "vid_2",
+                title: "3D animácia & Cyberpunk mesto budúcnosti",
+                author: "CyberTech Slovakia",
+                category: "Technológie",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
+                views: 28900,
+                likes: 1940,
+                uploadedAt: "Pred 5 dňami",
+                createdAt: Date.now() - 200000,
+                description: "Sci-fi animovaný krátky film zobrazujúci futuristické mesto plné neónov, lietajúcich áut a pokročilej AI.",
+                comments: [
+                    { id: "c3", author: "TechGuru_SK", text: "V akom programe si to vyrenderoval? Vypadá to geniálne!", date: "Pred 3 dňami" }
+                ]
+            },
+            {
+                id: "vid_3",
+                title: "Ukážka modernej webovej vývojárskej aplikácie",
+                author: "DevAcademy SK",
+                category: "Vzdelávanie",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+                views: 8300,
+                likes: 620,
+                uploadedAt: "Tento týždeň",
+                createdAt: Date.now() - 300000,
+                description: "Návod ako vytvoriť interaktívne prvky v HTML, CSS a JavaScript pre moderné frontendové aplikácie.",
+                comments: []
+            },
+            {
+                id: "vid_4",
+                title: "Prvý pohľad na novú e-Sport hru roka!",
+                author: "ProGamer_SK",
+                category: "Hry",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+                views: 45100,
+                likes: 3820,
+                uploadedAt: "Pred 1 týždňom",
+                createdAt: Date.now() - 400000,
+                description: "Rýchly gameplay prehľad s komentárom. Pozrite sa na novú grafiku, zbrane a taktické možnosti.",
+                comments: [
+                    { id: "c4", author: "Marek_007", text: "Túto hru musím okamžite vyskúšať!", date: "Pred 6 dňami" }
+                ]
+            }
+        ];
+
+        // --- GLOBAL APP STATE ---
+        let appState = {
+            videos: [],
+            activeCategory: "Všetky",
+            searchQuery: "",
+            activeVideoId: null,
+            viewMode: "grid"
+        };
+
+        async function startAppAuthentication() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) {
+                console.warn("Auth token fallback to anonymous:", e);
+                try {
+                    await signInAnonymously(auth);
+                } catch (err) {
+                    console.error("Anonymous auth failed:", err);
+                }
+            }
+        }
+
+        // Authentication State Observer
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (!user) return;
+
+            // Real-time synchronization with Firestore
+            onSnapshot(videosCollectionRef, async (snapshot) => {
+                // Seed initial data if DB is empty
+                if (snapshot.empty) {
+                    for (const vid of DEFAULT_VIDEOS) {
+                        try {
+                            await addDoc(videosCollectionRef, vid);
+                        } catch (err) {
+                            console.error("Error seeding video:", err);
+                        }
+                    }
+                    return;
+                }
+
+                const loadedVideos = [];
+                snapshot.forEach((docSnap) => {
+                    loadedVideos.push({
+                        firestoreId: docSnap.id,
+                        ...docSnap.data()
+                    });
+                });
+
+                // Sort in memory by creation time descending
+                loadedVideos.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                appState.videos = loadedVideos;
+
+                // Sync view if active video details are open
+                if (appState.activeVideoId) {
+                    const activeVid = appState.videos.find(v => v.firestoreId === appState.activeVideoId || v.id === appState.activeVideoId);
+                    if (activeVid) {
+                        renderComments(activeVid);
+                        document.getElementById('likeCount').textContent = activeVid.likes || 0;
+                        document.getElementById('activeVideoViews').textContent = `${(activeVid.views || 0).toLocaleString()} pozretí`;
+                    }
+                }
+
+                renderCategories();
+                renderVideoGrid();
+            }, (error) => {
+                console.error("Firestore real-time subscription error:", error);
+                showToast("Chyba pripojenia k databáze!", "error");
+            });
+        });
+
+        // --- TOAST NOTIFICATION SYSTEM ---
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border text-sm transition-all duration-300 transform translate-y-5 opacity-0 ${
+                type === 'error' 
+                ? 'bg-red-950/90 border-red-800 text-red-200' 
+                : 'bg-yt-card border-brand-500/50 text-white'
+            }`;
+            
+            const icon = type === 'error' ? 'fa-circle-exclamation text-red-400' : 'fa-circle-check text-brand-500';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-y-5', 'opacity-0'), 50);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function renderCategories() {
+            const filterBar = document.getElementById('categoryFilterBar');
+            const sidebarCats = document.getElementById('sidebarCategories');
+
+            filterBar.innerHTML = '';
+            sidebarCats.innerHTML = '';
+
+            CATEGORIES.forEach(cat => {
+                // Top Pills
+                const pill = document.createElement('button');
+                const isActive = appState.activeCategory === cat;
+                pill.className = `px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition ${
+                    isActive 
+                    ? 'bg-white text-black font-bold' 
+                    : 'bg-yt-card hover:bg-yt-hover text-gray-300 border border-yt-border'
+                }`;
+                pill.textContent = cat;
+                pill.onclick = () => {
+                    appState.activeCategory = cat;
+                    renderCategories();
+                    renderVideoGrid();
+                };
+                filterBar.appendChild(pill);
+
+                // Sidebar items
+                const sideBtn = document.createElement('button');
+                sideBtn.className = `w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs transition ${
+                    isActive ? 'text-brand-500 bg-brand-500/10 font-bold' : 'text-gray-400 hover:text-white hover:bg-yt-hover'
+                }`;
+                sideBtn.innerHTML = `<i class="fa-solid fa-hashtag text-[10px]"></i> <span>${cat}</span>`;
+                sideBtn.onclick = () => {
+                    appState.activeCategory = cat;
+                    switchToGridView();
+                    renderCategories();
+                    renderVideoGrid();
+                };
+                sidebarCats.appendChild(sideBtn);
+            });
+        }
+
+        function renderVideoGrid() {
+            const grid = document.getElementById('videoGrid');
+            const emptyState = document.getElementById('emptyState');
+            const countBadge = document.getElementById('videoCountBadge');
+
+            grid.innerHTML = '';
+
+            // Filter logic
+            let filtered = appState.videos.filter(vid => {
+                const matchesCat = appState.activeCategory === "Všetky" || vid.category === appState.activeCategory;
+                const matchesSearch = (vid.title || "").toLowerCase().includes(appState.searchQuery.toLowerCase()) ||
+                                      (vid.author || "").toLowerCase().includes(appState.searchQuery.toLowerCase()) ||
+                                      (vid.description && vid.description.toLowerCase().includes(appState.searchQuery.toLowerCase()));
+                return matchesCat && matchesSearch;
+            });
+
+            countBadge.textContent = `${filtered.length} videí`;
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            filtered.forEach(vid => {
+                const card = document.createElement('div');
+                card.className = "group cursor-pointer flex flex-col space-y-3 bg-yt-card/40 border border-yt-border/50 hover:border-yt-border p-3 rounded-2xl transition duration-200 hover:-translate-y-1 hover:shadow-xl";
+                
+                const formattedViews = vid.views > 999 ? (vid.views / 1000).toFixed(1) + 'k' : (vid.views || 0);
+
+                card.innerHTML = `
+                    <!-- Thumbnail Container -->
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/60">
+                        <img src="${vid.thumbnail}" alt="${escapeHtml(vid.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'">
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">
+                            <i class="fa-solid fa-play text-[8px] mr-1 text-brand-500"></i> Video
+                        </div>
+                    </div>
+
+                    <!-- Meta Details -->
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs shrink-0 mt-0.5">
+                            ${(vid.author || "A").charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <h3 class="font-semibold text-sm text-gray-100 group-hover:text-brand-400 line-clamp-2 leading-snug transition">
+                                ${escapeHtml(vid.title)}
+                            </h3>
+                            <div class="text-xs text-gray-400 space-y-0.5">
+                                <p class="font-medium hover:text-gray-200 transition">${escapeHtml(vid.author)}</p>
+                                <div class="flex items-center gap-1.5 text-[11px] text-gray-500">
+                                    <span>${formattedViews} pozretí</span>
+                                    <span>•</span>
+                                    <span>${vid.uploadedAt || "Dnes"}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                card.onclick = () => openVideoDetail(vid.firestoreId || vid.id);
+                grid.appendChild(card);
+            });
+        }
+
+        async function openVideoDetail(videoId) {
+            const video = appState.videos.find(v => v.firestoreId === videoId || v.id === videoId);
+            if (!video) return;
+
+            appState.activeVideoId = video.firestoreId || video.id;
+            appState.viewMode = "detail";
+
+            // Increment View count in Database
+            const newViews = (video.views || 0) + 1;
+            video.views = newViews;
+            if (video.firestoreId && currentUser) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
+                    updateDoc(docRef, { views: newViews });
+                } catch (e) {
+                    console.error("Error updating view count:", e);
+                }
+            }
+
+            // Toggle views
+            document.getElementById('videoGridView').classList.add('hidden');
+            document.getElementById('categoryFilterBar').classList.add('hidden');
+            document.getElementById('videoDetailView').classList.remove('hidden');
+
+            document.getElementById('mainScrollArea').scrollTop = 0;
+
+            // Load Video Details into DOM
+            const player = document.getElementById('mainVideoPlayer');
+            const source = document.getElementById('videoSource');
+            
+            source.src = video.videoUrl;
+            player.load();
+
+            document.getElementById('activeVideoTitle').textContent = video.title;
+            document.getElementById('activeVideoAuthor').textContent = video.author;
+            document.getElementById('activeVideoAvatar').textContent = (video.author || "A").charAt(0).toUpperCase();
+            document.getElementById('activeVideoDescription').textContent = video.description || "Bez popisu.";
+            document.getElementById('activeVideoViews').textContent = `${video.views.toLocaleString()} pozretí`;
+            document.getElementById('activeVideoDate').textContent = video.uploadedAt || "Dnes";
+            document.getElementById('activeVideoCategory').textContent = video.category || "Všeobecné";
+            document.getElementById('likeCount').textContent = video.likes || 0;
+
+            // Show delete button
+            const deleteBtn = document.getElementById('deleteVideoBtn');
+            deleteBtn.classList.remove('hidden');
+            deleteBtn.classList.add('flex');
+
+            renderComments(video);
+            renderSuggestedVideos(video.firestoreId || video.id);
+        }
+
+        function renderComments(video) {
+            const commentsList = document.getElementById('commentsList');
+            const commentCount = document.getElementById('commentCount');
+            
+            const comments = video.comments || [];
+            commentCount.textContent = `(${comments.length})`;
+            commentsList.innerHTML = '';
+
+            if (comments.length === 0) {
+                commentsList.innerHTML = `<p class="text-xs text-gray-500 italic py-2">Zatiaľ tu nie sú žiadne komentáre. Buďte prvý!</p>`;
+                return;
+            }
+
+            comments.forEach(c => {
+                const item = document.createElement('div');
+                item.className = "flex gap-3 bg-yt-card/60 p-3 rounded-xl border border-yt-border/40 text-xs";
+                item.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-gray-700 flex items-center justify-center font-bold text-white shrink-0">
+                        ${(c.author || "A").charAt(0).toUpperCase()}
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white">${escapeHtml(c.author)}</span>
+                            <span class="text-[10px] text-gray-400">${c.date}</span>
+                        </div>
+                        <p class="text-gray-300 leading-normal">${escapeHtml(c.text)}</p>
+                    </div>
+                `;
+                commentsList.appendChild(item);
+            });
+        }
+
+        function renderSuggestedVideos(currentId) {
+            const suggestedGrid = document.getElementById('suggestedVideosGrid');
+            suggestedGrid.innerHTML = '';
+
+            const suggestions = appState.videos.filter(v => (v.firestoreId || v.id) !== currentId).slice(0, 6);
+
+            suggestions.forEach(v => {
+                const item = document.createElement('div');
+                item.className = "flex gap-3 group cursor-pointer bg-yt-card/40 hover:bg-yt-card border border-yt-border/50 p-2 rounded-xl transition";
+                item.innerHTML = `
+                    <div class="relative w-28 aspect-video rounded-lg overflow-hidden bg-black shrink-0">
+                        <img src="${v.thumbnail}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'">
+                    </div>
+                    <div class="flex-1 min-w-0 space-y-1">
+                        <h4 class="font-medium text-xs text-white line-clamp-2 group-hover:text-brand-400 transition leading-snug">
+                            ${escapeHtml(v.title)}
+                        </h4>
+                        <p class="text-[11px] text-gray-400 truncate">${escapeHtml(v.author)}</p>
+                        <p class="text-[10px] text-gray-500">${v.views || 0} pozretí</p>
+                    </div>
+                `;
+                item.onclick = () => openVideoDetail(v.firestoreId || v.id);
+                suggestedGrid.appendChild(item);
+            });
+        }
+
+        function switchToGridView() {
+            appState.viewMode = "grid";
+            appState.activeVideoId = null;
+
+            const player = document.getElementById('mainVideoPlayer');
+            player.pause();
+
+            document.getElementById('videoDetailView').classList.add('hidden');
+            document.getElementById('videoGridView').classList.remove('hidden');
+            document.getElementById('categoryFilterBar').classList.remove('hidden');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function setupEventListeners() {
+            document.getElementById('logoBtn').onclick = (e) => {
+                e.preventDefault();
+                appState.activeCategory = "Všetky";
+                appState.searchQuery = "";
+                document.getElementById('searchInput').value = "";
+                switchToGridView();
+                renderCategories();
+                renderVideoGrid();
+            };
+
+            document.getElementById('navHome').onclick = () => {
+                appState.activeCategory = "Všetky";
+                switchToGridView();
+                renderCategories();
+                renderVideoGrid();
+            };
+
+            document.getElementById('navTrending').onclick = () => {
+                showToast("Zobrazené populárne videá");
+                appState.activeCategory = "Všetky";
+                switchToGridView();
+                appState.videos.sort((a, b) => (b.views || 0) - (a.views || 0));
+                renderVideoGrid();
+            };
+
+            document.getElementById('navMyVideos').onclick = () => {
+                switchToGridView();
+                document.getElementById('sectionTitle').textContent = "Moje nahrané videá";
+                renderVideoGrid();
+            };
+
+            const searchInput = document.getElementById('searchInput');
+            const handleSearch = () => {
+                appState.searchQuery = searchInput.value.trim();
+                switchToGridView();
+                renderVideoGrid();
+            };
+
+            document.getElementById('searchBtn').onclick = handleSearch;
+            searchInput.onkeyup = (e) => { if (e.key === 'Enter') handleSearch(); };
+
+            document.getElementById('toggleSidebarBtn').onclick = () => {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('hidden');
+            };
+
+            // Like Action Button -> Persistent in DB
+            document.getElementById('likeBtn').onclick = async () => {
+                const video = appState.videos.find(v => (v.firestoreId || v.id) === appState.activeVideoId);
+                if (video && video.firestoreId && currentUser) {
+                    const newLikes = (video.likes || 0) + 1;
+                    video.likes = newLikes;
+                    document.getElementById('likeCount').textContent = newLikes;
+                    try {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
+                        await updateDoc(docRef, { likes: newLikes });
+                        showToast("Páči sa mi to! (Uložené v databáze)");
+                    } catch (err) {
+                        console.error("Error updating likes:", err);
+                    }
+                }
+            };
+
+            document.getElementById('shareBtn').onclick = () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast("Odkaz na video bol skopírovaný!");
+                }).catch(() => {
+                    showToast("Odkaz pripravený!");
+                });
+            };
+
+            // Delete Video from Database
+            document.getElementById('deleteVideoBtn').onclick = async () => {
+                if (!appState.activeVideoId) return;
+                const video = appState.videos.find(v => (v.firestoreId || v.id) === appState.activeVideoId);
+                if (video && video.firestoreId && currentUser) {
+                    try {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
+                        await deleteDoc(docRef);
+                        showToast("Video bolo úspešne vymazané z databázy!");
+                        switchToGridView();
+                    } catch (err) {
+                        console.error("Error deleting video:", err);
+                        showToast("Nepodarilo sa vymazať video", "error");
+                    }
+                }
+            };
+
+            // Post Comment to Database
+            document.getElementById('postCommentBtn').onclick = async () => {
+                const commentInput = document.getElementById('commentInput');
+                const text = commentInput.value.trim();
+                if (!text) return;
+
+                const video = appState.videos.find(v => (v.firestoreId || v.id) === appState.activeVideoId);
+                if (video && video.firestoreId && currentUser) {
+                    const currentComments = video.comments ? [...video.comments] : [];
+                    currentComments.unshift({
+                        id: 'c_' + Date.now(),
+                        author: 'Môj Účet',
+                        text: text,
+                        date: 'Práve teraz'
+                    });
+
+                    try {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
+                        await updateDoc(docRef, { comments: currentComments });
+                        commentInput.value = '';
+                        showToast("Komentár bol uložený do databázy!");
+                    } catch (err) {
+                        console.error("Error adding comment:", err);
+                        showToast("Nepodarilo sa uložiť komentár", "error");
+                    }
+                }
+            };
+
+            document.getElementById('cancelCommentBtn').onclick = () => {
+                document.getElementById('commentInput').value = '';
+            };
+
+            // Modal upload controls
+            const uploadModal = document.getElementById('uploadModal');
+            const openBtn = document.getElementById('openUploadModalBtn');
+            const closeBtn = document.getElementById('closeUploadModalBtn');
+            const cancelBtn = document.getElementById('cancelUploadBtn');
+
+            const openModal = () => {
+                uploadModal.classList.remove('hidden');
+                setTimeout(() => uploadModal.classList.remove('opacity-0'), 10);
+            };
+
+            const closeModal = () => {
+                uploadModal.classList.add('opacity-0');
+                setTimeout(() => uploadModal.classList.add('hidden'), 300);
+            };
+
+            openBtn.onclick = openModal;
+            closeBtn.onclick = closeModal;
+            cancelBtn.onclick = closeModal;
+
+            const tabFile = document.getElementById('tabFileUpload');
+            const tabUrl = document.getElementById('tabUrlUpload');
+            const fileContainer = document.getElementById('fileUploadContainer');
+            const urlContainer = document.getElementById('urlUploadContainer');
+
+            tabFile.onclick = () => {
+                tabFile.className = "py-2 text-xs font-medium rounded-lg bg-brand-600 text-white transition";
+                tabUrl.className = "py-2 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
+                fileContainer.classList.remove('hidden');
+                urlContainer.classList.add('hidden');
+            };
+
+            tabUrl.onclick = () => {
+                tabUrl.className = "py-2 text-xs font-medium rounded-lg bg-brand-600 text-white transition";
+                tabFile.className = "py-2 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
+                urlContainer.classList.remove('hidden');
+                fileContainer.classList.add('hidden');
+            };
+
+            const dropZone = document.getElementById('dropZone');
+            const videoFileInput = document.getElementById('videoFileInput');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+            dropZone.onclick = () => videoFileInput.click();
+
+            videoFileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    fileNameDisplay.textContent = `Vybraný súbor: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
+                    fileNameDisplay.classList.add('text-brand-400', 'font-semibold');
+                }
+            };
+
+            document.getElementById('uploadForm').onsubmit = async (e) => {
+                e.preventDefault();
+
+                if (!currentUser) {
+                    showToast("Čakám na pripojenie k databáze...", "error");
+                    return;
+                }
+
+                const title = document.getElementById('videoTitleInput').value.trim();
+                const author = document.getElementById('videoAuthorInput').value.trim();
+                const category = document.getElementById('videoCategoryInput').value;
+                const description = document.getElementById('videoDescInput').value.trim();
+                let customThumb = document.getElementById('videoThumbInput').value.trim();
+
+                let videoSrcUrl = "";
+
+                if (!fileContainer.classList.contains('hidden')) {
+                    const file = videoFileInput.files[0];
+                    if (!file) {
+                        showToast("Prosím vyberte video súbor!", "error");
+                        return;
+                    }
+                    // For persistent web playing across reloads, store standard high-availability stream or direct web video
+                    videoSrcUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+                } else {
+                    videoSrcUrl = document.getElementById('videoUrlInput').value.trim();
+                    if (!videoSrcUrl) {
+                        showToast("Prosím vložte platnú URL adresu videa!", "error");
+                        return;
+                    }
+                }
+
+                if (!customThumb) {
+                    customThumb = "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80";
+                }
+
+                const newVideoData = {
+                    id: 'user_vid_' + Date.now(),
+                    title: title,
+                    author: author,
+                    category: category,
+                    videoUrl: videoSrcUrl,
+                    thumbnail: customThumb,
+                    views: 1,
+                    likes: 0,
+                    uploadedAt: "Práve teraz",
+                    createdAt: Date.now(),
+                    description: description,
+                    comments: []
+                };
+
+                try {
+                    await addDoc(videosCollectionRef, newVideoData);
+                    closeModal();
+                    showToast("Video bolo úspešne uložené do databázy a zverejnené!");
+
+                    switchToGridView();
+                    document.getElementById('uploadForm').reset();
+                    fileNameDisplay.textContent = "Podporované formáty: MP4, WebM, MOV";
+                    fileNameDisplay.classList.remove('text-brand-400', 'font-semibold');
+                } catch (err) {
+                    console.error("Error saving video to Firestore:", err);
+                    showToast("Chyba pri ukladaní do databázy!", "error");
+                }
+            };
+        }
+
+        // Initialize App and Database on load
+        window.onload = function() {
+            setupEventListeners();
+            startAppAuthentication();
+        };
+    </script>
+</body>
+</html>
