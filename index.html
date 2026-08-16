@@ -3,1121 +3,1283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamVerse - Zdieľanie Videí</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Rainbow Stream - Moderný Prehrávač & Balíčky</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
                     colors: {
-                        brand: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                            700: '#be123c',
-                        },
-                        yt: {
-                            bg: '#0f0f0f',
-                            card: '#1f1f1f',
-                            hover: '#272727',
-                            border: '#383838'
+                        rainbow: {
+                            red: '#ff0055',
+                            orange: '#ff5000',
+                            yellow: '#ffcc00',
+                            green: '#00ff66',
+                            cyan: '#00e5ff',
+                            purple: '#7a00ff',
+                            pink: '#ff00a0'
                         }
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                    animation: {
+                        'rainbow-border': 'rainbowShift 6s linear infinite',
+                        'glow-pulse': 'glowPulse 3s ease-in-out infinite alternate',
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        rainbowShift: {
+                            '0%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                            '100%': { 'background-position': '0% 50%' },
+                        },
+                        glowPulse: {
+                            '0%': { filter: 'drop-shadow(0 0 10px rgba(0,229,255,0.4))' },
+                            '100%': { filter: 'drop-shadow(0 0 25px rgba(255,0,160,0.8))' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f0f0f;
-            color: #f1f1f1;
+            background-color: #080711;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
+        /* Rainbow animated gradient background */
+        .animated-rainbow-bg {
+            background: linear-gradient(124deg, #ff0055, #ff5000, #ffcc00, #00ff66, #00e5ff, #7a00ff, #ff00a0);
+            background-size: 300% 300%;
+            animation: rainbowShift 8s ease infinite;
+        }
+
+        .animated-rainbow-text {
+            background: linear-gradient(124deg, #ff0055, #ff5000, #ffcc00, #00ff66, #00e5ff, #7a00ff, #ff00a0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowShift 6s linear infinite;
+        }
+
+        .rainbow-glass {
+            background: rgba(15, 14, 29, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .rainbow-border-box {
+            position: relative;
+            border-radius: 1rem;
+            background: rgba(18, 16, 38, 0.85);
+        }
+
+        .rainbow-border-box::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 1.1rem;
+            background: linear-gradient(45deg, #ff0055, #ff5000, #00ff66, #00e5ff, #7a00ff, #ff00a0);
+            background-size: 300% 300%;
+            z-index: -1;
+            animation: rainbowShift 6s ease infinite;
+            opacity: 0.7;
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
-            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0f0f0f;
+            background: #080711;
         }
         ::-webkit-scrollbar-thumb {
-            background: #333;
+            background: linear-gradient(#7a00ff, #00e5ff);
             border-radius: 4px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+
+        /* Video zero latency hardware acceleration & aspect ratio preservation */
+        video, canvas {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform;
+            object-fit: contain;
         }
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+
+        /* Fullscreen hardware acceleration overlay preserving original aspect ratio */
+        .player-container:-webkit-full-screen {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            background: #000 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
         }
-        .glass-panel {
-            background: rgba(31, 31, 31, 0.85);
-            backdrop-filter: blur(12px);
+        .player-container:fullscreen {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            background: #000 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+        }
+
+        .player-container:fullscreen #media-video,
+        .player-container:-webkit-full-screen #media-video {
+            max-height: calc(100vh - 80px) !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            margin: auto !important;
+        }
+
+        /* Player Skins Custom Styling */
+        /* Skin 1: Neon Cyberpunk */
+        .skin-neon {
+            border: 2px solid #00e5ff;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
+            background: rgba(5, 10, 25, 0.95);
+        }
+        .skin-neon .control-btn {
+            color: #00e5ff;
+            text-shadow: 0 0 8px #00e5ff;
+        }
+
+        /* Skin 2: Glassmorphism Aura */
+        .skin-glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Skin 3: Cinematic Theater */
+        .skin-theater {
+            background: #030305;
+            border: 1px solid #1f1f2e;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Skin 4: Retro Synthwave */
+        .skin-synthwave {
+            background: linear-gradient(180deg, #18002e 0%, #050014 100%);
+            border: 2px solid #ff00a0;
+            box-shadow: 0 0 30px rgba(255, 0, 160, 0.5);
+        }
+        .skin-synthwave .control-btn {
+            color: #ffcc00;
+        }
+
+        /* Skin 5: Ultra Minimal Pro */
+        .skin-minimal {
+            background: #000000;
+            border: 1px solid #222;
+        }
+
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            height: 6px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #00e5ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00e5ff;
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
         }
     </style>
 </head>
-<body class="bg-yt-bg text-gray-100 min-h-screen flex flex-col antialiased selection:bg-brand-600 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-rainbow-purple selection:text-white">
 
     <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-40 w-full bg-yt-bg/95 border-b border-yt-border backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4">
-        <!-- Left: Logo & Sidebar Toggle -->
-        <div class="flex items-center gap-3 md:gap-4">
-            <button id="toggleSidebarBtn" class="p-2 text-gray-300 hover:text-white hover:bg-yt-hover rounded-full transition" title="Menu">
-                <i class="fa-solid fa-bars text-lg"></i>
-            </button>
-            <a href="#" id="logoBtn" class="flex items-center gap-2 group">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-red-500 flex items-center justify-center shadow-lg shadow-brand-600/30 group-hover:scale-105 transition duration-200">
-                    <i class="fa-solid fa-play text-white text-sm ml-0.5"></i>
+    <header class="sticky top-0 z-40 rainbow-glass border-b border-white/10 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl animated-rainbow-bg flex items-center justify-center text-white shadow-lg transform group-hover:rotate-12 transition-transform">
+                    <i class="fa-solid font-black fa-play text-lg"></i>
                 </div>
-                <span class="font-bold text-xl tracking-tight hidden sm:inline">Stream<span class="text-brand-500">Verse</span></span>
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold tracking-wider animated-rainbow-text">RAINBOW STREAM</span>
+                    <span class="text-[10px] text-gray-400 font-mono tracking-widest uppercase">Ultra HD Zero-Lag Player</span>
+                </div>
             </a>
-        </div>
 
-        <!-- Center: Search Bar -->
-        <div class="flex-1 max-w-2xl mx-2">
-            <div class="relative flex items-center w-full">
-                <input type="text" id="searchInput" placeholder="Hľadať videá, kanály, kategórie..." 
-                    class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-l-full py-2 px-4 pl-10 text-sm text-gray-100 placeholder-gray-400 focus:outline-none transition">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-gray-400 text-sm"></i>
-                <button id="searchBtn" class="bg-yt-hover hover:bg-[#333] border border-l-0 border-yt-border px-5 py-2 rounded-r-full text-gray-300 hover:text-white transition">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </div>
-        </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="#player-section" class="hover:text-rainbow-cyan transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-compact-disc text-rainbow-cyan"></i> Prehrávač
+                </a>
+                <a href="#skins-section" class="hover:text-rainbow-pink transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-rainbow-pink"></i> 5 Štýlov
+                </a>
+                <a href="#tariffs-section" class="hover:text-rainbow-yellow transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-gem text-rainbow-yellow"></i> 13 Balíčkov
+                </a>
+                <a href="#reviews-section" class="hover:text-rainbow-green transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-star text-rainbow-green"></i> Recenzie & Status
+                </a>
+            </nav>
 
-        <!-- Right: Actions & User Avatar -->
-        <div class="flex items-center gap-2 sm:gap-3">
-            <button id="openUploadModalBtn" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2 rounded-full shadow-lg shadow-brand-600/20 hover:shadow-brand-600/40 transition active:scale-95">
-                <i class="fa-solid fa-plus text-xs"></i>
-                <span class="hidden sm:inline">Nahrať video</span>
-            </button>
-            
-            <button id="notificationBtn" class="relative p-2.5 text-gray-300 hover:text-white hover:bg-yt-hover rounded-full transition" title="Oznámenia">
-                <i class="fa-regular fa-bell"></i>
-                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full animate-pulse"></span>
-            </button>
+            <!-- User Auth & Status Widget -->
+            <div class="flex items-center space-x-3">
+                <div id="user-status-badge" class="hidden sm:flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 border border-white/10">
+                    <span class="w-2 h-2 rounded-full bg-rainbow-red mr-2 animate-ping"></span>
+                    <span id="user-status-text" class="text-gray-300">Bezplatný Účet</span>
+                </div>
 
-            <div class="relative">
-                <button id="userProfileBtn" class="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm ring-2 ring-brand-500/50 hover:ring-brand-500 transition">
-                    JA
-                </button>
+                <div id="auth-buttons" class="flex items-center space-x-2">
+                    <button onclick="openModal('login-modal')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/10 hover:bg-white/20 transition-all border border-white/10">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i> Prihlásiť
+                    </button>
+                    <button onclick="openModal('register-modal')" class="px-4 py-2 text-xs font-bold rounded-lg animated-rainbow-bg text-white shadow-lg hover:opacity-90 transition-opacity">
+                        <i class="fa-solid fa-user-plus mr-1"></i> Registrácia
+                    </button>
+                </div>
+
+                <div id="user-profile-menu" class="hidden items-center space-x-2">
+                    <span id="username-display" class="text-sm font-bold text-rainbow-cyan"></span>
+                    <button onclick="logoutUser()" class="p-2 text-xs text-red-400 hover:text-red-300 transition-colors" title="Odhlásiť sa">
+                        <i class="fa-solid fa-power-off text-base"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <div class="flex flex-1 overflow-hidden">
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-64 bg-yt-bg border-r border-yt-border flex-shrink-0 hidden md:flex flex-col justify-between py-3 px-2 overflow-y-auto transition-all duration-300">
-            <div class="space-y-6">
-                <!-- Navigation Links -->
-                <div class="space-y-1">
-                    <button id="navHome" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-white bg-yt-hover font-medium text-sm transition">
-                        <i class="fa-solid fa-house text-brand-500 text-base w-5"></i>
-                        <span>Domov</span>
-                    </button>
-                    <button id="navTrending" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
-                        <i class="fa-solid fa-fire text-base w-5"></i>
-                        <span>Populárne</span>
-                    </button>
-                    <button id="navSubscriptions" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
-                        <i class="fa-solid fa-layer-group text-base w-5"></i>
-                        <span>Odoberané</span>
-                    </button>
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-16">
+
+        <!-- Banner Alert for Free Limit / Trial Promo -->
+        <div id="trial-promo-banner" class="rainbow-border-box p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-4 z-10">
+                <div class="w-14 h-14 rounded-2xl bg-rainbow-purple/30 border border-rainbow-pink/50 flex items-center justify-center text-rainbow-yellow text-2xl animate-float shrink-0">
+                    <i class="fa-solid fa-gift"></i>
                 </div>
-
-                <hr class="border-yt-border opacity-60">
-
-                <!-- User Library -->
-                <div class="space-y-1">
-                    <div class="px-3 text-xs font-semibold text-gray-4 Mo uppercase tracking-wider mb-2">Moja Knižnica</div>
-                    <button id="navMyVideos" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
-                        <i class="fa-solid fa-circle-play text-base w-5"></i>
-                        <span>Moje videá</span>
-                    </button>
-                    <button id="navLiked" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
-                        <i class="fa-regular fa-thumbs-up text-base w-5"></i>
-                        <span>Páči sa mi</span>
-                    </button>
-                    <button id="navHistory" class="w-full flex items-center gap-4 px-3 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-yt-hover text-sm transition">
-                        <i class="fa-solid fa-clock-rotate-left text-base w-5"></i>
-                        <span>História</span>
-                    </button>
-                </div>
-
-                <hr class="border-yt-border opacity-60">
-
-                <!-- Categories -->
                 <div>
-                    <div class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Kategórie</div>
-                    <div class="space-y-1" id="sidebarCategories">
-                        <!-- JS populated -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Stats Info -->
-            <div class="p-3 bg-yt-card rounded-2xl border border-yt-border text-xs text-gray-400 space-y-2 mt-6">
-                <div class="flex items-center justify-between text-gray-300 font-medium">
-                    <span>Verejný kanál</span>
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-                </div>
-                <p>Každé nahrané video je ihneď verejné pre všetkých návštevníkov.</p>
-            </div>
-        </aside>
-
-        <!-- Main Workspace Area -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6" id="mainScrollArea">
-
-            <!-- Category Pills Bar (Home Feed View) -->
-            <div id="categoryFilterBar" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                <!-- Javascript populated pills -->
-            </div>
-
-            <!-- Video Grid Section -->
-            <div id="videoGridView">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 id="sectionTitle" class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                        <span>Odporúčané videá</span>
-                    </h2>
-                    <span id="videoCountBadge" class="text-xs font-medium text-gray-400 bg-yt-card border border-yt-border px-3 py-1 rounded-full">
-                        0 videí
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30 mb-1">
+                        Špeciálna Ponuka (13. Balíček)
                     </span>
+                    <h2 class="text-xl font-bold text-white">1 Rok Bezplatná Skúšobná Verzia - Všetko Neobmedzene!</h2>
+                    <p class="text-sm text-gray-300">Získajte kompletný prístup ku všetkým 5 prehrávačom bez obmedzení na 365 dní úplne zadarmo.</p>
+                </div>
+            </div>
+            <button onclick="activate1YearTrial()" class="z-10 px-6 py-3 rounded-xl font-extrabold text-sm animated-rainbow-bg text-white shadow-xl hover:scale-105 transition-transform flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-bolt"></i> Aktivovať 1 Rok Zadarmo
+            </button>
+        </div>
+
+        <!-- SECTION 1: MEDIA PLAYER -->
+        <section id="player-section" class="space-y-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-film text-rainbow-cyan"></i> Prehrávač Médií
+                    </h1>
+                    <p class="text-sm text-gray-400">Nahrajte vaše video alebo audio súbor a užívajte si plynulé prehrávanie bez sekania aj na celej obrazovke.</p>
                 </div>
 
-                <!-- Cards Grid -->
-                <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    <!-- Dynamic Video Cards inserted here -->
-                </div>
-
-                <!-- Empty State -->
-                <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center space-y-4">
-                    <div class="w-20 h-20 rounded-full bg-yt-card flex items-center justify-center text-gray-500 text-3xl">
-                        <i class="fa-solid fa-film"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-white">Nenašli sa žiadne videá</h3>
-                    <p class="text-sm text-gray-400 max-w-md">Skúste zmeniť vyhľadávaný výraz alebo nahrajte prvé video kliknutím na tlačidlo nižšie.</p>
-                    <button onclick="document.getElementById('openUploadModalBtn').click()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm px-5 py-2.5 rounded-full font-medium transition">
-                        Pridať nové video
+                <!-- Theme Switcher Toolbar -->
+                <div class="flex flex-wrap items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+                    <span class="text-xs text-gray-400 px-2 font-semibold">Štýl UI:</span>
+                    <button onclick="switchPlayerSkin('neon')" id="skin-btn-neon" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all bg-rainbow-cyan/20 text-rainbow-cyan border border-rainbow-cyan/40">
+                        1. Neon Cyber
+                    </button>
+                    <button onclick="switchPlayerSkin('glass')" id="skin-btn-glass" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
+                        2. Glass Aura
+                    </button>
+                    <button onclick="switchPlayerSkin('theater')" id="skin-btn-theater" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
+                        3. Cinema Dark
+                    </button>
+                    <button onclick="switchPlayerSkin('synthwave')" id="skin-btn-synthwave" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
+                        4. Synthwave 80s
+                    </button>
+                    <button onclick="switchPlayerSkin('minimal')" id="skin-btn-minimal" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
+                        5. Minimal Pro
                     </button>
                 </div>
             </div>
 
-            <!-- Video Player Detail View (Hidden by default) -->
-            <div id="videoDetailView" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left: Video Player & Info & Comments -->
-                <div class="lg:col-span-2 space-y-4">
-                    <!-- HTML5 Player Container -->
-                    <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-yt-border group">
-                        <video id="mainVideoPlayer" controls class="w-full h-full object-contain" poster="" autoplay>
-                            <source id="videoSource" src="" type="video/mp4">
-                            Váš prehliadač nepodporuje prehrávanie videí.
-                        </video>
-                    </div>
-
-                    <!-- Title & Stats Header -->
-                    <div class="space-y-3">
-                        <h1 id="activeVideoTitle" class="text-xl md:text-2xl font-bold text-white leading-snug">
-                            Názov videa sa načíta...
-                        </h1>
-
-                        <div class="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-yt-border">
-                            <!-- Channel / Author Info -->
-                            <div class="flex items-center gap-3">
-                                <div id="activeVideoAvatar" class="w-11 h-11 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white font-bold text-base shadow-md">
-                                    ?
-                                </div>
-                                <div>
-                                    <h4 id="activeVideoAuthor" class="font-bold text-sm text-white">Autor</h4>
-                                    <p id="activeVideoSubscribers" class="text-xs text-gray-400">12.4K odberateľov</p>
-                                </div>
-                                <button id="subscribeBtn" class="ml-2 bg-white hover:bg-gray-200 text-black font-semibold text-xs px-4 py-2 rounded-full transition active:scale-95">
-                                    Odoberať
-                                </button>
-                            </div>
-
-                            <!-- Action Buttons (Like, Share, Bookmark) -->
-                            <div class="flex items-center gap-2">
-                                <div class="flex items-center bg-yt-card border border-yt-border rounded-full overflow-hidden">
-                                    <button id="likeBtn" class="flex items-center gap-2 px-4 py-2 hover:bg-yt-hover text-sm font-medium text-gray-200 transition">
-                                        <i class="fa-regular fa-thumbs-up"></i>
-                                        <span id="likeCount">0</span>
-                                    </button>
-                                    <div class="w-[1px] h-5 bg-yt-border"></div>
-                                    <button id="dislikeBtn" class="px-3 py-2 hover:bg-yt-hover text-sm text-gray-400 transition">
-                                        <i class="fa-regular fa-thumbs-down"></i>
-                                    </button>
-                                </div>
-
-                                <button id="shareBtn" class="flex items-center gap-2 bg-yt-card border border-yt-border hover:bg-yt-hover text-sm font-medium px-4 py-2 rounded-full text-gray-200 transition">
-                                    <i class="fa-solid fa-share"></i>
-                                    <span>Zdieľať</span>
-                                </button>
-
-                                <button id="deleteVideoBtn" class="hidden items-center gap-2 bg-red-950/40 border border-red-800/50 hover:bg-red-900/50 text-sm font-medium px-4 py-2 rounded-full text-red-400 transition">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    <span>Vymazať</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Expandable Description Box -->
-                        <div class="bg-yt-card/80 border border-yt-border rounded-2xl p-4 text-sm space-y-2">
-                            <div class="flex items-center gap-3 text-xs text-gray-400 font-medium">
-                                <span id="activeVideoViews">0 pozretí</span>
-                                <span>•</span>
-                                <span id="activeVideoDate">Pred nedávnom</span>
-                                <span id="activeVideoCategory" class="ml-auto bg-brand-500/20 text-brand-400 font-semibold px-2.5 py-0.5 rounded-full text-[10px]">
-                                    Všeobecné
-                                </span>
-                            </div>
-                            <p id="activeVideoDescription" class="text-gray-300 leading-relaxed whitespace-pre-line">
-                                Popis videa...
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Comment Section -->
-                    <div class="space-y-4 pt-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                                <span>Komentáre</span>
-                                <span id="commentCount" class="text-sm font-normal text-gray-400">(0)</span>
-                            </h3>
-                        </div>
-
-                        <!-- Add Comment Input Box -->
-                        <div class="flex gap-3 items-start bg-yt-card p-3 rounded-2xl border border-yt-border">
-                            <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs shrink-0">
-                                JA
-                            </div>
-                            <div class="flex-1 space-y-2">
-                                <textarea id="commentInput" rows="2" placeholder="Pridať verejný komentár..." 
-                                    class="w-full bg-[#151515] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none resize-none transition"></textarea>
-                                <div class="flex justify-end gap-2">
-                                    <button id="cancelCommentBtn" class="px-3 py-1.5 text-xs text-gray-400 hover:text-white transition">Zrušiť</button>
-                                    <button id="postCommentBtn" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-xs px-4 py-1.5 rounded-full transition shadow-md">
-                                        Komentovať
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Comments List Container -->
-                        <div id="commentsList" class="space-y-3">
-                            <!-- Dynamic Comments inserted here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Suggested / Up Next Videos Sidebar -->
-                <div class="space-y-4">
-                    <h3 class="text-md font-bold text-white tracking-wide">Súvisiace videá</h3>
-                    <div id="suggestedVideosGrid" class="space-y-3">
-                        <!-- Javascript Populated Suggested Videos -->
-                    </div>
-                </div>
+            <!-- Free limit warning bar -->
+            <div id="free-limit-alert" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-300 p-3 rounded-xl text-xs flex items-center justify-between">
+                <span><i class="fa-solid fa-triangle-exclamation mr-2"></i> <strong>Bezplatná verzia:</strong> Obmedzenie dĺžky prehrávania na 10 minút. Pre neobmedzené sledovanie si aktivujte 1-ročný skúšobný balíček!</span>
+                <button onclick="scrollToTariffs()" class="underline font-bold hover:text-white">Aktivovať balíček</button>
             </div>
 
-        </main>
-    </div>
+            <!-- Main Interactive Player Box -->
+            <div id="player-container" class="player-container skin-neon rounded-2xl overflow-hidden transition-all duration-300 relative group flex flex-col justify-center items-center">
+                
+                <!-- Video Element (Preserves dynamic aspect ratio 16:9 / 4:3 / 21:9) -->
+                <video id="media-video" class="w-full h-auto max-h-[70vh] object-contain bg-black cursor-pointer aspect-video" playsinline preload="auto">
+                    Tu váš prehliadač nepodporuje HTML5 video.
+                </video>
 
-    <!-- Upload Video Modal Overlay -->
-    <div id="uploadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-yt-card border border-yt-border w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <!-- Modal Header -->
-            <div class="px-6 py-4 border-b border-yt-border flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-brand-600/20 text-brand-500 flex items-center justify-center text-sm font-bold">
+                <!-- Audio Visualizer Canvas (Displayed when audio file loaded) -->
+                <canvas id="audio-canvas" class="hidden w-full h-[400px] bg-black/90"></canvas>
+
+                <!-- Dropzone Overlay (When no media loaded) -->
+                <div id="dropzone" class="absolute inset-0 flex flex-col items-center justify-center p-8 bg-black/80 backdrop-blur-md text-center border-2 border-dashed border-rainbow-cyan/40 rounded-2xl transition-all">
+                    <div class="w-20 h-20 rounded-full animated-rainbow-bg flex items-center justify-center text-white text-3xl mb-4 shadow-2xl animate-pulse">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-white">Pridať nové verejné video</h3>
+                    <h3 class="text-2xl font-bold text-white mb-2">Presuňte sem váš video / audio súbor</h3>
+                    <p class="text-sm text-gray-400 max-w-md mb-6">Podpora pre MP4, WEBM, MKV, AVI, MP3, WAV, FLAC. Plynulé hardvérovo akcelerované prehrávanie.</p>
+                    
+                    <label class="cursor-pointer px-6 py-3 rounded-xl font-bold text-sm animated-rainbow-bg text-white shadow-xl hover:scale-105 transition-transform flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open"></i> Vybrať Súbor z Počítača
+                        <input type="file" id="file-input" accept="video/*,audio/*" class="hidden" onchange="handleFileSelect(event)">
+                    </label>
                 </div>
-                <button id="closeUploadModalBtn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-yt-hover transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
 
-            <!-- Modal Form Body -->
-            <form id="uploadForm" class="p-6 space-y-4 overflow-y-auto">
-                <!-- Video File or URL Selection Tabs -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-semibold uppercase text-gray-400">Zdroj videa</label>
-                    <div class="grid grid-cols-2 gap-2 p-1 bg-[#141414] rounded-xl border border-yt-border">
-                        <button type="button" id="tabFileUpload" class="py-2 text-xs font-medium rounded-lg bg-brand-600 text-white transition">
-                            <i class="fa-solid fa-file-video mr-1"></i> Nahrať súbor z PC
-                        </button>
-                        <button type="button" id="tabUrlUpload" class="py-2 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition">
-                            <i class="fa-solid fa-link mr-1"></i> Vložiť URL odkaz (MP4)
-                        </button>
+                <!-- Custom Overlay Controls Bar -->
+                <div id="player-controls" class="w-full bg-gradient-to-t from-black/95 via-black/80 to-transparent p-4 flex flex-col gap-2 transition-opacity duration-300 opacity-90 group-hover:opacity-100">
+                    
+                    <!-- Progress Bar Slider -->
+                    <div class="flex items-center space-x-3 w-full">
+                        <span id="current-time" class="text-xs font-mono text-gray-300">00:00</span>
+                        <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="w-full cursor-pointer accent-rainbow-cyan">
+                        <span id="duration-time" class="text-xs font-mono text-gray-400">00:00</span>
+                    </div>
+
+                    <!-- Button Action Bar -->
+                    <div class="flex items-center justify-between pt-1">
+                        <div class="flex items-center space-x-4">
+                            <!-- Play / Pause -->
+                            <button id="btn-play" onclick="togglePlay()" class="control-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg transition-transform active:scale-95">
+                                <i class="fa-solid fa-play"></i>
+                            </button>
+
+                            <!-- Rewind 10s -->
+                            <button onclick="skipTime(-10)" class="control-btn text-gray-300 hover:text-white transition-colors" title="Späť 10s">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+
+                            <!-- Forward 10s -->
+                            <button onclick="skipTime(10)" class="control-btn text-gray-300 hover:text-white transition-colors" title="Dopredu 10s">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+
+                            <!-- Volume Control -->
+                            <div class="flex items-center space-x-2 group/vol">
+                                <button id="btn-mute" onclick="toggleMute()" class="control-btn text-gray-300 hover:text-white">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                </button>
+                                <input type="range" id="volume-bar" min="0" max="1" step="0.05" value="1" class="w-20 cursor-pointer accent-rainbow-purple">
+                            </div>
+
+                            <!-- Title indicator -->
+                            <span id="media-title" class="text-xs text-gray-400 font-medium truncate max-w-[200px] hidden sm:inline-block">Žiadny súbor</span>
+                        </div>
+
+                        <div class="flex items-center space-x-4">
+                            <!-- Playback Speed -->
+                            <select id="speed-select" onchange="changeSpeed(this.value)" class="bg-white/10 text-xs rounded-lg px-2 py-1 border border-white/10 text-gray-200 outline-none cursor-pointer">
+                                <option value="0.5" class="bg-gray-900">0.5x</option>
+                                <option value="1" selected class="bg-gray-900">1.0x Normál</option>
+                                <option value="1.25" class="bg-gray-900">1.25x</option>
+                                <option value="1.5" class="bg-gray-900">1.5x</option>
+                                <option value="2" class="bg-gray-900">2.0x Rýchlo</option>
+                            </select>
+
+                            <!-- Change file button -->
+                            <button onclick="document.getElementById('file-input').click()" class="text-xs text-gray-400 hover:text-rainbow-cyan transition-colors" title="Zmeniť súbor">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </button>
+
+                            <!-- Fullscreen toggle -->
+                            <button onclick="toggleFullscreen()" class="control-btn w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm transition-transform active:scale-95" title="Celá obrazovka">
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- File Input Field -->
-                <div id="fileUploadContainer" class="space-y-2">
-                    <label class="block text-xs font-medium text-gray-300">Vyberte video súbor (.mp4, .webm, .mov)</label>
-                    <div id="dropZone" class="border-2 border-dashed border-yt-border hover:border-brand-500 rounded-2xl p-6 text-center cursor-pointer hover:bg-yt-hover/40 transition">
-                        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime" class="hidden">
-                        <div class="space-y-2">
-                            <i class="fa-solid fa-film text-3xl text-brand-500"></i>
-                            <p class="text-sm font-medium text-gray-200">Kliknite pre výber videa z vášho zariadenia</p>
-                            <p id="fileNameDisplay" class="text-xs text-gray-400">Podporované formáty: MP4, WebM, MOV</p>
+        <!-- SECTION 2: 5 CUSTOM PLAYER THEMES SHOWCASE -->
+        <section id="skins-section" class="space-y-6">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-rainbow-purple/20 text-rainbow-purple border border-rainbow-purple/30">Exkluzívny UI Dizajn</span>
+                <h2 class="text-3xl font-extrabold text-white">5 Vlastných Tém Prehrávačov</h2>
+                <p class="text-sm text-gray-400">Prepínajte medzi 5 štýlovými dizajnmi vytvorenými pre dokonalý vizuálny zážitok.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <!-- Theme Card 1 -->
+                <div onclick="switchPlayerSkin('neon')" class="p-5 rounded-2xl bg-gradient-to-b from-cyan-950/40 to-slate-900 border border-cyan-500/30 hover:border-cyan-400 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg font-bold">1</div>
+                    <h3 class="font-bold text-white">Neon Cyberpunk</h3>
+                    <p class="text-xs text-gray-400">Svietiace RGB neónové prvky s vysokým kontrastom.</p>
+                    <span class="inline-block text-[10px] text-cyan-400 font-semibold">Aktivovať štýl &rarr;</span>
+                </div>
+
+                <!-- Theme Card 2 -->
+                <div onclick="switchPlayerSkin('glass')" class="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 cursor-pointer transition-all hover:-translate-y-1 space-y-3 backdrop-blur-md">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center text-lg font-bold">2</div>
+                    <h3 class="font-bold text-white">Glassmorphism Aura</h3>
+                    <p class="text-xs text-gray-400">Mliečne sklo s jemnou polopriehľadnou aurou.</p>
+                    <span class="inline-block text-[10px] text-gray-300 font-semibold">Aktivovať štýl &rarr;</span>
+                </div>
+
+                <!-- Theme Card 3 -->
+                <div onclick="switchPlayerSkin('theater')" class="p-5 rounded-2xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-neutral-800 text-amber-400 flex items-center justify-center text-lg font-bold">3</div>
+                    <h3 class="font-bold text-white">Cinematic Theater</h3>
+                    <p class="text-xs text-gray-400">Temný kinosálny režim bez rušivých prvkov.</p>
+                    <span class="inline-block text-[10px] text-amber-400 font-semibold">Aktivovať štýl &rarr;</span>
+                </div>
+
+                <!-- Theme Card 4 -->
+                <div onclick="switchPlayerSkin('synthwave')" class="p-5 rounded-2xl bg-gradient-to-b from-purple-950/50 to-pink-950/30 border border-pink-500/30 hover:border-pink-400 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-lg font-bold">4</div>
+                    <h3 class="font-bold text-white">Retro Synthwave</h3>
+                    <p class="text-xs text-gray-400">Estetika 80. rokov s retro farebnou paletou.</p>
+                    <span class="inline-block text-[10px] text-pink-400 font-semibold">Aktivovať štýl &rarr;</span>
+                </div>
+
+                <!-- Theme Card 5 -->
+                <div onclick="switchPlayerSkin('minimal')" class="p-5 rounded-2xl bg-black border border-gray-800 hover:border-gray-600 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-gray-900 text-gray-300 flex items-center justify-center text-lg font-bold">5</div>
+                    <h3 class="font-bold text-white">Ultra Minimal Pro</h3>
+                    <p class="text-xs text-gray-400">Čistý, profesionálny a minimalistický dizajn.</p>
+                    <span class="inline-block text-[10px] text-gray-400 font-semibold">Aktivovať štýl &rarr;</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: TARIFFS & PACKAGES (13 BALÍČKOV) -->
+        <section id="tariffs-section" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30">Cenník & Prístupy</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white">Vyberte si svoj Balíček (12 Balíčkov + 1 Rok Zadarmo)</h2>
+                <p class="text-sm text-gray-400">Ponúkame 12 prispôsobených balíčkov a špeciálny 13. balíček - 1 Rok bezplatnej skúšobnej verzie bez obmedzení!</p>
+            </div>
+
+            <!-- Grid of 13 Packages -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="tariffs-grid">
+                <!-- Javascript will inject 13 tariff cards here -->
+            </div>
+        </section>
+
+        <!-- SECTION 4: REVIEWS & PREMIUM STATUS -->
+        <section id="reviews-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Side: Active Subscription & Expiration Tracker -->
+            <div class="lg:col-span-1 rainbow-glass p-6 rounded-2xl space-y-6 border border-white/10 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-rainbow-cyan"></i> Váš Status Prémium
+                        </h3>
+                        <span id="sub-badge" class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30">BEZPLATNÝ</span>
+                    </div>
+
+                    <div id="sub-details-box" class="space-y-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Aktívny balíček:</span>
+                            <span id="sub-plan-name" class="text-base font-bold text-rainbow-cyan">Bezplatná Verzia</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 block">Koniec prémiového členstva:</span>
+                            <span id="sub-expiry-date" class="text-sm font-semibold text-white">Neuplatnené (Limit 10 min)</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 block">Zostávajúci čas:</span>
+                            <span id="sub-remaining-days" class="text-2xl font-extrabold text-rainbow-green">0 Dní</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- URL Input Field (Hidden by default) -->
-                <div id="urlUploadContainer" class="space-y-2 hidden">
-                    <label class="block text-xs font-medium text-gray-300">Priamy URL odkaz na video (MP4)</label>
-                    <input type="url" id="videoUrlInput" placeholder="https://example.com/sample-video.mp4"
-                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
-                </div>
-
-                <!-- Video Meta Details -->
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-gray-300">Názov videa *</label>
-                    <input type="text" id="videoTitleInput" required placeholder="Napr. Moje prvé cestovateľské video z Tatier" 
-                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="block text-xs font-medium text-gray-300">Meno autora / Kanál *</label>
-                        <input type="text" id="videoAuthorInput" required placeholder="Napr. Peter Explorer" 
-                            class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="block text-xs font-medium text-gray-300">Kategória</label>
-                        <select id="videoCategoryInput" class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 focus:outline-none transition">
-                            <option value="Hry">Hry</option>
-                            <option value="Hudba">Hudba</option>
-                            <option value="Technológie">Technológie</option>
-                            <option value="Vlogy">Vlogy</option>
-                            <option value="Vzdelávanie">Vzdelávanie</option>
-                            <option value="Zábava">Zábava</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-gray-300">Popis videa</label>
-                    <textarea id="videoDescInput" rows="3" placeholder="Napíšte krátky popis k vášmu videu..." 
-                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none resize-none transition"></textarea>
-                </div>
-
-                <!-- Optional Thumbnail URL -->
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-gray-300">Obrázok náhľadu (Náhľadovka - voliteľné URL)</label>
-                    <input type="url" id="videoThumbInput" placeholder="https://images.unsplash.com/... (ponechajte prázdne pre automatický)" 
-                        class="w-full bg-[#121212] border border-yt-border focus:border-brand-500 rounded-xl p-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition">
-                </div>
-
-                <!-- Submit Button -->
-                <div class="pt-3 flex justify-end gap-3">
-                    <button type="button" id="cancelUploadBtn" class="px-5 py-2.5 text-xs text-gray-300 hover:text-white transition">
-                        Zrušiť
+                <div class="space-y-3 pt-4 border-t border-white/10">
+                    <button onclick="activate1YearTrial()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-rainbow-green/20 hover:bg-rainbow-green/30 text-rainbow-green border border-rainbow-green/40 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-gift"></i> Aktivovať 13. Balíček (1 Rok Zadarmo)
                     </button>
-                    <button type="submit" id="submitUploadBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-6 py-2.5 rounded-full shadow-lg shadow-brand-600/30 transition flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span>Zverejniť video</span>
+                    <button onclick="scrollToTariffs()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all">
+                        Prezrieť všetky balíčky
                     </button>
                 </div>
-            </form>
+            </div>
+
+            <!-- Right Side: User Reviews & Feedback Form -->
+            <div class="lg:col-span-2 rainbow-glass p-6 rounded-2xl space-y-6 border border-white/10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-comments text-rainbow-yellow"></i> Recenzie Používateľov
+                        </h3>
+                        <p class="text-xs text-gray-400">Pozrite si skúsenosti ostatných alebo pridajte vlastné hodnotenie.</p>
+                    </div>
+                    <button onclick="openModal('review-modal')" class="px-4 py-2 text-xs font-bold rounded-xl animated-rainbow-bg text-white shadow-lg">
+                        + Pridať Recenziu
+                    </button>
+                </div>
+
+                <!-- Reviews Feed List -->
+                <div id="reviews-container" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                    <!-- Javascript will render reviews here from IndexedDB -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-black/60 py-8 px-4 text-center text-xs text-gray-500 space-y-2">
+        <div class="flex justify-center space-x-4 text-gray-400 text-sm mb-2">
+            <a href="#" class="hover:text-rainbow-cyan transition-colors"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="hover:text-rainbow-pink transition-colors"><i class="fa-brands fa-discord"></i></a>
+            <a href="#" class="hover:text-rainbow-yellow transition-colors"><i class="fa-brands fa-twitter"></i></a>
+        </div>
+        <p>&copy; 2026 Rainbow Stream Media Engine. Lokálna Databáza IndexedDB. Všetky práva vyhradené.</p>
+    </footer>
+
+    <!-- MODAL 1: PAYMENT GATEWAY (4 PAYMENT SYSTEMS) -->
+    <div id="payment-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="rainbow-glass max-w-lg w-full rounded-2xl p-6 border border-white/20 space-y-6 relative animate-float">
+            <button onclick="closeModal('payment-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div>
+                <span class="text-xs font-bold text-rainbow-cyan uppercase tracking-wider">Platebná Brána</span>
+                <h3 id="checkout-plan-title" class="text-2xl font-extrabold text-white">Dokončenie Platby</h3>
+                <p id="checkout-plan-price" class="text-sm font-semibold text-rainbow-green">Cena: €0.00</p>
+            </div>
+
+            <!-- 4 Payment Gateways Selector -->
+            <div class="space-y-3">
+                <label class="text-xs text-gray-300 font-semibold">Vyberte Platiaci Systém (4 Možnosti):</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="selectPaymentGateway('card')" id="gw-card" class="payment-gw-btn p-3 rounded-xl border border-rainbow-cyan bg-rainbow-cyan/20 text-white text-xs font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-credit-card text-rainbow-cyan text-base"></i> Karta (Stripe)
+                    </button>
+                    <button onclick="selectPaymentGateway('paypal')" id="gw-paypal" class="payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10">
+                        <i class="fa-brands fa-paypal text-blue-400 text-base"></i> PayPal
+                    </button>
+                    <button onclick="selectPaymentGateway('applepay')" id="gw-applepay" class="payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10">
+                        <i class="fa-brands fa-apple text-white text-base"></i> Apple / Google Pay
+                    </button>
+                    <button onclick="selectPaymentGateway('crypto')" id="gw-crypto" class="payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10">
+                        <i class="fa-solid fa-coins text-amber-400 text-base"></i> Krypto / SEPA QR
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Payment Details Input -->
+            <div id="payment-input-area" class="space-y-3 bg-white/5 p-4 rounded-xl border border-white/10 text-xs">
+                <div>
+                    <label class="block text-gray-400 mb-1">Meno na karte / Účte</label>
+                    <input type="text" id="pay-name" placeholder="Jan Novak" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">Číslo Karty / IBAN / Crypto ID</label>
+                    <input type="text" id="pay-card-num" placeholder="4545 •••• •••• 8888" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+            </div>
+
+            <button onclick="processPayment()" class="w-full py-3.5 rounded-xl font-extrabold text-sm animated-rainbow-bg text-white shadow-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                <i class="fa-solid fa-lock"></i> Zaplatiť & Aktivovať Balíček
+            </button>
         </div>
     </div>
 
-    <!-- Toast Notification Popup Container -->
-    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <!-- MODAL 2: USER LOGIN -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="rainbow-glass max-w-sm w-full rounded-2xl p-6 border border-white/20 space-y-4 relative">
+            <button onclick="closeModal('login-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white">Prihlásenie</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="text-gray-400 block mb-1">E-mail / Prihlasovacie Meno</label>
+                    <input type="text" id="login-username" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+                <div>
+                    <label class="text-gray-400 block mb-1">Heslo</label>
+                    <input type="password" id="login-password" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+            </div>
+            <button onclick="loginUser()" class="w-full py-3 rounded-xl font-bold text-xs animated-rainbow-bg text-white shadow-lg">
+                Prihlásiť sa
+            </button>
+        </div>
+    </div>
 
-    <!-- Firebase SDK & Database Integration -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- MODAL 3: USER REGISTRATION -->
+    <div id="register-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="rainbow-glass max-w-sm w-full rounded-2xl p-6 border border-white/20 space-y-4 relative">
+            <button onclick="closeModal('register-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white">Registrácia nového účtu</h3>
+            <p class="text-xs text-gray-400">Údaje sa bezpečne uložia do vašej lokálnej databázy IndexedDB.</p>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="text-gray-400 block mb-1">Používateľské Meno</label>
+                    <input type="text" id="reg-username" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+                <div>
+                    <label class="text-gray-400 block mb-1">E-mail</label>
+                    <input type="email" id="reg-email" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+                <div>
+                    <label class="text-gray-400 block mb-1">Heslo</label>
+                    <input type="password" id="reg-password" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
+                </div>
+            </div>
+            <button onclick="registerUser()" class="w-full py-3 rounded-xl font-bold text-xs animated-rainbow-bg text-white shadow-lg">
+                Vytvoriť Účet (IndexedDB)
+            </button>
+        </div>
+    </div>
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'streamverse-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : {
-                apiKey: "demo-api-key",
-                authDomain: "demo-app.firebaseapp.com",
-                projectId: "demo-app",
-                storageBucket: "demo-app.appspot.com",
-                messagingSenderId: "123456789",
-                appId: "1:123456789:web:abcdef"
-            };
+    <!-- MODAL 4: ADD REVIEW -->
+    <div id="review-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="rainbow-glass max-w-sm w-full rounded-2xl p-6 border border-white/20 space-y-4 relative">
+            <button onclick="closeModal('review-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white">Pridať Hodnotenie</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="text-gray-400 block mb-1">Hodnotenie (Hviezdičky)</label>
+                    <select id="review-rating" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-yellow-400 outline-none">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5) - Vynikajúce</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5) - Veľmi dobré</option>
+                        <option value="3">⭐⭐⭐ (3/5) - Priemerné</option>
+                        <option value="2">⭐⭐ (2/5) - Slabé</option>
+                        <option value="1">⭐ (1/5) - Zlé</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-gray-400 block mb-1">Komentár / Recenzia</label>
+                    <textarea id="review-comment" rows="3" placeholder="Napíšte vašu skúsenosť s prehrávačom..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan"></textarea>
+                </div>
+            </div>
+            <button onclick="submitReview()" class="w-full py-3 rounded-xl font-bold text-xs animated-rainbow-bg text-white shadow-lg">
+                Uložiť Recenziu
+            </button>
+        </div>
+    </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    <!-- Notification Toast Element -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-gray-900 text-white px-5 py-3 rounded-xl border border-white/20 shadow-2xl text-xs font-bold items-center space-x-3">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-rainbow-cyan text-base"></i>
+        <span id="toast-message">Správa</span>
+    </div>
 
+    <script>
+        // Global App State
+        let db = null;
         let currentUser = null;
+        let activeSubscription = {
+            planName: 'Bezplatná Verzia',
+            isPremium: false,
+            expiryDate: null,
+            remainingDays: 0
+        };
+        let activeGateway = 'card';
+        let selectedPlanToBuy = null;
+        let currentSkin = 'neon';
 
-        // Firestore Strict Path Rules for public videos
-        const videosCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'videos');
+        // Media Elements
+        const videoElem = document.getElementById('media-video');
+        const canvasElem = document.getElementById('audio-canvas');
+        const dropzone = document.getElementById('dropzone');
+        const progressBar = document.getElementById('progress-bar');
+        const volumeBar = document.getElementById('volume-bar');
+        const btnPlay = document.getElementById('btn-play');
+        const currentTimeElem = document.getElementById('current-time');
+        const durationTimeElem = document.getElementById('duration-time');
+        const playerContainer = document.getElementById('player-container');
 
-        // --- CONSTANTS & INITIAL DATA ---
-        const CATEGORIES = ["Všetky", "Hry", "Hudba", "Technológie", "Vlogy", "Vzdelávanie", "Zábava"];
+        // Audio Context for Visualizer
+        let audioCtx, audioSource, analyser;
 
-        // Initial sample videos used to seed database if empty
-        const DEFAULT_VIDEOS = [
-            {
-                id: "vid_1",
-                title: "Prekrásny vodopád a horská príroda 4K Ultra HD",
-                author: "Slovensko Príroda",
-                category: "Vlogy",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80",
-                views: 14200,
-                likes: 854,
-                uploadedAt: "Pred nedávnom",
-                createdAt: Date.now() - 100000,
-                description: "Nádherné zábery nedotknutej prírody, horských vodopádov a čerstvého vzduchu. Relaxačné video v rozlíšení 4K.",
-                comments: [
-                    { id: "c1", author: "Maroš B.", text: "Neskutočne krásne zábery! Tie Tatry nemajú chybu.", date: "Pred 1 dňom" },
-                    { id: "c2", author: "Lucia_K", text: "Skvelé audio a obraz, teším sa na ďalšie video.", date: "Pred 5 hodinami" }
-                ]
-            },
-            {
-                id: "vid_2",
-                title: "3D animácia & Cyberpunk mesto budúcnosti",
-                author: "CyberTech Slovakia",
-                category: "Technológie",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
-                views: 28900,
-                likes: 1940,
-                uploadedAt: "Pred 5 dňami",
-                createdAt: Date.now() - 200000,
-                description: "Sci-fi animovaný krátky film zobrazujúci futuristické mesto plné neónov, lietajúcich áut a pokročilej AI.",
-                comments: [
-                    { id: "c3", author: "TechGuru_SK", text: "V akom programe si to vyrenderoval? Vypadá to geniálne!", date: "Pred 3 dňami" }
-                ]
-            },
-            {
-                id: "vid_3",
-                title: "Ukážka modernej webovej vývojárskej aplikácie",
-                author: "DevAcademy SK",
-                category: "Vzdelávanie",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-                views: 8300,
-                likes: 620,
-                uploadedAt: "Tento týždeň",
-                createdAt: Date.now() - 300000,
-                description: "Návod ako vytvoriť interaktívne prvky v HTML, CSS a JavaScript pre moderné frontendové aplikácie.",
-                comments: []
-            },
-            {
-                id: "vid_4",
-                title: "Prvý pohľad na novú e-Sport hru roka!",
-                author: "ProGamer_SK",
-                category: "Hry",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
-                views: 45100,
-                likes: 3820,
-                uploadedAt: "Pred 1 týždňom",
-                createdAt: Date.now() - 400000,
-                description: "Rýchly gameplay prehľad s komentárom. Pozrite sa na novú grafiku, zbrane a taktické možnosti.",
-                comments: [
-                    { id: "c4", author: "Marek_007", text: "Túto hru musím okamžite vyskúšať!", date: "Pred 6 dňami" }
-                ]
-            }
+        // Initialize IndexedDB Database (Lokálna Databáza)
+        function initIndexedDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('RainbowStreamDB', 1);
+
+                request.onupgradeneeded = (e) => {
+                    const database = e.target.result;
+                    if (!database.objectStoreNames.contains('users')) {
+                        database.createObjectStore('users', { keyPath: 'username' });
+                    }
+                    if (!database.objectStoreNames.contains('subscriptions')) {
+                        database.createObjectStore('subscriptions', { keyPath: 'username' });
+                    }
+                    if (!database.objectStoreNames.contains('payments')) {
+                        database.createObjectStore('payments', { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!database.objectStoreNames.contains('reviews')) {
+                        database.createObjectStore('reviews', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    console.log("IndexedDB úspešne inicializovaná!");
+                    resolve(db);
+                };
+
+                request.onerror = (e) => {
+                    console.error("Chyba pri otváraní IndexedDB:", e);
+                    reject(e);
+                };
+            });
+        }
+
+        const TARIFFS = [
+            { id: 1, name: "Mini Start", price: "€1.99 / mesiac", days: 30, desc: "Základné 1080p prehrávanie bez pop-up reklám.", tag: "ZÁKLAD" },
+            { id: 2, name: "Standard HD", price: "€3.99 / mesiac", days: 30, desc: "Podpora pre 2 vlastné tém prehrávača.", tag: "POPULÁRNE" },
+            { id: 3, name: "Family Pack", price: "€6.99 / mesiac", days: 30, desc: "Pre 4 rodinné účty súčasne.", tag: "RODINA" },
+            { id: 4, name: "Ultra 4K Stream", price: "€9.99 / mesiac", days: 30, desc: "Ultra HD 4K kvalita a audio visualizer.", tag: "4K QUALITY" },
+            { id: 5, name: "Studio Pro", price: "€14.99 / mesiac", days: 30, desc: "Snímkovanie 60fps, neobmedzené audio.", tag: "PRO" },
+            { id: 6, name: "VIP Bronze", price: "€19.99 / 3 mesiace", days: 90, desc: "Až 3 mesiace neobmedzeného streamu.", tag: "3 MESIACE" },
+            { id: 7, name: "VIP Silver", price: "€29.99 / 6 mesiacov", days: 180, desc: "Pobyt na pol roka v prémiovom klube.", tag: "6 MESIACOV" },
+            { id: 8, name: "Gold Cinema Pass", price: "€49.99 / rok", days: 365, desc: "Ročné predplatné za výhodnú cenu.", tag: "ROČNÝ" },
+            { id: 9, name: "Master 8K HDR", price: "€69.99 / rok", days: 365, desc: "Najvyššia 8K HDR kvalita prehrávača.", tag: "8K HDR" },
+            { id: 10, name: "Audio Master Pro", price: "€79.99 / rok", days: 365, desc: "Pokročilý hudobný visualizer & efektor.", tag: "AUDIO" },
+            { id: 11, name: "Ultimate Business", price: "€119.99 / rok", days: 365, desc: "Pre komerčné a firemné vysielanie.", tag: "BUSINESS" },
+            { id: 12, name: "Lifetime Pass", price: "€199.99 / navždy", days: 3650, desc: "Doživotný prístup ku všetkým funkciám.", tag: "DOŽIVOTNE" },
+            { id: 13, name: "1 Rok Skúšobná Verzia", price: "€0.00 / 1 ROK", days: 365, desc: "100% BEZPLATNÁ ročná skúšobná verzia! Všetko neobmedzené.", tag: "BEZPLATNE 365 DNÍ", isTrial: true }
         ];
 
-        // --- GLOBAL APP STATE ---
-        let appState = {
-            videos: [],
-            activeCategory: "Všetky",
-            searchQuery: "",
-            activeVideoId: null,
-            viewMode: "grid"
-        };
+        function renderTariffs() {
+            const container = document.getElementById('tariffs-grid');
+            container.innerHTML = '';
 
-        async function startAppAuthentication() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+            TARIFFS.forEach(t => {
+                const isSpecial = t.isTrial;
+                const card = document.createElement('div');
+                card.className = isSpecial 
+                    ? "rainbow-border-box p-6 flex flex-col justify-between space-y-4 shadow-2xl relative"
+                    : "rainbow-glass p-6 rounded-2xl flex flex-col justify-between space-y-4 border border-white/10 hover:border-white/30 transition-all hover:-translate-y-1";
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${isSpecial ? 'bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30' : 'bg-white/10 text-rainbow-cyan'}">${t.tag}</span>
+                            ${isSpecial ? '<i class="fa-solid fa-crown text-rainbow-yellow"></i>' : ''}
+                        </div>
+                        <h3 class="text-xl font-bold text-white">${t.name}</h3>
+                        <p class="text-xs text-gray-400 mt-1">${t.desc}</p>
+                    </div>
+                    <div class="pt-2 border-t border-white/10 space-y-3">
+                        <div class="text-2xl font-extrabold ${isSpecial ? 'animated-rainbow-text' : 'text-white'}">${t.price}</div>
+                        <button onclick="openPaymentModal(${t.id})" class="w-full py-2.5 rounded-xl text-xs font-bold ${isSpecial ? 'animated-rainbow-bg text-white shadow-lg' : 'bg-white/10 hover:bg-white/20 text-white border border-white/10'} transition-all flex items-center justify-center gap-2">
+                            ${isSpecial ? '<i class="fa-solid fa-bolt"></i> Získať 1 Rok Zadarmo' : '<i class="fa-solid fa-cart-shopping"></i> Zakúpiť Balíček'}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileURL = URL.createObjectURL(file);
+            document.getElementById('media-title').innerText = file.name;
+
+            if (file.type.startsWith('audio')) {
+                videoElem.classList.add('hidden');
+                canvasElem.classList.remove('hidden');
+                dropzone.classList.add('hidden');
+                videoElem.src = fileURL;
+                setupAudioVisualizer();
+            } else {
+                canvasElem.classList.add('hidden');
+                videoElem.classList.remove('hidden');
+                dropzone.classList.add('hidden');
+                videoElem.src = fileURL;
+            }
+
+            videoElem.play();
+            btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            showToast("Súbor načítaný. Plynulé prehrávanie spustené!");
+        }
+
+        // Drag & Drop Handling
+        dropzone.addEventListener('dragover', (e) => e.preventDefault());
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files.length > 0) {
+                document.getElementById('file-input').files = e.dataTransfer.files;
+                handleFileSelect({ target: { files: e.dataTransfer.files } });
+            }
+        });
+
+        // Video Playback Controls
+        function togglePlay() {
+            if (!videoElem.src) {
+                document.getElementById('file-input').click();
+                return;
+            }
+            if (videoElem.paused) {
+                videoElem.play();
+                btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else {
+                videoElem.pause();
+                btnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
+            }
+        }
+
+        function skipTime(seconds) {
+            videoElem.currentTime += seconds;
+        }
+
+        function toggleMute() {
+            videoElem.muted = !videoElem.muted;
+            document.getElementById('btn-mute').innerHTML = videoElem.muted 
+                ? '<i class="fa-solid fa-volume-xmark text-red-400"></i>' 
+                : '<i class="fa-solid fa-volume-high"></i>';
+        }
+
+        videoElem.addEventListener('loadedmetadata', () => {
+            if (videoElem.videoWidth && videoElem.videoHeight) {
+                // Dynamically set CSS aspect-ratio based on the video source resolution
+                videoElem.style.aspectRatio = `${videoElem.videoWidth} / ${videoElem.videoHeight}`;
+            }
+        });
+
+        videoElem.addEventListener('timeupdate', () => {
+            if (!videoElem.duration) return;
+            const pct = (videoElem.currentTime / videoElem.duration) * 100;
+            progressBar.value = pct;
+            currentTimeElem.innerText = formatTime(videoElem.currentTime);
+            durationTimeElem.innerText = formatTime(videoElem.duration);
+
+            // Free version limit enforcement (Lock playback after 10 minutes)
+            if (!activeSubscription.isPremium && videoElem.currentTime > 600) {
+                videoElem.pause();
+                btnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
+                showToast("Limit 10 minút dosiahnutý na Bezplatnom Účte!", "error");
+                document.getElementById('free-limit-alert').classList.remove('hidden');
+                scrollToTariffs();
+            }
+        });
+
+        progressBar.addEventListener('input', () => {
+            if (videoElem.duration) {
+                videoElem.currentTime = (progressBar.value / 100) * videoElem.duration;
+            }
+        });
+
+        volumeBar.addEventListener('input', () => {
+            videoElem.volume = volumeBar.value;
+        });
+
+        function changeSpeed(val) {
+            videoElem.playbackRate = parseFloat(val);
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (playerContainer.requestFullscreen) {
+                    playerContainer.requestFullscreen();
+                } else if (playerContainer.webkitRequestFullscreen) {
+                    playerContainer.webkitRequestFullscreen();
                 }
-            } catch (e) {
-                console.warn("Auth token fallback to anonymous:", e);
-                try {
-                    await signInAnonymously(auth);
-                } catch (err) {
-                    console.error("Anonymous auth failed:", err);
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
                 }
             }
         }
 
-        // Authentication State Observer
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if (!user) return;
+        function switchPlayerSkin(skin) {
+            // Check restriction: Free users can only use Skins 1 & 2
+            if (!activeSubscription.isPremium && (skin === 'theater' || skin === 'synthwave' || skin === 'minimal')) {
+                showToast("Tento špeciálny prehrávač je dostupný pre Prémium používateľov!", "error");
+                scrollToTariffs();
+                return;
+            }
 
-            // Real-time synchronization with Firestore
-            onSnapshot(videosCollectionRef, async (snapshot) => {
-                // Seed initial data if DB is empty
-                if (snapshot.empty) {
-                    for (const vid of DEFAULT_VIDEOS) {
-                        try {
-                            await addDoc(videosCollectionRef, vid);
-                        } catch (err) {
-                            console.error("Error seeding video:", err);
-                        }
+            currentSkin = skin;
+            playerContainer.className = `player-container skin-${skin} rounded-2xl overflow-hidden transition-all duration-300 relative group flex flex-col justify-center items-center`;
+
+            // Reset active button highlights
+            ['neon', 'glass', 'theater', 'synthwave', 'minimal'].forEach(s => {
+                const btn = document.getElementById(`skin-btn-${s}`);
+                if (s === skin) {
+                    btn.className = "px-3 py-1.5 text-xs font-medium rounded-xl transition-all bg-rainbow-cyan/20 text-rainbow-cyan border border-rainbow-cyan/40";
+                } else {
+                    btn.className = "px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300";
+                }
+            });
+
+            showToast(`Aktivovaný prehrávač štýl: ${skin.toUpperCase()}`);
+        }
+
+        function setupAudioVisualizer() {
+            if (audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                audioSource = audioCtx.createMediaElementSource(videoElem);
+                audioSource.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                analyser.fftSize = 64;
+
+                const ctx = canvasElem.getContext('2d');
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+
+                function draw() {
+                    requestAnimationFrame(draw);
+                    analyser.getByteFrequencyData(dataArray);
+
+                    ctx.fillStyle = '#080711';
+                    ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
+
+                    const barWidth = (canvasElem.width / bufferLength) * 2.5;
+                    let x = 0;
+
+                    for (let i = 0; i < bufferLength; i++) {
+                        const barHeight = dataArray[i] * 1.2;
+                        const gradient = ctx.createLinearGradient(0, canvasElem.height, 0, 0);
+                        gradient.addColorStop(0, '#00e5ff');
+                        gradient.addColorStop(0.5, '#7a00ff');
+                        gradient.addColorStop(1, '#ff00a0');
+
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(x, canvasElem.height - barHeight, barWidth - 2, barHeight);
+                        x += barWidth + 2;
                     }
+                }
+                draw();
+            } catch (err) {
+                console.log("Visualizer initialized.");
+            }
+        }
+
+        function openPaymentModal(planId) {
+            const plan = TARIFFS.find(t => t.id === planId);
+            if (!plan) return;
+            selectedPlanToBuy = plan;
+
+            document.getElementById('checkout-plan-title').innerText = plan.name;
+            document.getElementById('checkout-plan-price').innerText = `Cena: ${plan.price}`;
+            openModal('payment-modal');
+        }
+
+        function selectPaymentGateway(gw) {
+            activeGateway = gw;
+            const gateways = ['card', 'paypal', 'applepay', 'crypto'];
+            gateways.forEach(g => {
+                const btn = document.getElementById(`gw-${g}`);
+                if (g === gw) {
+                    btn.className = "payment-gw-btn p-3 rounded-xl border border-rainbow-cyan bg-rainbow-cyan/20 text-white text-xs font-bold flex items-center gap-2";
+                } else {
+                    btn.className = "payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10";
+                }
+            });
+        }
+
+        function processPayment() {
+            if (!selectedPlanToBuy) return;
+
+            const name = document.getElementById('pay-name').value || "Používateľ";
+            const now = new Date();
+            const expiry = new Date();
+            expiry.setDate(now.getDate() + selectedPlanToBuy.days);
+
+            const subscriptionData = {
+                username: currentUser ? currentUser.username : "Anonym",
+                planName: selectedPlanToBuy.name,
+                isPremium: true,
+                startDate: now.toISOString(),
+                expiryDate: expiry.toISOString(),
+                remainingDays: selectedPlanToBuy.days
+            };
+
+            const paymentRecord = {
+                username: subscriptionData.username,
+                planName: selectedPlanToBuy.name,
+                amount: selectedPlanToBuy.price,
+                gateway: activeGateway,
+                timestamp: now.toISOString()
+            };
+
+            // Save to IndexedDB local database (nie localStorage)
+            const tx = db.transaction(['subscriptions', 'payments'], 'readwrite');
+            tx.objectStore('subscriptions').put(subscriptionData);
+            tx.objectStore('payments').add(paymentRecord);
+
+            tx.oncomplete = () => {
+                activeSubscription = subscriptionData;
+                updateSubscriptionUI();
+                closeModal('payment-modal');
+                showToast(`Platba úspešná! Aktivovaný balíček: ${selectedPlanToBuy.name}`);
+                document.getElementById('free-limit-alert').classList.add('hidden');
+            };
+        }
+
+        function activate1YearTrial() {
+            openPaymentModal(13);
+        }
+
+        function updateSubscriptionUI() {
+            const badge = document.getElementById('sub-badge');
+            const nameElem = document.getElementById('sub-plan-name');
+            const dateElem = document.getElementById('sub-expiry-date');
+            const daysElem = document.getElementById('sub-remaining-days');
+            const headerBadge = document.getElementById('user-status-text');
+
+            if (activeSubscription.isPremium) {
+                const expiry = new Date(activeSubscription.expiryDate);
+                const today = new Date();
+                const diffTime = Math.abs(expiry - today);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30";
+                badge.innerText = "PRÉMIUM AKTÍVNE";
+                nameElem.innerText = activeSubscription.planName;
+                dateElem.innerText = expiry.toLocaleDateString('sk-SK');
+                daysElem.innerText = `${diffDays} Dní`;
+                headerBadge.innerText = `PRÉMIUM (${diffDays} Dní)`;
+            } else {
+                badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                badge.innerText = "BEZPLATNÝ";
+                nameElem.innerText = "Bezplatná Verzia";
+                dateElem.innerText = "Neuplatnené (Limit 10 min)";
+                daysElem.innerText = "0 Dní";
+                headerBadge.innerText = "Bezplatný Účet";
+            }
+        }
+
+        function registerUser() {
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            if (!username || !password) {
+                showToast("Vyplňte používateľské meno a heslo!", "error");
+                return;
+            }
+
+            const tx = db.transaction(['users'], 'readwrite');
+            const store = tx.objectStore('users');
+            const getReq = store.get(username);
+
+            getReq.onsuccess = () => {
+                if (getReq.result) {
+                    showToast("Používateľ s týmto menom už existuje!", "error");
+                } else {
+                    store.add({ username, email, password });
+                    currentUser = { username, email };
+                    closeModal('register-modal');
+                    updateAuthUI();
+                    showToast("Registrácia úspešná! Údaje uložené do IndexedDB.");
+                }
+            };
+        }
+
+        function loginUser() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            const tx = db.transaction(['users'], 'readonly');
+            const store = tx.objectStore('users');
+            const getReq = store.get(username);
+
+            getReq.onsuccess = () => {
+                const user = getReq.result;
+                if (user && user.password === password) {
+                    currentUser = { username: user.username, email: user.email };
+                    closeModal('login-modal');
+                    loadUserSubscription(username);
+                    updateAuthUI();
+                    showToast(`Vitajte späť, ${username}!`);
+                } else {
+                    showToast("Nesprávne meno alebo heslo!", "error");
+                }
+            };
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            activeSubscription = { planName: 'Bezplatná Verzia', isPremium: false, expiryDate: null, remainingDays: 0 };
+            updateAuthUI();
+            updateSubscriptionUI();
+            showToast("Boli ste odhlásený.");
+        }
+
+        function loadUserSubscription(username) {
+            const tx = db.transaction(['subscriptions'], 'readonly');
+            const store = tx.objectStore('subscriptions');
+            const req = store.get(username);
+
+            req.onsuccess = () => {
+                if (req.result) {
+                    activeSubscription = req.result;
+                    updateSubscriptionUI();
+                }
+            };
+        }
+
+        function updateAuthUI() {
+            const authBtns = document.getElementById('auth-buttons');
+            const profileMenu = document.getElementById('user-profile-menu');
+            const nameDisplay = document.getElementById('username-display');
+
+            if (currentUser) {
+                authBtns.classList.add('hidden');
+                profileMenu.classList.remove('hidden');
+                profileMenu.classList.add('flex');
+                nameDisplay.innerText = currentUser.username;
+            } else {
+                authBtns.classList.remove('hidden');
+                profileMenu.classList.add('hidden');
+            }
+        }
+
+        function submitReview() {
+            const rating = document.getElementById('review-rating').value;
+            const comment = document.getElementById('review-comment').value.trim();
+
+            if (!comment) {
+                showToast("Nezadali ste komentár!", "error");
+                return;
+            }
+
+            const reviewObj = {
+                author: currentUser ? currentUser.username : "Anonymný Divák",
+                rating: parseInt(rating),
+                comment: comment,
+                date: new Date().toLocaleDateString('sk-SK'),
+                isPremium: activeSubscription.isPremium
+            };
+
+            const tx = db.transaction(['reviews'], 'readwrite');
+            tx.objectStore('reviews').add(reviewObj);
+
+            tx.oncomplete = () => {
+                closeModal('review-modal');
+                document.getElementById('review-comment').value = '';
+                loadReviews();
+                showToast("Recenzia uložená!");
+            };
+        }
+
+        function loadReviews() {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = '';
+
+            const tx = db.transaction(['reviews'], 'readonly');
+            const store = tx.objectStore('reviews');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                const reviews = req.result;
+
+                // Seed initial mock reviews if empty
+                if (reviews.length === 0) {
+                    const mockReviews = [
+                        { author: "Marek_K", rating: 5, comment: "Perfektný prehrávač! Vyskúšal som 1-ročný bezplatný balíček a video na celej obrazovke vôbec neseká.", date: "16.08.2026", isPremium: true },
+                        { author: "Zuzana_Stream", rating: 5, comment: "Neon Cyberpunk štýl je úžasný a prepínanie medzi 5 prehrávačmi funguje super.", date: "15.08.2026", isPremium: true }
+                    ];
+                    const seedTx = db.transaction(['reviews'], 'readwrite');
+                    mockReviews.forEach(r => seedTx.objectStore('reviews').add(r));
+                    seedTx.oncomplete = () => loadReviews();
                     return;
                 }
 
-                const loadedVideos = [];
-                snapshot.forEach((docSnap) => {
-                    loadedVideos.push({
-                        firestoreId: docSnap.id,
-                        ...docSnap.data()
-                    });
+                reviews.reverse().forEach(r => {
+                    const stars = "⭐".repeat(r.rating);
+                    const card = document.createElement('div');
+                    card.className = "bg-white/5 p-4 rounded-xl border border-white/10 space-y-2";
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-bold text-sm text-white">${r.author}</span>
+                                ${r.isPremium ? '<span class="text-[9px] bg-rainbow-green/20 text-rainbow-green px-2 py-0.5 rounded-full font-bold">PRÉMIUM</span>' : ''}
+                            </div>
+                            <span class="text-xs text-gray-500">${r.date}</span>
+                        </div>
+                        <div class="text-amber-400 text-xs">${stars}</div>
+                        <p class="text-xs text-gray-300">${r.comment}</p>
+                    `;
+                    container.appendChild(card);
                 });
+            };
+        }
 
-                // Sort in memory by creation time descending
-                loadedVideos.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                appState.videos = loadedVideos;
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
 
-                // Sync view if active video details are open
-                if (appState.activeVideoId) {
-                    const activeVid = appState.videos.find(v => v.firestoreId === appState.activeVideoId || v.id === appState.activeVideoId);
-                    if (activeVid) {
-                        renderComments(activeVid);
-                        document.getElementById('likeCount').textContent = activeVid.likes || 0;
-                        document.getElementById('activeVideoViews').textContent = `${(activeVid.views || 0).toLocaleString()} pozretí`;
-                    }
-                }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
 
-                renderCategories();
-                renderVideoGrid();
-            }, (error) => {
-                console.error("Firestore real-time subscription error:", error);
-                showToast("Chyba pripojenia k databáze!", "error");
-            });
-        });
+        function scrollToTariffs() {
+            document.getElementById('tariffs-section').scrollIntoView({ behavior: 'smooth' });
+        }
 
-        // --- TOAST NOTIFICATION SYSTEM ---
-        function showToast(message, type = "success") {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border text-sm transition-all duration-300 transform translate-y-5 opacity-0 ${
-                type === 'error' 
-                ? 'bg-red-950/90 border-red-800 text-red-200' 
-                : 'bg-yt-card border-brand-500/50 text-white'
-            }`;
-            
-            const icon = type === 'error' ? 'fa-circle-exclamation text-red-400' : 'fa-circle-check text-brand-500';
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
-            
-            container.appendChild(toast);
+        function showToast(msg, type = "info") {
+            const toast = document.getElementById('toast');
+            const msgElem = document.getElementById('toast-message');
+            const iconElem = document.getElementById('toast-icon');
 
-            setTimeout(() => toast.classList.remove('translate-y-5', 'opacity-0'), 50);
+            msgElem.innerText = msg;
+            if (type === "error") {
+                iconElem.className = "fa-solid fa-circle-exclamation text-red-400 text-base";
+            } else {
+                iconElem.className = "fa-solid fa-circle-check text-rainbow-green text-base";
+            }
+
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => toast.remove(), 300);
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
             }, 3500);
         }
 
-        function renderCategories() {
-            const filterBar = document.getElementById('categoryFilterBar');
-            const sidebarCats = document.getElementById('sidebarCategories');
-
-            filterBar.innerHTML = '';
-            sidebarCats.innerHTML = '';
-
-            CATEGORIES.forEach(cat => {
-                // Top Pills
-                const pill = document.createElement('button');
-                const isActive = appState.activeCategory === cat;
-                pill.className = `px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition ${
-                    isActive 
-                    ? 'bg-white text-black font-bold' 
-                    : 'bg-yt-card hover:bg-yt-hover text-gray-300 border border-yt-border'
-                }`;
-                pill.textContent = cat;
-                pill.onclick = () => {
-                    appState.activeCategory = cat;
-                    renderCategories();
-                    renderVideoGrid();
-                };
-                filterBar.appendChild(pill);
-
-                // Sidebar items
-                const sideBtn = document.createElement('button');
-                sideBtn.className = `w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs transition ${
-                    isActive ? 'text-brand-500 bg-brand-500/10 font-bold' : 'text-gray-400 hover:text-white hover:bg-yt-hover'
-                }`;
-                sideBtn.innerHTML = `<i class="fa-solid fa-hashtag text-[10px]"></i> <span>${cat}</span>`;
-                sideBtn.onclick = () => {
-                    appState.activeCategory = cat;
-                    switchToGridView();
-                    renderCategories();
-                    renderVideoGrid();
-                };
-                sidebarCats.appendChild(sideBtn);
-            });
-        }
-
-        function renderVideoGrid() {
-            const grid = document.getElementById('videoGrid');
-            const emptyState = document.getElementById('emptyState');
-            const countBadge = document.getElementById('videoCountBadge');
-
-            grid.innerHTML = '';
-
-            // Filter logic
-            let filtered = appState.videos.filter(vid => {
-                const matchesCat = appState.activeCategory === "Všetky" || vid.category === appState.activeCategory;
-                const matchesSearch = (vid.title || "").toLowerCase().includes(appState.searchQuery.toLowerCase()) ||
-                                      (vid.author || "").toLowerCase().includes(appState.searchQuery.toLowerCase()) ||
-                                      (vid.description && vid.description.toLowerCase().includes(appState.searchQuery.toLowerCase()));
-                return matchesCat && matchesSearch;
-            });
-
-            countBadge.textContent = `${filtered.length} videí`;
-
-            if (filtered.length === 0) {
-                grid.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                emptyState.classList.add('flex');
-                return;
-            }
-
-            grid.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            emptyState.classList.remove('flex');
-
-            filtered.forEach(vid => {
-                const card = document.createElement('div');
-                card.className = "group cursor-pointer flex flex-col space-y-3 bg-yt-card/40 border border-yt-border/50 hover:border-yt-border p-3 rounded-2xl transition duration-200 hover:-translate-y-1 hover:shadow-xl";
-                
-                const formattedViews = vid.views > 999 ? (vid.views / 1000).toFixed(1) + 'k' : (vid.views || 0);
-
-                card.innerHTML = `
-                    <!-- Thumbnail Container -->
-                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/60">
-                        <img src="${vid.thumbnail}" alt="${escapeHtml(vid.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'">
-                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">
-                            <i class="fa-solid fa-play text-[8px] mr-1 text-brand-500"></i> Video
-                        </div>
-                    </div>
-
-                    <!-- Meta Details -->
-                    <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs shrink-0 mt-0.5">
-                            ${(vid.author || "A").charAt(0).toUpperCase()}
-                        </div>
-                        <div class="flex-1 min-w-0 space-y-1">
-                            <h3 class="font-semibold text-sm text-gray-100 group-hover:text-brand-400 line-clamp-2 leading-snug transition">
-                                ${escapeHtml(vid.title)}
-                            </h3>
-                            <div class="text-xs text-gray-400 space-y-0.5">
-                                <p class="font-medium hover:text-gray-200 transition">${escapeHtml(vid.author)}</p>
-                                <div class="flex items-center gap-1.5 text-[11px] text-gray-500">
-                                    <span>${formattedViews} pozretí</span>
-                                    <span>•</span>
-                                    <span>${vid.uploadedAt || "Dnes"}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                card.onclick = () => openVideoDetail(vid.firestoreId || vid.id);
-                grid.appendChild(card);
-            });
-        }
-
-        async function openVideoDetail(videoId) {
-            const video = appState.videos.find(v => v.firestoreId === videoId || v.id === videoId);
-            if (!video) return;
-
-            appState.activeVideoId = video.firestoreId || video.id;
-            appState.viewMode = "detail";
-
-            // Increment View count in Database
-            const newViews = (video.views || 0) + 1;
-            video.views = newViews;
-            if (video.firestoreId && currentUser) {
-                try {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
-                    updateDoc(docRef, { views: newViews });
-                } catch (e) {
-                    console.error("Error updating view count:", e);
-                }
-            }
-
-            // Toggle views
-            document.getElementById('videoGridView').classList.add('hidden');
-            document.getElementById('categoryFilterBar').classList.add('hidden');
-            document.getElementById('videoDetailView').classList.remove('hidden');
-
-            document.getElementById('mainScrollArea').scrollTop = 0;
-
-            // Load Video Details into DOM
-            const player = document.getElementById('mainVideoPlayer');
-            const source = document.getElementById('videoSource');
-            
-            source.src = video.videoUrl;
-            player.load();
-
-            document.getElementById('activeVideoTitle').textContent = video.title;
-            document.getElementById('activeVideoAuthor').textContent = video.author;
-            document.getElementById('activeVideoAvatar').textContent = (video.author || "A").charAt(0).toUpperCase();
-            document.getElementById('activeVideoDescription').textContent = video.description || "Bez popisu.";
-            document.getElementById('activeVideoViews').textContent = `${video.views.toLocaleString()} pozretí`;
-            document.getElementById('activeVideoDate').textContent = video.uploadedAt || "Dnes";
-            document.getElementById('activeVideoCategory').textContent = video.category || "Všeobecné";
-            document.getElementById('likeCount').textContent = video.likes || 0;
-
-            // Show delete button
-            const deleteBtn = document.getElementById('deleteVideoBtn');
-            deleteBtn.classList.remove('hidden');
-            deleteBtn.classList.add('flex');
-
-            renderComments(video);
-            renderSuggestedVideos(video.firestoreId || video.id);
-        }
-
-        function renderComments(video) {
-            const commentsList = document.getElementById('commentsList');
-            const commentCount = document.getElementById('commentCount');
-            
-            const comments = video.comments || [];
-            commentCount.textContent = `(${comments.length})`;
-            commentsList.innerHTML = '';
-
-            if (comments.length === 0) {
-                commentsList.innerHTML = `<p class="text-xs text-gray-500 italic py-2">Zatiaľ tu nie sú žiadne komentáre. Buďte prvý!</p>`;
-                return;
-            }
-
-            comments.forEach(c => {
-                const item = document.createElement('div');
-                item.className = "flex gap-3 bg-yt-card/60 p-3 rounded-xl border border-yt-border/40 text-xs";
-                item.innerHTML = `
-                    <div class="w-7 h-7 rounded-full bg-gray-700 flex items-center justify-center font-bold text-white shrink-0">
-                        ${(c.author || "A").charAt(0).toUpperCase()}
-                    </div>
-                    <div class="flex-1 space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-white">${escapeHtml(c.author)}</span>
-                            <span class="text-[10px] text-gray-400">${c.date}</span>
-                        </div>
-                        <p class="text-gray-300 leading-normal">${escapeHtml(c.text)}</p>
-                    </div>
-                `;
-                commentsList.appendChild(item);
-            });
-        }
-
-        function renderSuggestedVideos(currentId) {
-            const suggestedGrid = document.getElementById('suggestedVideosGrid');
-            suggestedGrid.innerHTML = '';
-
-            const suggestions = appState.videos.filter(v => (v.firestoreId || v.id) !== currentId).slice(0, 6);
-
-            suggestions.forEach(v => {
-                const item = document.createElement('div');
-                item.className = "flex gap-3 group cursor-pointer bg-yt-card/40 hover:bg-yt-card border border-yt-border/50 p-2 rounded-xl transition";
-                item.innerHTML = `
-                    <div class="relative w-28 aspect-video rounded-lg overflow-hidden bg-black shrink-0">
-                        <img src="${v.thumbnail}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'">
-                    </div>
-                    <div class="flex-1 min-w-0 space-y-1">
-                        <h4 class="font-medium text-xs text-white line-clamp-2 group-hover:text-brand-400 transition leading-snug">
-                            ${escapeHtml(v.title)}
-                        </h4>
-                        <p class="text-[11px] text-gray-400 truncate">${escapeHtml(v.author)}</p>
-                        <p class="text-[10px] text-gray-500">${v.views || 0} pozretí</p>
-                    </div>
-                `;
-                item.onclick = () => openVideoDetail(v.firestoreId || v.id);
-                suggestedGrid.appendChild(item);
-            });
-        }
-
-        function switchToGridView() {
-            appState.viewMode = "grid";
-            appState.activeVideoId = null;
-
-            const player = document.getElementById('mainVideoPlayer');
-            player.pause();
-
-            document.getElementById('videoDetailView').classList.add('hidden');
-            document.getElementById('videoGridView').classList.remove('hidden');
-            document.getElementById('categoryFilterBar').classList.remove('hidden');
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-
-        function setupEventListeners() {
-            document.getElementById('logoBtn').onclick = (e) => {
-                e.preventDefault();
-                appState.activeCategory = "Všetky";
-                appState.searchQuery = "";
-                document.getElementById('searchInput').value = "";
-                switchToGridView();
-                renderCategories();
-                renderVideoGrid();
-            };
-
-            document.getElementById('navHome').onclick = () => {
-                appState.activeCategory = "Všetky";
-                switchToGridView();
-                renderCategories();
-                renderVideoGrid();
-            };
-
-            document.getElementById('navTrending').onclick = () => {
-                showToast("Zobrazené populárne videá");
-                appState.activeCategory = "Všetky";
-                switchToGridView();
-                appState.videos.sort((a, b) => (b.views || 0) - (a.views || 0));
-                renderVideoGrid();
-            };
-
-            document.getElementById('navMyVideos').onclick = () => {
-                switchToGridView();
-                document.getElementById('sectionTitle').textContent = "Moje nahrané videá";
-                renderVideoGrid();
-            };
-
-            const searchInput = document.getElementById('searchInput');
-            const handleSearch = () => {
-                appState.searchQuery = searchInput.value.trim();
-                switchToGridView();
-                renderVideoGrid();
-            };
-
-            document.getElementById('searchBtn').onclick = handleSearch;
-            searchInput.onkeyup = (e) => { if (e.key === 'Enter') handleSearch(); };
-
-            document.getElementById('toggleSidebarBtn').onclick = () => {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.toggle('hidden');
-            };
-
-            // Like Action Button -> Persistent in DB
-            document.getElementById('likeBtn').onclick = async () => {
-                const video = appState.videos.find(v => (v.firestoreId || v.id) === appState.activeVideoId);
-                if (video && video.firestoreId && currentUser) {
-                    const newLikes = (video.likes || 0) + 1;
-                    video.likes = newLikes;
-                    document.getElementById('likeCount').textContent = newLikes;
-                    try {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
-                        await updateDoc(docRef, { likes: newLikes });
-                        showToast("Páči sa mi to! (Uložené v databáze)");
-                    } catch (err) {
-                        console.error("Error updating likes:", err);
-                    }
-                }
-            };
-
-            document.getElementById('shareBtn').onclick = () => {
-                navigator.clipboard.writeText(window.location.href).then(() => {
-                    showToast("Odkaz na video bol skopírovaný!");
-                }).catch(() => {
-                    showToast("Odkaz pripravený!");
-                });
-            };
-
-            // Delete Video from Database
-            document.getElementById('deleteVideoBtn').onclick = async () => {
-                if (!appState.activeVideoId) return;
-                const video = appState.videos.find(v => (v.firestoreId || v.id) === appState.activeVideoId);
-                if (video && video.firestoreId && currentUser) {
-                    try {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
-                        await deleteDoc(docRef);
-                        showToast("Video bolo úspešne vymazané z databázy!");
-                        switchToGridView();
-                    } catch (err) {
-                        console.error("Error deleting video:", err);
-                        showToast("Nepodarilo sa vymazať video", "error");
-                    }
-                }
-            };
-
-            // Post Comment to Database
-            document.getElementById('postCommentBtn').onclick = async () => {
-                const commentInput = document.getElementById('commentInput');
-                const text = commentInput.value.trim();
-                if (!text) return;
-
-                const video = appState.videos.find(v => (v.firestoreId || v.id) === appState.activeVideoId);
-                if (video && video.firestoreId && currentUser) {
-                    const currentComments = video.comments ? [...video.comments] : [];
-                    currentComments.unshift({
-                        id: 'c_' + Date.now(),
-                        author: 'Môj Účet',
-                        text: text,
-                        date: 'Práve teraz'
-                    });
-
-                    try {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'videos', video.firestoreId);
-                        await updateDoc(docRef, { comments: currentComments });
-                        commentInput.value = '';
-                        showToast("Komentár bol uložený do databázy!");
-                    } catch (err) {
-                        console.error("Error adding comment:", err);
-                        showToast("Nepodarilo sa uložiť komentár", "error");
-                    }
-                }
-            };
-
-            document.getElementById('cancelCommentBtn').onclick = () => {
-                document.getElementById('commentInput').value = '';
-            };
-
-            // Modal upload controls
-            const uploadModal = document.getElementById('uploadModal');
-            const openBtn = document.getElementById('openUploadModalBtn');
-            const closeBtn = document.getElementById('closeUploadModalBtn');
-            const cancelBtn = document.getElementById('cancelUploadBtn');
-
-            const openModal = () => {
-                uploadModal.classList.remove('hidden');
-                setTimeout(() => uploadModal.classList.remove('opacity-0'), 10);
-            };
-
-            const closeModal = () => {
-                uploadModal.classList.add('opacity-0');
-                setTimeout(() => uploadModal.classList.add('hidden'), 300);
-            };
-
-            openBtn.onclick = openModal;
-            closeBtn.onclick = closeModal;
-            cancelBtn.onclick = closeModal;
-
-            const tabFile = document.getElementById('tabFileUpload');
-            const tabUrl = document.getElementById('tabUrlUpload');
-            const fileContainer = document.getElementById('fileUploadContainer');
-            const urlContainer = document.getElementById('urlUploadContainer');
-
-            tabFile.onclick = () => {
-                tabFile.className = "py-2 text-xs font-medium rounded-lg bg-brand-600 text-white transition";
-                tabUrl.className = "py-2 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
-                fileContainer.classList.remove('hidden');
-                urlContainer.classList.add('hidden');
-            };
-
-            tabUrl.onclick = () => {
-                tabUrl.className = "py-2 text-xs font-medium rounded-lg bg-brand-600 text-white transition";
-                tabFile.className = "py-2 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
-                urlContainer.classList.remove('hidden');
-                fileContainer.classList.add('hidden');
-            };
-
-            const dropZone = document.getElementById('dropZone');
-            const videoFileInput = document.getElementById('videoFileInput');
-            const fileNameDisplay = document.getElementById('fileNameDisplay');
-
-            dropZone.onclick = () => videoFileInput.click();
-
-            videoFileInput.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    fileNameDisplay.textContent = `Vybraný súbor: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
-                    fileNameDisplay.classList.add('text-brand-400', 'font-semibold');
-                }
-            };
-
-            document.getElementById('uploadForm').onsubmit = async (e) => {
-                e.preventDefault();
-
-                if (!currentUser) {
-                    showToast("Čakám na pripojenie k databáze...", "error");
-                    return;
-                }
-
-                const title = document.getElementById('videoTitleInput').value.trim();
-                const author = document.getElementById('videoAuthorInput').value.trim();
-                const category = document.getElementById('videoCategoryInput').value;
-                const description = document.getElementById('videoDescInput').value.trim();
-                let customThumb = document.getElementById('videoThumbInput').value.trim();
-
-                let videoSrcUrl = "";
-
-                if (!fileContainer.classList.contains('hidden')) {
-                    const file = videoFileInput.files[0];
-                    if (!file) {
-                        showToast("Prosím vyberte video súbor!", "error");
-                        return;
-                    }
-                    // For persistent web playing across reloads, store standard high-availability stream or direct web video
-                    videoSrcUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-                } else {
-                    videoSrcUrl = document.getElementById('videoUrlInput').value.trim();
-                    if (!videoSrcUrl) {
-                        showToast("Prosím vložte platnú URL adresu videa!", "error");
-                        return;
-                    }
-                }
-
-                if (!customThumb) {
-                    customThumb = "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80";
-                }
-
-                const newVideoData = {
-                    id: 'user_vid_' + Date.now(),
-                    title: title,
-                    author: author,
-                    category: category,
-                    videoUrl: videoSrcUrl,
-                    thumbnail: customThumb,
-                    views: 1,
-                    likes: 0,
-                    uploadedAt: "Práve teraz",
-                    createdAt: Date.now(),
-                    description: description,
-                    comments: []
-                };
-
-                try {
-                    await addDoc(videosCollectionRef, newVideoData);
-                    closeModal();
-                    showToast("Video bolo úspešne uložené do databázy a zverejnené!");
-
-                    switchToGridView();
-                    document.getElementById('uploadForm').reset();
-                    fileNameDisplay.textContent = "Podporované formáty: MP4, WebM, MOV";
-                    fileNameDisplay.classList.remove('text-brand-400', 'font-semibold');
-                } catch (err) {
-                    console.error("Error saving video to Firestore:", err);
-                    showToast("Chyba pri ukladaní do databázy!", "error");
-                }
-            };
-        }
-
-        // Initialize App and Database on load
-        window.onload = function() {
-            setupEventListeners();
-            startAppAuthentication();
+        // Initialize App on Window Load
+        window.onload = async function () {
+            await initIndexedDB();
+            renderTariffs();
+            loadReviews();
+            updateSubscriptionUI();
         };
     </script>
 </body>
