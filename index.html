@@ -1,1286 +1,1383 @@
 <!DOCTYPE html>
-<html lang="sk" class="dark">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rainbow Stream - Moderný Prehrávač & Balíčky</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        rainbow: {
-                            red: '#ff0055',
-                            orange: '#ff5000',
-                            yellow: '#ffcc00',
-                            green: '#00ff66',
-                            cyan: '#00e5ff',
-                            purple: '#7a00ff',
-                            pink: '#ff00a0'
-                        }
-                    },
-                    animation: {
-                        'rainbow-border': 'rainbowShift 6s linear infinite',
-                        'glow-pulse': 'glowPulse 3s ease-in-out infinite alternate',
-                        'float': 'float 4s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        rainbowShift: {
-                            '0%': { 'background-position': '0% 50%' },
-                            '50%': { 'background-position': '100% 50%' },
-                            '100%': { 'background-position': '0% 50%' },
-                        },
-                        glowPulse: {
-                            '0%': { filter: 'drop-shadow(0 0 10px rgba(0,229,255,0.4))' },
-                            '100%': { filter: 'drop-shadow(0 0 25px rgba(255,0,160,0.8))' }
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <title>QuantumStream Ultra - Futuristický Dúhový Prehrávač</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --rainbow-gradient: linear-gradient(90deg, #ff0055, #ff5500, #ffea00, #00ff66, #00e1ff, #7a00ff, #ff007f);
+            --rainbow-glow: 0 0 20px rgba(0, 225, 255, 0.8), 0 0 40px rgba(255, 0, 127, 0.5);
+            --bg-cyber: #04060d;
+            --card-glass: rgba(13, 18, 36, 0.75);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --cyber-cyan: #00f0ff;
+            --cyber-pink: #ff0055;
+            --cyber-gold: #ffea00;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
         body {
-            background-color: #080711;
-            color: #f3f4f6;
+            background-color: var(--bg-cyber);
+            color: var(--text-main);
+            min-height: 100vh;
             overflow-x: hidden;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 0, 128, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 240, 255, 0.18) 0px, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
         }
 
-        /* Rainbow animated gradient background */
-        .animated-rainbow-bg {
-            background: linear-gradient(124deg, #ff0055, #ff5000, #ffcc00, #00ff66, #00e5ff, #7a00ff, #ff00a0);
-            background-size: 300% 300%;
-            animation: rainbowShift 8s ease infinite;
+        /* Top Dúhový Laser */
+        .laser-top-line {
+            height: 3px;
+            background: var(--rainbow-gradient);
+            background-size: 300% 100%;
+            animation: laserMove 5s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.8);
         }
 
-        .animated-rainbow-text {
-            background: linear-gradient(124deg, #ff0055, #ff5000, #ffcc00, #00ff66, #00e5ff, #7a00ff, #ff00a0);
-            background-size: 200% auto;
+        @keyframes laserMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        /* Navigácia */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(8, 12, 24, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: var(--rainbow-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: rainbowShift 6s linear infinite;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5));
         }
 
-        .rainbow-glass {
-            background: rgba(15, 14, 29, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
-        .rainbow-border-box {
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+            border: 1px solid var(--border-glass);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: #fff;
+            border-color: var(--cyber-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .rainbow-btn {
+            background: var(--rainbow-gradient);
+            background-size: 200% 100%;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+        }
+
+        .rainbow-btn:hover {
+            background-position: 100% 0;
+            transform: scale(1.03);
+            box-shadow: var(--rainbow-glow);
+        }
+
+        main {
+            padding: 30px 5%;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Prepínač 5 Štýlov */
+        .theme-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .theme-pill {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-glass);
+            background: rgba(15, 23, 42, 0.8);
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+        }
+
+        .theme-pill.active {
+            background: var(--rainbow-gradient);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: var(--rainbow-glow);
+        }
+
+        /* =========================================================
+           FUTURISTICKÝ SCI-FI HUD RÁM A PREHRÁVAČ
+           ========================================================= */
+        .futuristic-player-hud {
+            max-width: 1050px;
+            margin: auto;
             position: relative;
-            border-radius: 1rem;
-            background: rgba(18, 16, 38, 0.85);
-        }
-
-        .rainbow-border-box::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 1.1rem;
-            background: linear-gradient(45deg, #ff0055, #ff5000, #00ff66, #00e5ff, #7a00ff, #ff00a0);
-            background-size: 300% 300%;
-            z-index: -1;
-            animation: rainbowShift 6s ease infinite;
-            opacity: 0.7;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #080711;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(#7a00ff, #00e5ff);
-            border-radius: 4px;
-        }
-
-        /* Video zero latency hardware acceleration & aspect ratio preservation */
-        video, canvas {
+            background: #02040a;
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.4s;
             transform: translateZ(0);
-            backface-visibility: hidden;
-            will-change: transform;
+            will-change: transform, box-shadow;
+        }
+
+        /* Sci-Fi Rohy */
+        .hud-corner {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .hud-corner.top-left {
+            top: 6px; left: 6px;
+            border-top: 3px solid var(--cyber-cyan);
+            border-left: 3px solid var(--cyber-cyan);
+            filter: drop-shadow(0 0 6px var(--cyber-cyan));
+        }
+        .hud-corner.top-right {
+            top: 6px; right: 6px;
+            border-top: 3px solid var(--cyber-pink);
+            border-right: 3px solid var(--cyber-pink);
+            filter: drop-shadow(0 0 6px var(--cyber-pink));
+        }
+        .hud-corner.bottom-left {
+            bottom: 6px; left: 6px;
+            border-bottom: 3px solid var(--cyber-pink);
+            border-left: 3px solid var(--cyber-pink);
+            filter: drop-shadow(0 0 6px var(--cyber-pink));
+        }
+        .hud-corner.bottom-right {
+            bottom: 6px; right: 6px;
+            border-bottom: 3px solid var(--cyber-cyan);
+            border-right: 3px solid var(--cyber-cyan);
+            filter: drop-shadow(0 0 6px var(--cyber-cyan));
+        }
+
+        /* HUD Horná stavová lišta */
+        .hud-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .hud-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hud-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff66;
+            box-shadow: 0 0 8px #00ff66;
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* 5 ŠTÝLOV RÁMU */
+        .theme-rainbow-cyber {
+            border: 2px solid transparent;
+            background: linear-gradient(#02040a, #02040a) padding-box, var(--rainbow-gradient) border-box;
+            box-shadow: 0 0 35px rgba(0, 225, 255, 0.4), inset 0 0 25px rgba(255, 0, 127, 0.15);
+        }
+
+        .theme-quantum-blue {
+            border: 2px solid #00f0ff;
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.45), inset 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .theme-matrix-neon {
+            border: 2px solid #00ff66;
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.4), inset 0 0 20px rgba(0, 255, 102, 0.15);
+        }
+
+        .theme-cyberpunk-gold {
+            border: 2px solid #ffea00;
+            box-shadow: 0 0 35px rgba(255, 234, 0, 0.4), inset 0 0 20px rgba(255, 0, 85, 0.2);
+        }
+
+        .theme-frosted-glass {
+            background: rgba(10, 15, 30, 0.6);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* Video Box */
+        .video-box {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
+            outline: none;
         }
 
-        /* Fullscreen hardware acceleration overlay preserving original aspect ratio */
-        .player-container:-webkit-full-screen {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: none !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            background: #000 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
-        }
-        .player-container:fullscreen {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: none !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            background: #000 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
+        .video-overlay-play {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--cyber-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            box-shadow: 0 0 25px var(--cyber-cyan);
         }
 
-        .player-container:fullscreen #media-video,
-        .player-container:-webkit-full-screen #media-video {
-            max-height: calc(100vh - 80px) !important;
+        .video-box:hover .video-overlay-play.visible {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        /* =========================================================
+           DÚHOVÁ ČIARA & KONTROLNÝ PANEL
+           ========================================================= */
+        .cyber-controls {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rainbow-timeline-container {
+            position: relative;
+            width: 100%;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .rainbow-timeline-track {
+            position: relative;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: visible;
+            transition: height 0.2s;
+        }
+
+        .rainbow-timeline-container:hover .rainbow-timeline-track {
+            height: 8px;
+        }
+
+        .rainbow-timeline-buffer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            transition: width 0.3s;
+        }
+
+        .rainbow-timeline-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--rainbow-gradient);
+            background-size: 250% 100%;
+            animation: laserMove 4s linear infinite;
+            border-radius: 6px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.8), 0 0 30px rgba(255, 0, 127, 0.6);
+        }
+
+        .rainbow-timeline-thumb {
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%) scale(1);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #ff0055;
+            box-shadow: 0 0 15px #00f0ff, 0 0 25px #ff0055;
+            transition: transform 0.2s;
+        }
+
+        .rainbow-timeline-container:hover .rainbow-timeline-thumb {
+            transform: translateY(-50%) scale(1.35);
+        }
+
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hud-icon-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .hud-icon-btn:hover {
+            border-color: var(--cyber-cyan);
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .time-hud {
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--cyber-cyan);
+            letter-spacing: 1px;
+            background: rgba(0, 240, 255, 0.06);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .vol-slider {
+            width: 80px;
+            accent-color: var(--cyber-cyan);
+            cursor: pointer;
+        }
+
+        .speed-hud-select {
+            background: #0d1424;
+            color: #fff;
+            border: 1px solid var(--border-glass);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .file-zone-hud {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-file-upload {
+            border: 1px dashed var(--cyber-cyan);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            cursor: pointer;
+            border-radius: 8px;
+            background: rgba(0, 240, 255, 0.05);
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .custom-file-upload:hover {
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .limit-badge {
+            padding: 6px 14px;
+            background: rgba(255, 0, 100, 0.15);
+            border: 1px solid rgba(255, 0, 100, 0.4);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #ff6b8b;
+            font-weight: 700;
+        }
+
+        .limit-badge.unlimited {
+            background: rgba(0, 255, 128, 0.15);
+            border-color: rgba(0, 255, 128, 0.4);
+            color: #00ff88;
+            box-shadow: 0 0 12px rgba(0, 255, 128, 0.25);
+        }
+
+        /* =========================================================
+           ŠPECIÁLNY ČISTÝ FULLSCREEN REŽIM (SKRYTÉ GUI, IBA PREHRÁVAČ & ČAS)
+           ========================================================= */
+        .futuristic-player-hud:fullscreen {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            border-radius: 0 !important;
+            border: none !important;
+            padding: 0 !important;
+            background: #000 !important;
+            box-shadow: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        /* Skrytie rušivých prvkov GUI na celej obrazovke */
+        .futuristic-player-hud:fullscreen .hud-corner,
+        .futuristic-player-hud:fullscreen .hud-top-bar,
+        .futuristic-player-hud:fullscreen .file-zone-hud {
+            display: none !important;
+        }
+
+        .futuristic-player-hud:fullscreen .video-box {
             width: 100% !important;
             height: 100% !important;
-            object-fit: contain !important;
-            margin: auto !important;
+            border-radius: 0 !important;
+            border: none !important;
+            aspect-ratio: auto !important;
         }
 
-        /* Player Skins Custom Styling */
-        /* Skin 1: Neon Cyberpunk */
-        .skin-neon {
-            border: 2px solid #00e5ff;
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
-            background: rgba(5, 10, 25, 0.95);
-        }
-        .skin-neon .control-btn {
-            color: #00e5ff;
-            text-shadow: 0 0 8px #00e5ff;
-        }
-
-        /* Skin 2: Glassmorphism Aura */
-        .skin-glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        .futuristic-player-hud:fullscreen .cyber-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px 30px 40px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            z-index: 50;
+            margin-top: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        /* Skin 3: Cinematic Theater */
-        .skin-theater {
-            background: #030305;
-            border: 1px solid #1f1f2e;
-            box-shadow: 0 0 100px rgba(0, 0, 0, 0.9);
+        /* Automatické skrytie ovládania a kurzora pri nečinnosti na celej obrazovke */
+        .futuristic-player-hud:fullscreen.hide-controls {
+            cursor: none;
         }
 
-        /* Skin 4: Retro Synthwave */
-        .skin-synthwave {
-            background: linear-gradient(180deg, #18002e 0%, #050014 100%);
-            border: 2px solid #ff00a0;
-            box-shadow: 0 0 30px rgba(255, 0, 160, 0.5);
-        }
-        .skin-synthwave .control-btn {
-            color: #ffcc00;
+        .futuristic-player-hud:fullscreen.hide-controls .cyber-controls {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
         }
 
-        /* Skin 5: Ultra Minimal Pro */
-        .skin-minimal {
-            background: #000000;
-            border: 1px solid #222;
+        /* Tarify Grid (12 Balíčkov + 13. Promo) */
+        .tariffs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
         }
 
-        /* Custom Slider Styling */
-        input[type=range] {
-            -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 9999px;
-            height: 6px;
+        .tariff-card {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.3s;
         }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: #00e5ff;
+
+        .tariff-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 10px 25px rgba(0, 240, 255, 0.15);
+        }
+
+        .tariff-card.promo-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(255, 0, 127, 0.2), rgba(0, 240, 255, 0.2));
+            border: 2px solid var(--cyber-cyan);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
+        }
+
+        .tariff-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .tariff-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: var(--rainbow-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .tariff-features {
+            list-style: none;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .tariff-features li {
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tariff-features li i {
+            color: #00ff88;
+        }
+
+        /* Pokladňa */
+        .checkout-box {
+            max-width: 650px;
+            margin: auto;
+            background: var(--card-glass);
+            border: 1px solid var(--cyber-cyan);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .pay-option {
+            border: 1px solid var(--border-glass);
+            padding: 15px;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 0 10px #00e5ff;
-            transition: transform 0.1s ease;
+            text-align: center;
+            background: rgba(255,255,255,0.02);
+            transition: 0.3s;
         }
-        input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
+
+        .pay-option.active {
+            border-color: var(--cyber-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .pay-option i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Modal & Form */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: #0a0e1c;
+            border: 1px solid var(--cyber-cyan);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            padding: 35px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0 15px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .status-box {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .countdown {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #00ff88;
+            letter-spacing: 1px;
+            margin-top: 5px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-rainbow-purple selection:text-white">
+<body>
 
-    <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-40 rainbow-glass border-b border-white/10 px-4 lg:px-8 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center space-x-3 group">
-                <div class="w-10 h-10 rounded-xl animated-rainbow-bg flex items-center justify-center text-white shadow-lg transform group-hover:rotate-12 transition-transform">
-                    <i class="fa-solid font-black fa-play text-lg"></i>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-xl font-extrabold tracking-wider animated-rainbow-text">RAINBOW STREAM</span>
-                    <span class="text-[10px] text-gray-400 font-mono tracking-widest uppercase">Ultra HD Zero-Lag Player</span>
-                </div>
-            </a>
+    <div class="laser-top-line"></div>
 
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
-                <a href="#player-section" class="hover:text-rainbow-cyan transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-compact-disc text-rainbow-cyan"></i> Prehrávač
-                </a>
-                <a href="#skins-section" class="hover:text-rainbow-pink transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-wand-magic-sparkles text-rainbow-pink"></i> 5 Štýlov
-                </a>
-                <a href="#tariffs-section" class="hover:text-rainbow-yellow transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-gem text-rainbow-yellow"></i> 13 Balíčkov
-                </a>
-                <a href="#reviews-section" class="hover:text-rainbow-green transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-star text-rainbow-green"></i> Recenzie & Status
-                </a>
-            </nav>
-
-            <!-- User Auth & Status Widget -->
-            <div class="flex items-center space-x-3">
-                <div id="user-status-badge" class="hidden sm:flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 border border-white/10">
-                    <span class="w-2 h-2 rounded-full bg-rainbow-red mr-2 animate-ping"></span>
-                    <span id="user-status-text" class="text-gray-300">Bezplatný Účet</span>
-                </div>
-
-                <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button onclick="openModal('login-modal')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/10 hover:bg-white/20 transition-all border border-white/10">
-                        <i class="fa-solid fa-right-to-bracket mr-1"></i> Prihlásiť
-                    </button>
-                    <button onclick="openModal('register-modal')" class="px-4 py-2 text-xs font-bold rounded-lg animated-rainbow-bg text-white shadow-lg hover:opacity-90 transition-opacity">
-                        <i class="fa-solid fa-user-plus mr-1"></i> Registrácia
-                    </button>
-                </div>
-
-                <div id="user-profile-menu" class="hidden items-center space-x-2">
-                    <span id="username-display" class="text-sm font-bold text-rainbow-cyan"></span>
-                    <button onclick="logoutUser()" class="p-2 text-xs text-red-400 hover:text-red-300 transition-colors" title="Odhlásiť sa">
-                        <i class="fa-solid fa-power-off text-base"></i>
-                    </button>
-                </div>
-            </div>
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-bolt-lightning" style="color:var(--cyber-cyan);"></i> QuantumStream
         </div>
+        <nav>
+            <button class="nav-btn active" onclick="switchTab('player-sec')"><i class="fa-solid fa-play"></i> Prehrávač</button>
+            <button class="nav-btn" onclick="switchTab('tariffs-sec')"><i class="fa-solid fa-gem"></i> Tarify (13)</button>
+            <button class="nav-btn" onclick="switchTab('reviews-sec')"><i class="fa-solid fa-star"></i> Profil & Recenzie</button>
+            <div id="auth-actions">
+                <button class="rainbow-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> Prihlásiť sa</button>
+            </div>
+        </nav>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-16">
-
-        <!-- Banner Alert for Free Limit / Trial Promo -->
-        <div id="trial-promo-banner" class="rainbow-border-box p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center space-x-4 z-10">
-                <div class="w-14 h-14 rounded-2xl bg-rainbow-purple/30 border border-rainbow-pink/50 flex items-center justify-center text-rainbow-yellow text-2xl animate-float shrink-0">
-                    <i class="fa-solid fa-gift"></i>
-                </div>
-                <div>
-                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30 mb-1">
-                        Špeciálna Ponuka (13. Balíček)
-                    </span>
-                    <h2 class="text-xl font-bold text-white">1 Rok Bezplatná Skúšobná Verzia - Všetko Neobmedzene!</h2>
-                    <p class="text-sm text-gray-300">Získajte kompletný prístup ku všetkým 5 prehrávačom bez obmedzení na 365 dní úplne zadarmo.</p>
-                </div>
-            </div>
-            <button onclick="activate1YearTrial()" class="z-10 px-6 py-3 rounded-xl font-extrabold text-sm animated-rainbow-bg text-white shadow-xl hover:scale-105 transition-transform flex items-center gap-2 whitespace-nowrap">
-                <i class="fa-solid fa-bolt"></i> Aktivovať 1 Rok Zadarmo
-            </button>
-        </div>
-
-        <!-- SECTION 1: MEDIA PLAYER -->
-        <section id="player-section" class="space-y-6">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-                        <i class="fa-solid fa-film text-rainbow-cyan"></i> Prehrávač Médií
-                    </h1>
-                    <p class="text-sm text-gray-400">Nahrajte vaše video alebo audio súbor a užívajte si plynulé prehrávanie bez sekania aj na celej obrazovke.</p>
-                </div>
-
-                <!-- Theme Switcher Toolbar -->
-                <div class="flex flex-wrap items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
-                    <span class="text-xs text-gray-400 px-2 font-semibold">Štýl UI:</span>
-                    <button onclick="switchPlayerSkin('neon')" id="skin-btn-neon" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all bg-rainbow-cyan/20 text-rainbow-cyan border border-rainbow-cyan/40">
-                        1. Neon Cyber
-                    </button>
-                    <button onclick="switchPlayerSkin('glass')" id="skin-btn-glass" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
-                        2. Glass Aura
-                    </button>
-                    <button onclick="switchPlayerSkin('theater')" id="skin-btn-theater" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
-                        3. Cinema Dark
-                    </button>
-                    <button onclick="switchPlayerSkin('synthwave')" id="skin-btn-synthwave" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
-                        4. Synthwave 80s
-                    </button>
-                    <button onclick="switchPlayerSkin('minimal')" id="skin-btn-minimal" class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300">
-                        5. Minimal Pro
-                    </button>
-                </div>
+    <main>
+        <!-- SEKCIÁ 1: PREHRÁVAČ -->
+        <section id="player-sec" class="section active">
+            
+            <div class="theme-selector">
+                <button class="theme-pill active" onclick="setTheme('theme-rainbow-cyber', this)">1. Dúhový Cyberpunk</button>
+                <button class="theme-pill" onclick="setTheme('theme-quantum-blue', this)">2. Quantum Blue Laser</button>
+                <button class="theme-pill" onclick="setTheme('theme-matrix-neon', this)">3. Matrix Toxic Neon</button>
+                <button class="theme-pill" onclick="setTheme('theme-cyberpunk-gold', this)">4. Neo Tokyo Gold</button>
+                <button class="theme-pill" onclick="setTheme('theme-frosted-glass', this)">5. Stealth Hologram</button>
             </div>
 
-            <!-- Free limit warning bar -->
-            <div id="free-limit-alert" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-300 p-3 rounded-xl text-xs flex items-center justify-between">
-                <span><i class="fa-solid fa-triangle-exclamation mr-2"></i> <strong>Bezplatná verzia:</strong> Obmedzenie dĺžky prehrávania na 10 minút. Pre neobmedzené sledovanie si aktivujte 1-ročný skúšobný balíček!</span>
-                <button onclick="scrollToTariffs()" class="underline font-bold hover:text-white">Aktivovať balíček</button>
-            </div>
+            <!-- Futuristický HUD Rám -->
+            <div id="main-player-frame" class="futuristic-player-hud theme-rainbow-cyber">
+                <div class="hud-corner top-left"></div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-corner bottom-right"></div>
 
-            <!-- Main Interactive Player Box -->
-            <div id="player-container" class="player-container skin-neon rounded-2xl overflow-hidden transition-all duration-300 relative group flex flex-col justify-center items-center">
-                
-                <!-- Video Element (Preserves dynamic aspect ratio 16:9 / 4:3 / 21:9) -->
-                <video id="media-video" class="w-full h-auto max-h-[70vh] object-contain bg-black cursor-pointer aspect-video" playsinline preload="auto">
-                    Tu váš prehliadač nepodporuje HTML5 video.
-                </video>
+                <div class="hud-top-bar">
+                    <span class="hud-tag"><span class="hud-dot"></span> SYSTEM: ACTIVE (NO-LAG HEVC)</span>
+                    <span class="hud-tag" id="hud-format">DECODER: 60 FPS ULTRA HD</span>
+                    <span class="hud-tag" style="color:var(--cyber-cyan);"><i class="fa-solid fa-shield-halved"></i> HARDWARE ACCELERATED</span>
+                </div>
 
-                <!-- Audio Visualizer Canvas (Displayed when audio file loaded) -->
-                <canvas id="audio-canvas" class="hidden w-full h-[400px] bg-black/90"></canvas>
-
-                <!-- Dropzone Overlay (When no media loaded) -->
-                <div id="dropzone" class="absolute inset-0 flex flex-col items-center justify-center p-8 bg-black/80 backdrop-blur-md text-center border-2 border-dashed border-rainbow-cyan/40 rounded-2xl transition-all">
-                    <div class="w-20 h-20 rounded-full animated-rainbow-bg flex items-center justify-center text-white text-3xl mb-4 shadow-2xl animate-pulse">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                <div class="video-box" id="video-wrapper" onclick="togglePlay()">
+                    <video id="video-element" playsinline preload="auto"></video>
+                    <div class="video-overlay-play visible" id="center-play-overlay">
+                        <i class="fa-solid fa-play" id="center-play-icon"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Presuňte sem váš video / audio súbor</h3>
-                    <p class="text-sm text-gray-400 max-w-md mb-6">Podpora pre MP4, WEBM, MKV, AVI, MP3, WAV, FLAC. Plynulé hardvérovo akcelerované prehrávanie.</p>
-                    
-                    <label class="cursor-pointer px-6 py-3 rounded-xl font-bold text-sm animated-rainbow-bg text-white shadow-xl hover:scale-105 transition-transform flex items-center gap-2">
-                        <i class="fa-solid fa-folder-open"></i> Vybrať Súbor z Počítača
-                        <input type="file" id="file-input" accept="video/*,audio/*" class="hidden" onchange="handleFileSelect(event)">
-                    </label>
                 </div>
 
-                <!-- Custom Overlay Controls Bar -->
-                <div id="player-controls" class="w-full bg-gradient-to-t from-black/95 via-black/80 to-transparent p-4 flex flex-col gap-2 transition-opacity duration-300 opacity-90 group-hover:opacity-100">
-                    
-                    <!-- Progress Bar Slider -->
-                    <div class="flex items-center space-x-3 w-full">
-                        <span id="current-time" class="text-xs font-mono text-gray-300">00:00</span>
-                        <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="w-full cursor-pointer accent-rainbow-cyan">
-                        <span id="duration-time" class="text-xs font-mono text-gray-400">00:00</span>
+                <!-- Dúhová Čiara a Ovládanie -->
+                <div class="cyber-controls" id="cyber-controls-panel">
+                    <div class="rainbow-timeline-container" id="timeline-container">
+                        <div class="rainbow-timeline-track">
+                            <div class="rainbow-timeline-buffer" id="buffer-bar"></div>
+                            <div class="rainbow-timeline-fill" id="progress-bar">
+                                <div class="rainbow-timeline-thumb"></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Button Action Bar -->
-                    <div class="flex items-center justify-between pt-1">
-                        <div class="flex items-center space-x-4">
-                            <!-- Play / Pause -->
-                            <button id="btn-play" onclick="togglePlay()" class="control-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg transition-transform active:scale-95">
+                    <div class="controls-bar">
+                        <div class="ctrl-group">
+                            <button class="hud-icon-btn" onclick="togglePlay()" id="play-btn" title="Prehrať/Pozastaviť">
                                 <i class="fa-solid fa-play"></i>
                             </button>
-
-                            <!-- Rewind 10s -->
-                            <button onclick="skipTime(-10)" class="control-btn text-gray-300 hover:text-white transition-colors" title="Späť 10s">
-                                <i class="fa-solid fa-rotate-left"></i>
+                            <button class="hud-icon-btn" onclick="skipTime(-10)" title="Späť 10s">
+                                <i class="fa-solid fa-backward"></i>
                             </button>
-
-                            <!-- Forward 10s -->
-                            <button onclick="skipTime(10)" class="control-btn text-gray-300 hover:text-white transition-colors" title="Dopredu 10s">
-                                <i class="fa-solid fa-rotate-right"></i>
+                            <button class="hud-icon-btn" onclick="skipTime(10)" title="Dopredu 10s">
+                                <i class="fa-solid fa-forward"></i>
                             </button>
-
-                            <!-- Volume Control -->
-                            <div class="flex items-center space-x-2 group/vol">
-                                <button id="btn-mute" onclick="toggleMute()" class="control-btn text-gray-300 hover:text-white">
+                            <div class="ctrl-group" style="margin-left: 5px;">
+                                <button class="hud-icon-btn" onclick="toggleMute()" id="mute-btn">
                                     <i class="fa-solid fa-volume-high"></i>
                                 </button>
-                                <input type="range" id="volume-bar" min="0" max="1" step="0.05" value="1" class="w-20 cursor-pointer accent-rainbow-purple">
+                                <input type="range" class="vol-slider" id="vol-range" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)">
                             </div>
-
-                            <!-- Title indicator -->
-                            <span id="media-title" class="text-xs text-gray-400 font-medium truncate max-w-[200px] hidden sm:inline-block">Žiadny súbor</span>
+                            <span class="time-hud" id="time-display">00:00 / 00:00</span>
                         </div>
 
-                        <div class="flex items-center space-x-4">
-                            <!-- Playback Speed -->
-                            <select id="speed-select" onchange="changeSpeed(this.value)" class="bg-white/10 text-xs rounded-lg px-2 py-1 border border-white/10 text-gray-200 outline-none cursor-pointer">
-                                <option value="0.5" class="bg-gray-900">0.5x</option>
-                                <option value="1" selected class="bg-gray-900">1.0x Normál</option>
-                                <option value="1.25" class="bg-gray-900">1.25x</option>
-                                <option value="1.5" class="bg-gray-900">1.5x</option>
-                                <option value="2" class="bg-gray-900">2.0x Rýchlo</option>
+                        <div class="ctrl-group">
+                            <select class="speed-hud-select" onchange="setSpeed(this.value)">
+                                <option value="0.5">0.5x</option>
+                                <option value="1.0" selected>1.0x Norm</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2.0">2.0x Fast</option>
                             </select>
-
-                            <!-- Change file button -->
-                            <button onclick="document.getElementById('file-input').click()" class="text-xs text-gray-400 hover:text-rainbow-cyan transition-colors" title="Zmeniť súbor">
-                                <i class="fa-solid fa-folder-open"></i>
+                            <button class="hud-icon-btn" onclick="togglePiP()" title="Obraz v obraze">
+                                <i class="fa-solid fa-clone"></i>
                             </button>
-
-                            <!-- Fullscreen toggle -->
-                            <button onclick="toggleFullscreen()" class="control-btn w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm transition-transform active:scale-95" title="Celá obrazovka">
+                            <button class="hud-icon-btn" onclick="toggleFullscreen()" title="Celá obrazovka">
                                 <i class="fa-solid fa-expand"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- SECTION 2: 5 CUSTOM PLAYER THEMES SHOWCASE -->
-        <section id="skins-section" class="space-y-6">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <span class="px-3 py-1 rounded-full text-xs font-bold bg-rainbow-purple/20 text-rainbow-purple border border-rainbow-purple/30">Exkluzívny UI Dizajn</span>
-                <h2 class="text-3xl font-extrabold text-white">5 Vlastných Tém Prehrávačov</h2>
-                <p class="text-sm text-gray-400">Prepínajte medzi 5 štýlovými dizajnmi vytvorenými pre dokonalý vizuálny zážitok.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <!-- Theme Card 1 -->
-                <div onclick="switchPlayerSkin('neon')" class="p-5 rounded-2xl bg-gradient-to-b from-cyan-950/40 to-slate-900 border border-cyan-500/30 hover:border-cyan-400 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg font-bold">1</div>
-                    <h3 class="font-bold text-white">Neon Cyberpunk</h3>
-                    <p class="text-xs text-gray-400">Svietiace RGB neónové prvky s vysokým kontrastom.</p>
-                    <span class="inline-block text-[10px] text-cyan-400 font-semibold">Aktivovať štýl &rarr;</span>
-                </div>
-
-                <!-- Theme Card 2 -->
-                <div onclick="switchPlayerSkin('glass')" class="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 cursor-pointer transition-all hover:-translate-y-1 space-y-3 backdrop-blur-md">
-                    <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center text-lg font-bold">2</div>
-                    <h3 class="font-bold text-white">Glassmorphism Aura</h3>
-                    <p class="text-xs text-gray-400">Mliečne sklo s jemnou polopriehľadnou aurou.</p>
-                    <span class="inline-block text-[10px] text-gray-300 font-semibold">Aktivovať štýl &rarr;</span>
-                </div>
-
-                <!-- Theme Card 3 -->
-                <div onclick="switchPlayerSkin('theater')" class="p-5 rounded-2xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-neutral-800 text-amber-400 flex items-center justify-center text-lg font-bold">3</div>
-                    <h3 class="font-bold text-white">Cinematic Theater</h3>
-                    <p class="text-xs text-gray-400">Temný kinosálny režim bez rušivých prvkov.</p>
-                    <span class="inline-block text-[10px] text-amber-400 font-semibold">Aktivovať štýl &rarr;</span>
-                </div>
-
-                <!-- Theme Card 4 -->
-                <div onclick="switchPlayerSkin('synthwave')" class="p-5 rounded-2xl bg-gradient-to-b from-purple-950/50 to-pink-950/30 border border-pink-500/30 hover:border-pink-400 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-lg font-bold">4</div>
-                    <h3 class="font-bold text-white">Retro Synthwave</h3>
-                    <p class="text-xs text-gray-400">Estetika 80. rokov s retro farebnou paletou.</p>
-                    <span class="inline-block text-[10px] text-pink-400 font-semibold">Aktivovať štýl &rarr;</span>
-                </div>
-
-                <!-- Theme Card 5 -->
-                <div onclick="switchPlayerSkin('minimal')" class="p-5 rounded-2xl bg-black border border-gray-800 hover:border-gray-600 cursor-pointer transition-all hover:-translate-y-1 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-gray-900 text-gray-300 flex items-center justify-center text-lg font-bold">5</div>
-                    <h3 class="font-bold text-white">Ultra Minimal Pro</h3>
-                    <p class="text-xs text-gray-400">Čistý, profesionálny a minimalistický dizajn.</p>
-                    <span class="inline-block text-[10px] text-gray-400 font-semibold">Aktivovať štýl &rarr;</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: TARIFFS & PACKAGES (13 BALÍČKOV) -->
-        <section id="tariffs-section" class="space-y-8">
-            <div class="text-center max-w-3xl mx-auto space-y-3">
-                <span class="px-3 py-1 rounded-full text-xs font-bold bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30">Cenník & Prístupy</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-white">Vyberte si svoj Balíček (12 Balíčkov + 1 Rok Zadarmo)</h2>
-                <p class="text-sm text-gray-400">Ponúkame 12 prispôsobených balíčkov a špeciálny 13. balíček - 1 Rok bezplatnej skúšobnej verzie bez obmedzení!</p>
-            </div>
-
-            <!-- Grid of 13 Packages -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="tariffs-grid">
-                <!-- Javascript will inject 13 tariff cards here -->
-            </div>
-        </section>
-
-        <!-- SECTION 4: REVIEWS & PREMIUM STATUS -->
-        <section id="reviews-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Left Side: Active Subscription & Expiration Tracker -->
-            <div class="lg:col-span-1 rainbow-glass p-6 rounded-2xl space-y-6 border border-white/10 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-clock-rotate-left text-rainbow-cyan"></i> Váš Status Prémium
-                        </h3>
-                        <span id="sub-badge" class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30">BEZPLATNÝ</span>
-                    </div>
-
-                    <div id="sub-details-box" class="space-y-4 bg-white/5 p-4 rounded-xl border border-white/10">
-                        <div>
-                            <span class="text-xs text-gray-400 block">Aktívny balíček:</span>
-                            <span id="sub-plan-name" class="text-base font-bold text-rainbow-cyan">Bezplatná Verzia</span>
-                        </div>
-                        <div>
-                            <span class="text-xs text-gray-400 block">Koniec prémiového členstva:</span>
-                            <span id="sub-expiry-date" class="text-sm font-semibold text-white">Neuplatnené (Limit 10 min)</span>
-                        </div>
-                        <div>
-                            <span class="text-xs text-gray-400 block">Zostávajúci čas:</span>
-                            <span id="sub-remaining-days" class="text-2xl font-extrabold text-rainbow-green">0 Dní</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-4 border-t border-white/10">
-                    <button onclick="activate1YearTrial()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-rainbow-green/20 hover:bg-rainbow-green/30 text-rainbow-green border border-rainbow-green/40 transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-gift"></i> Aktivovať 13. Balíček (1 Rok Zadarmo)
-                    </button>
-                    <button onclick="scrollToTariffs()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all">
-                        Prezrieť všetky balíčky
-                    </button>
-                </div>
-            </div>
-
-            <!-- Right Side: User Reviews & Feedback Form -->
-            <div class="lg:col-span-2 rainbow-glass p-6 rounded-2xl space-y-6 border border-white/10">
-                <div class="flex items-center justify-between">
+                <!-- Nahratie súboru & Limit -->
+                <div class="file-zone-hud">
                     <div>
-                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-comments text-rainbow-yellow"></i> Recenzie Používateľov
-                        </h3>
-                        <p class="text-xs text-gray-400">Pozrite si skúsenosti ostatných alebo pridajte vlastné hodnotenie.</p>
+                        <label class="custom-file-upload">
+                            <input type="file" id="file-input" accept="video/*" style="display:none;" onchange="loadCustomVideo(event)">
+                            <i class="fa-solid fa-upload"></i> Nahrať video súbor zo zariadenia
+                        </label>
+                        <span id="file-name" style="margin-left: 10px; font-size: 0.85rem; color: var(--text-muted);">Pripravené na súbor...</span>
                     </div>
-                    <button onclick="openModal('review-modal')" class="px-4 py-2 text-xs font-bold rounded-xl animated-rainbow-bg text-white shadow-lg">
-                        + Pridať Recenziu
-                    </button>
-                </div>
-
-                <!-- Reviews Feed List -->
-                <div id="reviews-container" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                    <!-- Javascript will render reviews here from IndexedDB -->
+                    <div id="user-tier-badge" class="limit-badge">
+                        Limit bezplatnej verzie: max. 3 minúty
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- SEKCIA 2: TARIFY -->
+        <section id="tariffs-sec" class="section">
+            <h2 style="text-align:center; font-size: 2rem; margin-bottom: 5px;">Tarifné Balíčky</h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom: 25px;">Získajte neobmedzenú dĺžku, nulový lag a odomknutie všetkých funkcií.</p>
+
+            <div class="tariffs-grid" id="tariffs-container">
+                <div class="tariff-card promo-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <span style="background:#ff0055; padding:4px 12px; border-radius:4px; font-size:0.8rem; font-weight:800; text-transform:uppercase;">Špeciálna Akcia</span>
+                            <div class="tariff-title" style="font-size:1.8rem; margin-top:5px;">Balíček 13: 1 ROK ZADARMO TRIAL</div>
+                            <p style="color:var(--text-muted);">1-ročná bezplatná skúšobná verzia bez akýchkoľvek limitov dĺžky.</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="tariff-price" style="font-size:2.4rem;">0.00 € / 1 Rok</div>
+                            <button class="rainbow-btn" onclick="startCheckout(13, 'Promo 1 Rok Zadarmo', 0, 365)">Aktivovať 1 Rok Zadarmo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEKCIA 3: PLATOBNÁ BRÁNA -->
+        <section id="checkout-sec" class="section">
+            <div class="checkout-box">
+                <h2><i class="fa-solid fa-lock" style="color:var(--cyber-cyan);"></i> Bezpečná Pokladňa</h2>
+                <p style="color:var(--text-muted); margin-bottom: 15px;">Vybraný balíček: <b id="checkout-plan-name" style="color:#fff;">-</b></p>
+                <div style="font-size: 1.6rem; font-weight: 800; margin-bottom: 20px;">K úhrade: <span id="checkout-price" style="color:var(--cyber-cyan);">0.00 €</span></div>
+
+                <label style="font-weight:700; font-size:0.9rem; letter-spacing:0.5px;">Zvoľte platobný systém:</label>
+                <div class="payment-methods">
+                    <div class="pay-option active" onclick="selectPay(this, 'Kreditná Karta & Apple Pay')">
+                        <i class="fa-solid fa-credit-card" style="color:var(--cyber-cyan);"></i>
+                        <span>Karta & Apple/Google Pay</span>
+                    </div>
+                    <div class="pay-option" onclick="selectPay(this, 'PayPal Express')">
+                        <i class="fa-brands fa-paypal" style="color:#0070f3;"></i>
+                        <span>PayPal Express</span>
+                    </div>
+                    <div class="pay-option" onclick="selectPay(this, 'Krypto Brána (BTC/ETH/USDT)')">
+                        <i class="fa-brands fa-bitcoin" style="color:var(--cyber-gold);"></i>
+                        <span>Krypto Brána</span>
+                    </div>
+                    <div class="pay-option" onclick="selectPay(this, 'Okamžitý SEPA Prevod')">
+                        <i class="fa-solid fa-building-columns" style="color:#00ff88;"></i>
+                        <span>Okamžitý SEPA Prevod</span>
+                    </div>
+                </div>
+
+                <input type="text" class="input-field" placeholder="Meno držiteľa / ID Platcu" value="Janko Hraško">
+                <input type="text" class="input-field" placeholder="Karta / Peňaženka / IBAN" value="SK89 0200 0000 0012 3456 7890">
+
+                <button class="rainbow-btn" style="width: 100%; padding: 14px; margin-top: 10px;" onclick="processPayment()">Zaplatiť a Aktivovať</button>
+                <button class="nav-btn" style="width: 100%; margin-top: 10px;" onclick="switchTab('tariffs-sec')">Späť na Tarify</button>
+            </div>
+        </section>
+
+        <!-- SEKCIA 4: RECENZIE & PROFIL -->
+        <section id="reviews-sec" class="section">
+            <div class="status-box">
+                <h2><i class="fa-solid fa-id-card" style="color:var(--cyber-cyan);"></i> Profil & Doba Platnosti</h2>
+                <div style="margin-top:15px;">
+                    <p>Používateľ: <b id="user-display">Neprihlásený (Hosť)</b></p>
+                    <p>Aktuálny plán: <b id="plan-display" style="color:var(--cyber-cyan);">Bezplatná verzia (3 min limit)</b></p>
+                    <p style="margin-top: 10px;">Stav expirácie predplatného:</p>
+                    <div class="countdown" id="expiry-countdown">Predplatné nie je aktívne</div>
+                </div>
+            </div>
+
+            <div class="status-box">
+                <h3>Pridať Recenziu k prehrávaču</h3>
+                <textarea id="review-text" class="input-field" style="height: 80px; resize:none;" placeholder="Napíšte vašu skúsenosť so stabilitou a plynulosťou prehrávania na celej obrazovke..."></textarea>
+                <button class="rainbow-btn" onclick="addReview()">Odoslať Hodnotenie</button>
+
+                <h3 style="margin-top: 25px;">Používateľské Recenzie</h3>
+                <div id="reviews-list" style="margin-top: 15px; display:grid; gap:12px;">
+                    <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:10px; border:1px solid var(--border-glass);">
+                        <b>Michal T. (VIP Platinum)</b> ⭐⭐⭐⭐⭐
+                        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Ten dúhový HUD dizajn a plynulá časová os sú neskutočné. Žiadne trhanie obrazu ani pri 4K 60FPS videu!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/10 bg-black/60 py-8 px-4 text-center text-xs text-gray-500 space-y-2">
-        <div class="flex justify-center space-x-4 text-gray-400 text-sm mb-2">
-            <a href="#" class="hover:text-rainbow-cyan transition-colors"><i class="fa-brands fa-github"></i></a>
-            <a href="#" class="hover:text-rainbow-pink transition-colors"><i class="fa-brands fa-discord"></i></a>
-            <a href="#" class="hover:text-rainbow-yellow transition-colors"><i class="fa-brands fa-twitter"></i></a>
+    <!-- AUTH MODAL -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-box">
+            <h2 id="auth-title" style="margin-bottom:15px;">Prihlásenie</h2>
+            <input type="text" id="auth-user" class="input-field" placeholder="Používateľské meno">
+            <input type="password" id="auth-pass" class="input-field" placeholder="Heslo">
+            <button class="rainbow-btn" style="width: 100%;" id="auth-submit-btn" onclick="handleAuth()">Prihlásiť sa</button>
+            <p style="text-align: center; margin-top: 15px; font-size:0.85rem; color:var(--text-muted); cursor:pointer;" onclick="toggleAuthMode()" id="auth-toggle">
+                Nemáte účet? Zaregistrujte sa.
+            </p>
+            <button class="nav-btn" style="width: 100%; margin-top: 10px;" onclick="closeAuthModal()">Zavrieť</button>
         </div>
-        <p>&copy; 2026 Rainbow Stream Media Engine. Lokálna Databáza IndexedDB. Všetky práva vyhradené.</p>
-    </footer>
-
-    <!-- MODAL 1: PAYMENT GATEWAY (4 PAYMENT SYSTEMS) -->
-    <div id="payment-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="rainbow-glass max-w-lg w-full rounded-2xl p-6 border border-white/20 space-y-6 relative animate-float">
-            <button onclick="closeModal('payment-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div>
-                <span class="text-xs font-bold text-rainbow-cyan uppercase tracking-wider">Platebná Brána</span>
-                <h3 id="checkout-plan-title" class="text-2xl font-extrabold text-white">Dokončenie Platby</h3>
-                <p id="checkout-plan-price" class="text-sm font-semibold text-rainbow-green">Cena: €0.00</p>
-            </div>
-
-            <!-- 4 Payment Gateways Selector -->
-            <div class="space-y-3">
-                <label class="text-xs text-gray-300 font-semibold">Vyberte Platiaci Systém (4 Možnosti):</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="selectPaymentGateway('card')" id="gw-card" class="payment-gw-btn p-3 rounded-xl border border-rainbow-cyan bg-rainbow-cyan/20 text-white text-xs font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-credit-card text-rainbow-cyan text-base"></i> Karta (Stripe)
-                    </button>
-                    <button onclick="selectPaymentGateway('paypal')" id="gw-paypal" class="payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10">
-                        <i class="fa-brands fa-paypal text-blue-400 text-base"></i> PayPal
-                    </button>
-                    <button onclick="selectPaymentGateway('applepay')" id="gw-applepay" class="payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10">
-                        <i class="fa-brands fa-apple text-white text-base"></i> Apple / Google Pay
-                    </button>
-                    <button onclick="selectPaymentGateway('crypto')" id="gw-crypto" class="payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10">
-                        <i class="fa-solid fa-coins text-amber-400 text-base"></i> Krypto / SEPA QR
-                    </button>
-                </div>
-            </div>
-
-            <!-- Dynamic Payment Details Input -->
-            <div id="payment-input-area" class="space-y-3 bg-white/5 p-4 rounded-xl border border-white/10 text-xs">
-                <div>
-                    <label class="block text-gray-400 mb-1">Meno na karte / Účte</label>
-                    <input type="text" id="pay-name" placeholder="Jan Novak" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-                <div>
-                    <label class="block text-gray-400 mb-1">Číslo Karty / IBAN / Crypto ID</label>
-                    <input type="text" id="pay-card-num" placeholder="4545 •••• •••• 8888" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-            </div>
-
-            <button onclick="processPayment()" class="w-full py-3.5 rounded-xl font-extrabold text-sm animated-rainbow-bg text-white shadow-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
-                <i class="fa-solid fa-lock"></i> Zaplatiť & Aktivovať Balíček
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL 2: USER LOGIN -->
-    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="rainbow-glass max-w-sm w-full rounded-2xl p-6 border border-white/20 space-y-4 relative">
-            <button onclick="closeModal('login-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="text-xl font-bold text-white">Prihlásenie</h3>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="text-gray-400 block mb-1">E-mail / Prihlasovacie Meno</label>
-                    <input type="text" id="login-username" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-                <div>
-                    <label class="text-gray-400 block mb-1">Heslo</label>
-                    <input type="password" id="login-password" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-            </div>
-            <button onclick="loginUser()" class="w-full py-3 rounded-xl font-bold text-xs animated-rainbow-bg text-white shadow-lg">
-                Prihlásiť sa
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL 3: USER REGISTRATION -->
-    <div id="register-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="rainbow-glass max-w-sm w-full rounded-2xl p-6 border border-white/20 space-y-4 relative">
-            <button onclick="closeModal('register-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="text-xl font-bold text-white">Registrácia nového účtu</h3>
-            <p class="text-xs text-gray-400">Údaje sa bezpečne uložia do vašej lokálnej databázy IndexedDB.</p>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="text-gray-400 block mb-1">Používateľské Meno</label>
-                    <input type="text" id="reg-username" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-                <div>
-                    <label class="text-gray-400 block mb-1">E-mail</label>
-                    <input type="email" id="reg-email" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-                <div>
-                    <label class="text-gray-400 block mb-1">Heslo</label>
-                    <input type="password" id="reg-password" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan">
-                </div>
-            </div>
-            <button onclick="registerUser()" class="w-full py-3 rounded-xl font-bold text-xs animated-rainbow-bg text-white shadow-lg">
-                Vytvoriť Účet (IndexedDB)
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL 4: ADD REVIEW -->
-    <div id="review-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="rainbow-glass max-w-sm w-full rounded-2xl p-6 border border-white/20 space-y-4 relative">
-            <button onclick="closeModal('review-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="text-xl font-bold text-white">Pridať Hodnotenie</h3>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="text-gray-400 block mb-1">Hodnotenie (Hviezdičky)</label>
-                    <select id="review-rating" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-yellow-400 outline-none">
-                        <option value="5">⭐⭐⭐⭐⭐ (5/5) - Vynikajúce</option>
-                        <option value="4">⭐⭐⭐⭐ (4/5) - Veľmi dobré</option>
-                        <option value="3">⭐⭐⭐ (3/5) - Priemerné</option>
-                        <option value="2">⭐⭐ (2/5) - Slabé</option>
-                        <option value="1">⭐ (1/5) - Zlé</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-gray-400 block mb-1">Komentár / Recenzia</label>
-                    <textarea id="review-comment" rows="3" placeholder="Napíšte vašu skúsenosť s prehrávačom..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-rainbow-cyan"></textarea>
-                </div>
-            </div>
-            <button onclick="submitReview()" class="w-full py-3 rounded-xl font-bold text-xs animated-rainbow-bg text-white shadow-lg">
-                Uložiť Recenziu
-            </button>
-        </div>
-    </div>
-
-    <!-- Notification Toast Element -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-gray-900 text-white px-5 py-3 rounded-xl border border-white/20 shadow-2xl text-xs font-bold items-center space-x-3">
-        <i id="toast-icon" class="fa-solid fa-circle-info text-rainbow-cyan text-base"></i>
-        <span id="toast-message">Správa</span>
     </div>
 
     <script>
-        // Global App State
-        let db = null;
-        let currentUser = null;
-        let activeSubscription = {
-            planName: 'Bezplatná Verzia',
-            isPremium: false,
-            expiryDate: null,
-            remainingDays: 0
-        };
-        let activeGateway = 'card';
-        let selectedPlanToBuy = null;
-        let currentSkin = 'neon';
+        /* =========================================================
+           1. INDEXEDDB DATABASE (Ukladanie bez localStorage)
+           ========================================================= */
+        const DB_NAME = "QuantumStreamDB";
+        const DB_VERSION = 1;
+        let db;
 
-        // Media Elements
-        const videoElem = document.getElementById('media-video');
-        const canvasElem = document.getElementById('audio-canvas');
-        const dropzone = document.getElementById('dropzone');
-        const progressBar = document.getElementById('progress-bar');
-        const volumeBar = document.getElementById('volume-bar');
-        const btnPlay = document.getElementById('btn-play');
-        const currentTimeElem = document.getElementById('current-time');
-        const durationTimeElem = document.getElementById('duration-time');
-        const playerContainer = document.getElementById('player-container');
-
-        // Audio Context for Visualizer
-        let audioCtx, audioSource, analyser;
-
-        // Initialize IndexedDB Database (Lokálna Databáza)
         function initIndexedDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open('RainbowStreamDB', 1);
-
-                request.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains('users')) {
-                        database.createObjectStore('users', { keyPath: 'username' });
-                    }
-                    if (!database.objectStoreNames.contains('subscriptions')) {
-                        database.createObjectStore('subscriptions', { keyPath: 'username' });
-                    }
-                    if (!database.objectStoreNames.contains('payments')) {
-                        database.createObjectStore('payments', { keyPath: 'id', autoIncrement: true });
-                    }
-                    if (!database.objectStoreNames.contains('reviews')) {
-                        database.createObjectStore('reviews', { keyPath: 'id', autoIncrement: true });
-                    }
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = (e) => {
+                    const d = e.target.result;
+                    if (!d.objectStoreNames.contains("users")) d.createObjectStore("users", { keyPath: "username" });
+                    if (!d.objectStoreNames.contains("payments")) d.createObjectStore("payments", { keyPath: "id", autoIncrement: true });
                 };
-
-                request.onsuccess = (e) => {
-                    db = e.target.result;
-                    console.log("IndexedDB úspešne inicializovaná!");
-                    resolve(db);
-                };
-
-                request.onerror = (e) => {
-                    console.error("Chyba pri otváraní IndexedDB:", e);
-                    reject(e);
-                };
+                req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+                req.onerror = (e) => reject(e);
             });
         }
 
-        const TARIFFS = [
-            { id: 1, name: "Mini Start", price: "€1.99 / mesiac", days: 30, desc: "Základné 1080p prehrávanie bez pop-up reklám.", tag: "ZÁKLAD" },
-            { id: 2, name: "Standard HD", price: "€3.99 / mesiac", days: 30, desc: "Podpora pre 2 vlastné tém prehrávača.", tag: "POPULÁRNE" },
-            { id: 3, name: "Family Pack", price: "€6.99 / mesiac", days: 30, desc: "Pre 4 rodinné účty súčasne.", tag: "RODINA" },
-            { id: 4, name: "Ultra 4K Stream", price: "€9.99 / mesiac", days: 30, desc: "Ultra HD 4K kvalita a audio visualizer.", tag: "4K QUALITY" },
-            { id: 5, name: "Studio Pro", price: "€14.99 / mesiac", days: 30, desc: "Snímkovanie 60fps, neobmedzené audio.", tag: "PRO" },
-            { id: 6, name: "VIP Bronze", price: "€19.99 / 3 mesiace", days: 90, desc: "Až 3 mesiace neobmedzeného streamu.", tag: "3 MESIACE" },
-            { id: 7, name: "VIP Silver", price: "€29.99 / 6 mesiacov", days: 180, desc: "Pobyt na pol roka v prémiovom klube.", tag: "6 MESIACOV" },
-            { id: 8, name: "Gold Cinema Pass", price: "€49.99 / rok", days: 365, desc: "Ročné predplatné za výhodnú cenu.", tag: "ROČNÝ" },
-            { id: 9, name: "Master 8K HDR", price: "€69.99 / rok", days: 365, desc: "Najvyššia 8K HDR kvalita prehrávača.", tag: "8K HDR" },
-            { id: 10, name: "Audio Master Pro", price: "€79.99 / rok", days: 365, desc: "Pokročilý hudobný visualizer & efektor.", tag: "AUDIO" },
-            { id: 11, name: "Ultimate Business", price: "€119.99 / rok", days: 365, desc: "Pre komerčné a firemné vysielanie.", tag: "BUSINESS" },
-            { id: 12, name: "Lifetime Pass", price: "€199.99 / navždy", days: 3650, desc: "Doživotný prístup ku všetkým funkciám.", tag: "DOŽIVOTNE" },
-            { id: 13, name: "1 Rok Skúšobná Verzia", price: "€0.00 / 1 ROK", days: 365, desc: "100% BEZPLATNÁ ročná skúšobná verzia! Všetko neobmedzené.", tag: "BEZPLATNE 365 DNÍ", isTrial: true }
+        async function dbAddUser(user) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction("users", "readwrite");
+                const store = tx.objectStore("users");
+                const req = store.add(user);
+                req.onsuccess = () => resolve(true);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function dbGetUser(username) {
+            return new Promise((resolve) => {
+                const tx = db.transaction("users", "readonly");
+                const store = tx.objectStore("users");
+                const req = store.get(username);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        async function dbUpdateUser(user) {
+            return new Promise((resolve) => {
+                const tx = db.transaction("users", "readwrite");
+                const store = tx.objectStore("users");
+                store.put(user);
+                tx.oncomplete = () => resolve(true);
+            });
+        }
+
+        async function dbAddPayment(payment) {
+            return new Promise((resolve) => {
+                const tx = db.transaction("payments", "readwrite");
+                const store = tx.objectStore("payments");
+                store.add(payment);
+                tx.oncomplete = () => resolve(true);
+            });
+        }
+
+        /* =========================================================
+           2. 12 BALÍČKOV + 13. AKCIOVÝ NA 1 ROK ZADARMO
+           ========================================================= */
+        const packages = [
+            { id: 1, name: "Starter Stream", price: "2.99 €", days: 7, desc: "7 dní plnej rýchlosti." },
+            { id: 2, name: "Mesačný Pass", price: "5.99 €", days: 30, desc: "1 Mesiac - 4K akcelerácia." },
+            { id: 3, name: "Kvartál Silver", price: "14.99 €", days: 90, desc: "3 Mesiace - Neobmedzená dĺžka." },
+            { id: 4, name: "Polročný Gold", price: "24.99 €", days: 180, desc: "6 Mesiacov - Bez limitov." },
+            { id: 5, name: "Ročný Platinum", price: "39.99 €", days: 365, desc: "12 Mesiacov - VIP prístup." },
+            { id: 6, name: "Cyber Ultra", price: "49.99 €", days: 365, desc: "1 Rok - 120 FPS podpora." },
+            { id: 7, name: "Family Pack", price: "59.99 €", days: 365, desc: "1 Rok - 5 účtov." },
+            { id: 8, name: "Cinema Deluxe", price: "69.99 €", days: 365, desc: "1 Rok - Dolby Atmos & Vision." },
+            { id: 9, name: "Titanium 2-Year", price: "79.99 €", days: 730, desc: "2 Roky - Maximálna kvalita." },
+            { id: 10, name: "Studio Master", price: "99.99 €", days: 730, desc: "2 Roky - Komerčné prehrávanie." },
+            { id: 11, name: "Legendary 5-Year", price: "149.99 €", days: 1825, desc: "5 Rokov - Všetky upgrady v cene." },
+            { id: 12, name: "Ultimate Infinity", price: "199.99 €", days: 3650, desc: "10 Rokov - Doživotný VIP status." }
         ];
 
         function renderTariffs() {
-            const container = document.getElementById('tariffs-grid');
-            container.innerHTML = '';
-
-            TARIFFS.forEach(t => {
-                const isSpecial = t.isTrial;
-                const card = document.createElement('div');
-                card.className = isSpecial 
-                    ? "rainbow-border-box p-6 flex flex-col justify-between space-y-4 shadow-2xl relative"
-                    : "rainbow-glass p-6 rounded-2xl flex flex-col justify-between space-y-4 border border-white/10 hover:border-white/30 transition-all hover:-translate-y-1";
-
+            const container = document.getElementById("tariffs-container");
+            packages.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "tariff-card";
                 card.innerHTML = `
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${isSpecial ? 'bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30' : 'bg-white/10 text-rainbow-cyan'}">${t.tag}</span>
-                            ${isSpecial ? '<i class="fa-solid fa-crown text-rainbow-yellow"></i>' : ''}
-                        </div>
-                        <h3 class="text-xl font-bold text-white">${t.name}</h3>
-                        <p class="text-xs text-gray-400 mt-1">${t.desc}</p>
+                        <div class="tariff-title">Balíček ${p.id}: ${p.name}</div>
+                        <div class="tariff-price">${p.price}</div>
+                        <ul class="tariff-features">
+                            <li><i class="fa-solid fa-check"></i> Trvanie: ${p.days} dní</li>
+                            <li><i class="fa-solid fa-check"></i> ${p.desc}</li>
+                            <li><i class="fa-solid fa-check"></i> 100% Neobmedzená dĺžka videa</li>
+                        </ul>
                     </div>
-                    <div class="pt-2 border-t border-white/10 space-y-3">
-                        <div class="text-2xl font-extrabold ${isSpecial ? 'animated-rainbow-text' : 'text-white'}">${t.price}</div>
-                        <button onclick="openPaymentModal(${t.id})" class="w-full py-2.5 rounded-xl text-xs font-bold ${isSpecial ? 'animated-rainbow-bg text-white shadow-lg' : 'bg-white/10 hover:bg-white/20 text-white border border-white/10'} transition-all flex items-center justify-center gap-2">
-                            ${isSpecial ? '<i class="fa-solid fa-bolt"></i> Získať 1 Rok Zadarmo' : '<i class="fa-solid fa-cart-shopping"></i> Zakúpiť Balíček'}
-                        </button>
-                    </div>
+                    <button class="rainbow-btn" onclick="startCheckout(${p.id}, '${p.name}', '${p.price}', ${p.days})">Aktivovať Balíček</button>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        /* =========================================================
+           3. PREHRÁVAČ, DÚHOVÁ ČASOVÁ OS & FULLSCREEN LOGIKA
+           ========================================================= */
+        const video = document.getElementById("video-element");
+        const playBtn = document.getElementById("play-btn");
+        const centerPlayOverlay = document.getElementById("center-play-overlay");
+        const centerPlayIcon = document.getElementById("center-play-icon");
+        const timelineContainer = document.getElementById("timeline-container");
+        const progressBar = document.getElementById("progress-bar");
+        const bufferBar = document.getElementById("buffer-bar");
+        const timeDisplay = document.getElementById("time-display");
+        const playerFrame = document.getElementById("main-player-frame");
 
-            const fileURL = URL.createObjectURL(file);
-            document.getElementById('media-title').innerText = file.name;
+        let controlsTimeout = null;
 
-            if (file.type.startsWith('audio')) {
-                videoElem.classList.add('hidden');
-                canvasElem.classList.remove('hidden');
-                dropzone.classList.add('hidden');
-                videoElem.src = fileURL;
-                setupAudioVisualizer();
-            } else {
-                canvasElem.classList.add('hidden');
-                videoElem.classList.remove('hidden');
-                dropzone.classList.add('hidden');
-                videoElem.src = fileURL;
-            }
-
-            videoElem.play();
-            btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            showToast("Súbor načítaný. Plynulé prehrávanie spustené!");
+        function setTheme(themeClass, btn) {
+            playerFrame.className = "futuristic-player-hud " + themeClass;
+            document.querySelectorAll(".theme-pill").forEach(p => p.classList.remove("active"));
+            btn.classList.add("active");
         }
 
-        // Drag & Drop Handling
-        dropzone.addEventListener('dragover', (e) => e.preventDefault());
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (e.dataTransfer.files.length > 0) {
-                document.getElementById('file-input').files = e.dataTransfer.files;
-                handleFileSelect({ target: { files: e.dataTransfer.files } });
+        function loadCustomVideo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById("file-name").innerText = file.name;
+                video.src = URL.createObjectURL(file);
+                video.play();
+                updatePlayState(true);
             }
-        });
+        }
 
-        // Video Playback Controls
         function togglePlay() {
-            if (!videoElem.src) {
-                document.getElementById('file-input').click();
-                return;
-            }
-            if (videoElem.paused) {
-                videoElem.play();
-                btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            if (video.paused || video.ended) {
+                video.play();
+                updatePlayState(true);
             } else {
-                videoElem.pause();
-                btnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
+                video.pause();
+                updatePlayState(false);
+            }
+        }
+
+        function updatePlayState(isPlaying) {
+            if (isPlaying) {
+                playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                centerPlayOverlay.classList.remove("visible");
+            } else {
+                playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                centerPlayIcon.className = "fa-solid fa-play";
+                centerPlayOverlay.classList.add("visible");
             }
         }
 
         function skipTime(seconds) {
-            videoElem.currentTime += seconds;
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
         }
 
         function toggleMute() {
-            videoElem.muted = !videoElem.muted;
-            document.getElementById('btn-mute').innerHTML = videoElem.muted 
-                ? '<i class="fa-solid fa-volume-xmark text-red-400"></i>' 
-                : '<i class="fa-solid fa-volume-high"></i>';
+            video.muted = !video.muted;
+            document.getElementById("mute-btn").innerHTML = video.muted ? '<i class="fa-solid fa-volume-xmark" style="color:#ff0055;"></i>' : '<i class="fa-solid fa-volume-high"></i>';
         }
 
-        videoElem.addEventListener('loadedmetadata', () => {
-            if (videoElem.videoWidth && videoElem.videoHeight) {
-                // Dynamically set CSS aspect-ratio based on the video source resolution
-                videoElem.style.aspectRatio = `${videoElem.videoWidth} / ${videoElem.videoHeight}`;
-            }
-        });
-
-        videoElem.addEventListener('timeupdate', () => {
-            if (!videoElem.duration) return;
-            const pct = (videoElem.currentTime / videoElem.duration) * 100;
-            progressBar.value = pct;
-            currentTimeElem.innerText = formatTime(videoElem.currentTime);
-            durationTimeElem.innerText = formatTime(videoElem.duration);
-
-            // Free version limit enforcement (Lock playback after 10 minutes)
-            if (!activeSubscription.isPremium && videoElem.currentTime > 600) {
-                videoElem.pause();
-                btnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
-                showToast("Limit 10 minút dosiahnutý na Bezplatnom Účte!", "error");
-                document.getElementById('free-limit-alert').classList.remove('hidden');
-                scrollToTariffs();
-            }
-        });
-
-        progressBar.addEventListener('input', () => {
-            if (videoElem.duration) {
-                videoElem.currentTime = (progressBar.value / 100) * videoElem.duration;
-            }
-        });
-
-        volumeBar.addEventListener('input', () => {
-            videoElem.volume = volumeBar.value;
-        });
-
-        function changeSpeed(val) {
-            videoElem.playbackRate = parseFloat(val);
+        function setVolume(val) {
+            video.volume = val;
+            video.muted = (val == 0);
+            document.getElementById("mute-btn").innerHTML = (val == 0) ? '<i class="fa-solid fa-volume-xmark" style="color:#ff0055;"></i>' : '<i class="fa-solid fa-volume-high"></i>';
         }
 
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = Math.floor(seconds % 60);
-            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        function setSpeed(val) {
+            video.playbackRate = parseFloat(val);
+        }
+
+        async function togglePiP() {
+            try {
+                if (document.pictureInPictureElement) {
+                    await document.exitPictureInPicture();
+                } else if (document.pictureInPictureEnabled) {
+                    await video.requestPictureInPicture();
+                }
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                if (playerContainer.requestFullscreen) {
-                    playerContainer.requestFullscreen();
-                } else if (playerContainer.webkitRequestFullscreen) {
-                    playerContainer.webkitRequestFullscreen();
-                }
+                playerFrame.requestFullscreen().catch(err => alert(err.message));
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                document.exitFullscreen();
             }
         }
 
-        function switchPlayerSkin(skin) {
-            // Check restriction: Free users can only use Skins 1 & 2
-            if (!activeSubscription.isPremium && (skin === 'theater' || skin === 'synthwave' || skin === 'minimal')) {
-                showToast("Tento špeciálny prehrávač je dostupný pre Prémium používateľov!", "error");
-                scrollToTariffs();
-                return;
-            }
-
-            currentSkin = skin;
-            playerContainer.className = `player-container skin-${skin} rounded-2xl overflow-hidden transition-all duration-300 relative group flex flex-col justify-center items-center`;
-
-            // Reset active button highlights
-            ['neon', 'glass', 'theater', 'synthwave', 'minimal'].forEach(s => {
-                const btn = document.getElementById(`skin-btn-${s}`);
-                if (s === skin) {
-                    btn.className = "px-3 py-1.5 text-xs font-medium rounded-xl transition-all bg-rainbow-cyan/20 text-rainbow-cyan border border-rainbow-cyan/40";
-                } else {
-                    btn.className = "px-3 py-1.5 text-xs font-medium rounded-xl transition-all hover:bg-white/10 text-gray-300";
-                }
-            });
-
-            showToast(`Aktivovaný prehrávač štýl: ${skin.toUpperCase()}`);
-        }
-
-        function setupAudioVisualizer() {
-            if (audioCtx) return;
-            try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                audioSource = audioCtx.createMediaElementSource(videoElem);
-                audioSource.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                analyser.fftSize = 64;
-
-                const ctx = canvasElem.getContext('2d');
-                const bufferLength = analyser.frequencyBinCount;
-                const dataArray = new Uint8Array(bufferLength);
-
-                function draw() {
-                    requestAnimationFrame(draw);
-                    analyser.getByteFrequencyData(dataArray);
-
-                    ctx.fillStyle = '#080711';
-                    ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
-
-                    const barWidth = (canvasElem.width / bufferLength) * 2.5;
-                    let x = 0;
-
-                    for (let i = 0; i < bufferLength; i++) {
-                        const barHeight = dataArray[i] * 1.2;
-                        const gradient = ctx.createLinearGradient(0, canvasElem.height, 0, 0);
-                        gradient.addColorStop(0, '#00e5ff');
-                        gradient.addColorStop(0.5, '#7a00ff');
-                        gradient.addColorStop(1, '#ff00a0');
-
-                        ctx.fillStyle = gradient;
-                        ctx.fillRect(x, canvasElem.height - barHeight, barWidth - 2, barHeight);
-                        x += barWidth + 2;
+        // Fullscreen sledovanie pohybu myši pre automatické skrývanie
+        playerFrame.addEventListener("mousemove", () => {
+            if (document.fullscreenElement) {
+                playerFrame.classList.remove("hide-controls");
+                clearTimeout(controlsTimeout);
+                controlsTimeout = setTimeout(() => {
+                    if (!video.paused) {
+                        playerFrame.classList.add("hide-controls");
                     }
-                }
-                draw();
-            } catch (err) {
-                console.log("Visualizer initialized.");
+                }, 2500);
             }
+        });
+
+        document.addEventListener("fullscreenchange", () => {
+            if (!document.fullscreenElement) {
+                playerFrame.classList.remove("hide-controls");
+                clearTimeout(controlsTimeout);
+            }
+        });
+
+        // Aktualizácia Dúhovej Čiary (Timeline)
+        video.addEventListener("timeupdate", () => {
+            if (video.duration) {
+                const percent = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = percent + "%";
+                timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+            }
+
+            // Kontrola limitu bezplatnej verzie (max. 3 min / 180s)
+            const isUnlimited = currentUser && currentUser.expiry && (new Date(currentUser.expiry) > new Date());
+            if (!isUnlimited && video.currentTime > 180) {
+                video.pause();
+                video.currentTime = 0;
+                updatePlayState(false);
+                if (document.fullscreenElement) document.exitFullscreen();
+                alert("Limit bezplatnej verzie (3 minúty) vypršal! Aktivujte si tarifu alebo 13. Balíček na 1 Rok Zadarmo pre neobmedzené prehrávanie.");
+                switchTab("tariffs-sec");
+            }
+        });
+
+        // Buffer indikátor
+        video.addEventListener("progress", () => {
+            if (video.buffered.length > 0 && video.duration) {
+                const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+                const percent = (bufferedEnd / video.duration) * 100;
+                bufferBar.style.width = percent + "%";
+            }
+        });
+
+        // Kliknutie a posun na dúhovej časovej osi
+        timelineContainer.addEventListener("click", (e) => {
+            const rect = timelineContainer.getBoundingClientRect();
+            const clickPos = (e.clientX - rect.left) / rect.width;
+            if (video.duration) {
+                video.currentTime = clickPos * video.duration;
+            }
+        });
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        function openPaymentModal(planId) {
-            const plan = TARIFFS.find(t => t.id === planId);
-            if (!plan) return;
-            selectedPlanToBuy = plan;
+        /* =========================================================
+           4. AUTHENTIFIKÁCIA & STAV EXPIRÁCIE
+           ========================================================= */
+        let currentUser = null;
+        let isRegisterMode = false;
 
-            document.getElementById('checkout-plan-title').innerText = plan.name;
-            document.getElementById('checkout-plan-price').innerText = `Cena: ${plan.price}`;
-            openModal('payment-modal');
+        function openAuthModal() { document.getElementById("auth-modal").style.display = "flex"; }
+        function closeAuthModal() { document.getElementById("auth-modal").style.display = "none"; }
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById("auth-title").innerText = isRegisterMode ? "Registrácia" : "Prihlásenie";
+            document.getElementById("auth-submit-btn").innerText = isRegisterMode ? "Zaregistrovať sa" : "Prihlásiť sa";
+            document.getElementById("auth-toggle").innerText = isRegisterMode ? "Máte účet? Prihláste sa." : "Nemáte účet? Zaregistrujte sa.";
         }
 
-        function selectPaymentGateway(gw) {
-            activeGateway = gw;
-            const gateways = ['card', 'paypal', 'applepay', 'crypto'];
-            gateways.forEach(g => {
-                const btn = document.getElementById(`gw-${g}`);
-                if (g === gw) {
-                    btn.className = "payment-gw-btn p-3 rounded-xl border border-rainbow-cyan bg-rainbow-cyan/20 text-white text-xs font-bold flex items-center gap-2";
-                } else {
-                    btn.className = "payment-gw-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-xs font-bold flex items-center gap-2 hover:bg-white/10";
-                }
-            });
-        }
+        async function handleAuth() {
+            const u = document.getElementById("auth-user").value.trim();
+            const p = document.getElementById("auth-pass").value.trim();
+            if (!u || !p) return alert("Vyplňte prihlasovacie údaje.");
 
-        function processPayment() {
-            if (!selectedPlanToBuy) return;
-
-            const name = document.getElementById('pay-name').value || "Používateľ";
-            const now = new Date();
-            const expiry = new Date();
-            expiry.setDate(now.getDate() + selectedPlanToBuy.days);
-
-            const subscriptionData = {
-                username: currentUser ? currentUser.username : "Anonym",
-                planName: selectedPlanToBuy.name,
-                isPremium: true,
-                startDate: now.toISOString(),
-                expiryDate: expiry.toISOString(),
-                remainingDays: selectedPlanToBuy.days
-            };
-
-            const paymentRecord = {
-                username: subscriptionData.username,
-                planName: selectedPlanToBuy.name,
-                amount: selectedPlanToBuy.price,
-                gateway: activeGateway,
-                timestamp: now.toISOString()
-            };
-
-            // Save to IndexedDB local database (nie localStorage)
-            const tx = db.transaction(['subscriptions', 'payments'], 'readwrite');
-            tx.objectStore('subscriptions').put(subscriptionData);
-            tx.objectStore('payments').add(paymentRecord);
-
-            tx.oncomplete = () => {
-                activeSubscription = subscriptionData;
-                updateSubscriptionUI();
-                closeModal('payment-modal');
-                showToast(`Platba úspešná! Aktivovaný balíček: ${selectedPlanToBuy.name}`);
-                document.getElementById('free-limit-alert').classList.add('hidden');
-            };
-        }
-
-        function activate1YearTrial() {
-            openPaymentModal(13);
-        }
-
-        function updateSubscriptionUI() {
-            const badge = document.getElementById('sub-badge');
-            const nameElem = document.getElementById('sub-plan-name');
-            const dateElem = document.getElementById('sub-expiry-date');
-            const daysElem = document.getElementById('sub-remaining-days');
-            const headerBadge = document.getElementById('user-status-text');
-
-            if (activeSubscription.isPremium) {
-                const expiry = new Date(activeSubscription.expiryDate);
-                const today = new Date();
-                const diffTime = Math.abs(expiry - today);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-rainbow-green/20 text-rainbow-green border border-rainbow-green/30";
-                badge.innerText = "PRÉMIUM AKTÍVNE";
-                nameElem.innerText = activeSubscription.planName;
-                dateElem.innerText = expiry.toLocaleDateString('sk-SK');
-                daysElem.innerText = `${diffDays} Dní`;
-                headerBadge.innerText = `PRÉMIUM (${diffDays} Dní)`;
+            if (isRegisterMode) {
+                const exists = await dbGetUser(u);
+                if (exists) return alert("Používateľ už existuje v IndexedDB.");
+                const newUser = { username: u, password: p, plan: "Bezplatná verzia", expiry: null };
+                await dbAddUser(newUser);
+                currentUser = newUser;
+                alert("Registrácia úspešná!");
             } else {
-                badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30";
-                badge.innerText = "BEZPLATNÝ";
-                nameElem.innerText = "Bezplatná Verzia";
-                dateElem.innerText = "Neuplatnené (Limit 10 min)";
-                daysElem.innerText = "0 Dní";
-                headerBadge.innerText = "Bezplatný Účet";
+                const user = await dbGetUser(u);
+                if (!user || user.password !== p) return alert("Nesprávne meno alebo heslo.");
+                currentUser = user;
+                alert("Prihlásenie úspešné!");
             }
+            closeAuthModal();
+            updateUI();
         }
 
-        function registerUser() {
-            const username = document.getElementById('reg-username').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
-
-            if (!username || !password) {
-                showToast("Vyplňte používateľské meno a heslo!", "error");
-                return;
-            }
-
-            const tx = db.transaction(['users'], 'readwrite');
-            const store = tx.objectStore('users');
-            const getReq = store.get(username);
-
-            getReq.onsuccess = () => {
-                if (getReq.result) {
-                    showToast("Používateľ s týmto menom už existuje!", "error");
-                } else {
-                    store.add({ username, email, password });
-                    currentUser = { username, email };
-                    closeModal('register-modal');
-                    updateAuthUI();
-                    showToast("Registrácia úspešná! Údaje uložené do IndexedDB.");
-                }
-            };
-        }
-
-        function loginUser() {
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-
-            const tx = db.transaction(['users'], 'readonly');
-            const store = tx.objectStore('users');
-            const getReq = store.get(username);
-
-            getReq.onsuccess = () => {
-                const user = getReq.result;
-                if (user && user.password === password) {
-                    currentUser = { username: user.username, email: user.email };
-                    closeModal('login-modal');
-                    loadUserSubscription(username);
-                    updateAuthUI();
-                    showToast(`Vitajte späť, ${username}!`);
-                } else {
-                    showToast("Nesprávne meno alebo heslo!", "error");
-                }
-            };
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            activeSubscription = { planName: 'Bezplatná Verzia', isPremium: false, expiryDate: null, remainingDays: 0 };
-            updateAuthUI();
-            updateSubscriptionUI();
-            showToast("Boli ste odhlásený.");
-        }
-
-        function loadUserSubscription(username) {
-            const tx = db.transaction(['subscriptions'], 'readonly');
-            const store = tx.objectStore('subscriptions');
-            const req = store.get(username);
-
-            req.onsuccess = () => {
-                if (req.result) {
-                    activeSubscription = req.result;
-                    updateSubscriptionUI();
-                }
-            };
-        }
-
-        function updateAuthUI() {
-            const authBtns = document.getElementById('auth-buttons');
-            const profileMenu = document.getElementById('user-profile-menu');
-            const nameDisplay = document.getElementById('username-display');
+        function updateUI() {
+            const authDiv = document.getElementById("auth-actions");
+            const badge = document.getElementById("user-tier-badge");
+            const userDisp = document.getElementById("user-display");
+            const planDisp = document.getElementById("plan-display");
+            const expiryCd = document.getElementById("expiry-countdown");
 
             if (currentUser) {
-                authBtns.classList.add('hidden');
-                profileMenu.classList.remove('hidden');
-                profileMenu.classList.add('flex');
-                nameDisplay.innerText = currentUser.username;
+                authDiv.innerHTML = `<span style="margin-right:10px; font-weight:800; color:var(--cyber-cyan);">${currentUser.username}</span><button class="nav-btn" onclick="logout()">Odhlásiť</button>`;
+                userDisp.innerText = currentUser.username;
+                planDisp.innerText = currentUser.plan;
+
+                if (currentUser.expiry) {
+                    const expDate = new Date(currentUser.expiry);
+                    const now = new Date();
+
+                    if (now > expDate) {
+                        currentUser.plan = "Bezplatná verzia (Expirované)";
+                        currentUser.expiry = null;
+                        dbUpdateUser(currentUser);
+                        expiryCd.innerText = "Predplatné vypršalo!";
+                        expiryCd.style.color = "#ff0055";
+                        badge.innerText = "Limit bezplatnej verzie: max. 3 minúty";
+                        badge.className = "limit-badge";
+                    } else {
+                        const diffDays = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+                        expiryCd.innerText = `Aktívne do: ${expDate.toLocaleDateString()} (Zostáva ${diffDays} dní)`;
+                        expiryCd.style.color = "#00ff88";
+                        badge.innerText = `VIP Premium: ${currentUser.plan} (Neobmedzene)`;
+                        badge.className = "limit-badge unlimited";
+                    }
+                } else {
+                    expiryCd.innerText = "Bezplatný účet (Limit 3 minúty na video)";
+                    expiryCd.style.color = "var(--text-muted)";
+                    badge.innerText = "Limit bezplatnej verzie: max. 3 minúty";
+                    badge.className = "limit-badge";
+                }
             } else {
-                authBtns.classList.remove('hidden');
-                profileMenu.classList.add('hidden');
+                authDiv.innerHTML = `<button class="rainbow-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> Prihlásiť sa</button>`;
+                userDisp.innerText = "Neprihlásený (Hosť)";
+                planDisp.innerText = "Bezplatná verzia (3 min limit)";
+                expiryCd.innerText = "Prihláste sa pre zobrazenie stavu";
             }
         }
 
-        function submitReview() {
-            const rating = document.getElementById('review-rating').value;
-            const comment = document.getElementById('review-comment').value.trim();
+        function logout() {
+            currentUser = null;
+            updateUI();
+        }
 
-            if (!comment) {
-                showToast("Nezadali ste komentár!", "error");
+        /* =========================================================
+           5. PLATOBNÁ BRÁNA & 4 METÓDY
+           ========================================================= */
+        let selectedCheckoutPlan = null;
+        let selectedPayMethod = "Kreditná Karta & Apple Pay";
+
+        function startCheckout(id, name, price, days) {
+            if (!currentUser) {
+                alert("Najprv sa prihláste alebo zaregistrujte.");
+                openAuthModal();
                 return;
             }
+            selectedCheckoutPlan = { id, name, price, days };
+            document.getElementById("checkout-plan-name").innerText = `Balíček ${id}: ${name}`;
+            document.getElementById("checkout-price").innerText = typeof price === 'number' ? `${price.toFixed(2)} €` : price;
+            switchTab("checkout-sec");
+        }
 
-            const reviewObj = {
-                author: currentUser ? currentUser.username : "Anonymný Divák",
-                rating: parseInt(rating),
-                comment: comment,
-                date: new Date().toLocaleDateString('sk-SK'),
-                isPremium: activeSubscription.isPremium
+        function selectPay(el, method) {
+            document.querySelectorAll(".pay-option").forEach(p => p.classList.remove("active"));
+            el.classList.add("active");
+            selectedPayMethod = method;
+        }
+
+        async function processPayment() {
+            if (!selectedCheckoutPlan || !currentUser) return;
+            const now = new Date();
+            const expiryDate = new Date();
+            expiryDate.setDate(now.getDate() + selectedCheckoutPlan.days);
+
+            const record = {
+                username: currentUser.username,
+                planId: selectedCheckoutPlan.id,
+                planName: selectedCheckoutPlan.name,
+                price: selectedCheckoutPlan.price,
+                paymentMethod: selectedPayMethod,
+                paidAt: now.toISOString(),
+                expiresAt: expiryDate.toISOString()
             };
+            await dbAddPayment(record);
 
-            const tx = db.transaction(['reviews'], 'readwrite');
-            tx.objectStore('reviews').add(reviewObj);
+            currentUser.plan = selectedCheckoutPlan.name;
+            currentUser.expiry = expiryDate.toISOString();
+            await dbUpdateUser(currentUser);
 
-            tx.oncomplete = () => {
-                closeModal('review-modal');
-                document.getElementById('review-comment').value = '';
-                loadReviews();
-                showToast("Recenzia uložená!");
-            };
+            alert(`Platba úspešná cez: ${selectedPayMethod}!\nBalíček "${selectedCheckoutPlan.name}" bol úspešne aktivovaný do: ${expiryDate.toLocaleDateString()}`);
+            updateUI();
+            switchTab("reviews-sec");
         }
 
-        function loadReviews() {
-            const container = document.getElementById('reviews-container');
-            container.innerHTML = '';
-
-            const tx = db.transaction(['reviews'], 'readonly');
-            const store = tx.objectStore('reviews');
-            const req = store.getAll();
-
-            req.onsuccess = () => {
-                const reviews = req.result;
-
-                // Seed initial mock reviews if empty
-                if (reviews.length === 0) {
-                    const mockReviews = [
-                        { author: "Marek_K", rating: 5, comment: "Perfektný prehrávač! Vyskúšal som 1-ročný bezplatný balíček a video na celej obrazovke vôbec neseká.", date: "16.08.2026", isPremium: true },
-                        { author: "Zuzana_Stream", rating: 5, comment: "Neon Cyberpunk štýl je úžasný a prepínanie medzi 5 prehrávačmi funguje super.", date: "15.08.2026", isPremium: true }
-                    ];
-                    const seedTx = db.transaction(['reviews'], 'readwrite');
-                    mockReviews.forEach(r => seedTx.objectStore('reviews').add(r));
-                    seedTx.oncomplete = () => loadReviews();
-                    return;
-                }
-
-                reviews.reverse().forEach(r => {
-                    const stars = "⭐".repeat(r.rating);
-                    const card = document.createElement('div');
-                    card.className = "bg-white/5 p-4 rounded-xl border border-white/10 space-y-2";
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <span class="font-bold text-sm text-white">${r.author}</span>
-                                ${r.isPremium ? '<span class="text-[9px] bg-rainbow-green/20 text-rainbow-green px-2 py-0.5 rounded-full font-bold">PRÉMIUM</span>' : ''}
-                            </div>
-                            <span class="text-xs text-gray-500">${r.date}</span>
-                        </div>
-                        <div class="text-amber-400 text-xs">${stars}</div>
-                        <p class="text-xs text-gray-300">${r.comment}</p>
-                    `;
-                    container.appendChild(card);
-                });
-            };
+        /* =========================================================
+           6. RECENZIE & NAVIGÁCIA
+           ========================================================= */
+        function switchTab(tabId) {
+            document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
         }
 
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
+        function addReview() {
+            const text = document.getElementById("review-text").value.trim();
+            if (!text) return alert("Napíšte text hodnotenia.");
+            const user = currentUser ? currentUser.username : "Anonym";
+            const plan = currentUser ? currentUser.plan : "Návštevník";
+            const list = document.getElementById("reviews-list");
+
+            const rev = document.createElement("div");
+            rev.style = "background:rgba(255,255,255,0.03); padding:15px; border-radius:10px; border:1px solid var(--border-glass);";
+            rev.innerHTML = `<b>${user} (${plan})</b> ⭐⭐⭐⭐⭐<p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">${text}</p>`;
+            list.prepend(rev);
+            document.getElementById("review-text").value = "";
+            alert("Recenzia pridaná!");
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        function scrollToTariffs() {
-            document.getElementById('tariffs-section').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function showToast(msg, type = "info") {
-            const toast = document.getElementById('toast');
-            const msgElem = document.getElementById('toast-message');
-            const iconElem = document.getElementById('toast-icon');
-
-            msgElem.innerText = msg;
-            if (type === "error") {
-                iconElem.className = "fa-solid fa-circle-exclamation text-red-400 text-base";
-            } else {
-                iconElem.className = "fa-solid fa-circle-check text-rainbow-green text-base";
-            }
-
-            toast.classList.remove('hidden');
-            toast.classList.add('flex');
-            setTimeout(() => {
-                toast.classList.add('hidden');
-                toast.classList.remove('flex');
-            }, 3500);
-        }
-
-        // Initialize App on Window Load
-        window.onload = async function () {
+        window.addEventListener("DOMContentLoaded", async () => {
             await initIndexedDB();
             renderTariffs();
-            loadReviews();
-            updateSubscriptionUI();
-        };
+            updateUI();
+        });
     </script>
 </body>
 </html>
