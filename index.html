@@ -190,8 +190,9 @@
             border-radius: 20px;
             padding: 24px;
             transition: all 0.4s;
-            transform: translateZ(0);
-            will-change: transform, box-shadow;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            will-change: transform;
         }
 
         /* Sci-Fi Rohy */
@@ -294,7 +295,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Video Box */
+        /* Video Box - Optimalizované hardvérové vrstvenie pre GPU */
         .video-box {
             position: relative;
             width: 100%;
@@ -307,6 +308,9 @@
             justify-content: center;
             border: 1px solid rgba(255, 255, 255, 0.08);
             cursor: pointer;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            contain: strict;
         }
 
         video {
@@ -314,6 +318,8 @@
             height: 100%;
             object-fit: contain;
             outline: none;
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
         }
 
         .video-overlay-play {
@@ -529,9 +535,10 @@
         }
 
         /* =========================================================
-           ŠPECIÁLNY ČISTÝ FULLSCREEN REŽIM (SKRYTÉ GUI, IBA PREHRÁVAČ & ČAS)
+           OPTIMALIZOVANÝ ZERO-LAG FULLSCREEN REŽIM
            ========================================================= */
-        .futuristic-player-hud:fullscreen {
+        .futuristic-player-hud:fullscreen,
+        .futuristic-player-hud:-webkit-full-screen {
             width: 100vw !important;
             height: 100vh !important;
             max-width: 100vw !important;
@@ -540,45 +547,56 @@
             padding: 0 !important;
             background: #000 !important;
             box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
             align-items: center !important;
         }
 
-        /* Skrytie rušivých prvkov GUI na celej obrazovke */
         .futuristic-player-hud:fullscreen .hud-corner,
         .futuristic-player-hud:fullscreen .hud-top-bar,
-        .futuristic-player-hud:fullscreen .file-zone-hud {
+        .futuristic-player-hud:fullscreen .file-zone-hud,
+        .futuristic-player-hud:-webkit-full-screen .hud-corner,
+        .futuristic-player-hud:-webkit-full-screen .hud-top-bar,
+        .futuristic-player-hud:-webkit-full-screen .file-zone-hud {
             display: none !important;
         }
 
-        .futuristic-player-hud:fullscreen .video-box {
+        .futuristic-player-hud:fullscreen .video-box,
+        .futuristic-player-hud:-webkit-full-screen .video-box {
             width: 100% !important;
             height: 100% !important;
             border-radius: 0 !important;
             border: none !important;
+            box-shadow: none !important;
             aspect-ratio: auto !important;
+            contain: strict !important;
         }
 
-        .futuristic-player-hud:fullscreen .cyber-controls {
+        .futuristic-player-hud:fullscreen .cyber-controls,
+        .futuristic-player-hud:-webkit-full-screen .cyber-controls {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             padding: 20px 40px 30px 40px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            background: rgba(0, 0, 0, 0.75) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
             z-index: 50;
             margin-top: 0;
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        /* Automatické skrytie ovládania a kurzora pri nečinnosti na celej obrazovke */
-        .futuristic-player-hud:fullscreen.hide-controls {
+        .futuristic-player-hud:fullscreen.hide-controls,
+        .futuristic-player-hud:-webkit-full-screen.hide-controls {
             cursor: none;
         }
 
-        .futuristic-player-hud:fullscreen.hide-controls .cyber-controls {
+        .futuristic-player-hud:fullscreen.hide-controls .cyber-controls,
+        .futuristic-player-hud:-webkit-full-screen.hide-controls .cyber-controls {
             opacity: 0;
             pointer-events: none;
             transform: translateY(20px);
@@ -1071,6 +1089,8 @@
         const playerFrame = document.getElementById("main-player-frame");
 
         let controlsTimeout = null;
+        let currentVideoBlobUrl = null;
+        let animationFrameId = null;
 
         function setTheme(themeClass, btn) {
             playerFrame.className = "futuristic-player-hud " + themeClass;
@@ -1081,10 +1101,16 @@
         function loadCustomVideo(event) {
             const file = event.target.files[0];
             if (file) {
+                if (currentVideoBlobUrl) {
+                    URL.revokeObjectURL(currentVideoBlobUrl);
+                }
+                currentVideoBlobUrl = URL.createObjectURL(file);
                 document.getElementById("file-name").innerText = file.name;
-                video.src = URL.createObjectURL(file);
+                video.src = currentVideoBlobUrl;
+                video.load();
                 video.play();
                 updatePlayState(true);
+                startSmoothProgress();
             }
         }
 
@@ -1141,16 +1167,24 @@
         }
 
         function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                playerFrame.requestFullscreen().catch(err => alert(err.message));
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (playerFrame.requestFullscreen) {
+                    playerFrame.requestFullscreen({ navigationUI: "hide" }).catch(() => {});
+                } else if (playerFrame.webkitRequestFullscreen) {
+                    playerFrame.webkitRequestFullscreen();
+                }
             } else {
-                document.exitFullscreen();
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
             }
         }
 
         // Fullscreen sledovanie pohybu myši pre automatické skrývanie
         playerFrame.addEventListener("mousemove", () => {
-            if (document.fullscreenElement) {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
                 playerFrame.classList.remove("hide-controls");
                 clearTimeout(controlsTimeout);
                 controlsTimeout = setTimeout(() => {
@@ -1162,21 +1196,20 @@
         });
 
         document.addEventListener("fullscreenchange", () => {
-            if (!document.fullscreenElement) {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 playerFrame.classList.remove("hide-controls");
                 clearTimeout(controlsTimeout);
             }
         });
 
-        // Aktualizácia Dúhovej Čiary (Timeline)
-        video.addEventListener("timeupdate", () => {
-            if (video.duration) {
+        // Plynulá synchronizácia s obnovovacou frekvenciou monitora (Zero-Lag)
+        function updateProgressTick() {
+            if (video.duration && !video.paused) {
                 const percent = (video.currentTime / video.duration) * 100;
                 progressBar.style.width = percent + "%";
                 timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
             }
 
-            // Kontrola limitu bezplatnej verzie (max. 3 min / 180s)
             const isUnlimited = currentUser && currentUser.expiry && (new Date(currentUser.expiry) > new Date());
             if (!isUnlimited && video.currentTime > 180) {
                 video.pause();
@@ -1185,6 +1218,32 @@
                 if (document.fullscreenElement) document.exitFullscreen();
                 alert("Limit bezplatnej verzie (3 minúty) vypršal! Aktivujte si tarifu alebo 13. Balíček na 1 Rok Zadarmo pre neobmedzené prehrávanie.");
                 switchTab("tariffs-sec");
+                return;
+            }
+
+            if (!video.paused) {
+                if ("requestVideoFrameCallback" in video) {
+                    video.requestVideoFrameCallback(updateProgressTick);
+                } else {
+                    animationFrameId = requestAnimationFrame(updateProgressTick);
+                }
+            }
+        }
+
+        function startSmoothProgress() {
+            if ("requestVideoFrameCallback" in video) {
+                video.requestVideoFrameCallback(updateProgressTick);
+            } else {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = requestAnimationFrame(updateProgressTick);
+            }
+        }
+
+        video.addEventListener("play", startSmoothProgress);
+        video.addEventListener("pause", () => {
+            cancelAnimationFrame(animationFrameId);
+            if (video.duration) {
+                timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
             }
         });
 
@@ -1203,6 +1262,9 @@
             const clickPos = (e.clientX - rect.left) / rect.width;
             if (video.duration) {
                 video.currentTime = clickPos * video.duration;
+                const percent = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = percent + "%";
+                timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
             }
         });
 
