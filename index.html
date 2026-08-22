@@ -40,7 +40,6 @@
             background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
         }
 
-        /* Top Dúhový Laser */
         .laser-top-line {
             height: 3px;
             background: var(--rainbow-gradient);
@@ -54,7 +53,6 @@
             100% { background-position: 300% 50%; }
         }
 
-        /* Navigácia */
         header {
             display: flex;
             justify-content: space-between;
@@ -150,7 +148,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Prepínač 5 Štýlov */
         .theme-selector {
             display: flex;
             justify-content: center;
@@ -179,9 +176,7 @@
             box-shadow: var(--rainbow-glow);
         }
 
-        /* =========================================================
-           FUTURISTICKÝ SCI-FI HUD RÁM A PREHRÁVAČ
-           ========================================================= */
+        /* ==================== PREHRÁVAČ & HUD RÁM ==================== */
         .futuristic-player-hud {
             max-width: 1050px;
             margin: auto;
@@ -195,7 +190,6 @@
             will-change: transform;
         }
 
-        /* Sci-Fi Rohy */
         .hud-corner {
             position: absolute;
             width: 25px;
@@ -228,7 +222,6 @@
             filter: drop-shadow(0 0 6px var(--cyber-cyan));
         }
 
-        /* HUD Horná stavová lišta */
         .hud-top-bar {
             display: flex;
             justify-content: space-between;
@@ -266,28 +259,23 @@
             50% { opacity: 0.3; }
         }
 
-        /* 5 ŠTÝLOV RÁMU */
         .theme-rainbow-cyber {
             border: 2px solid transparent;
             background: linear-gradient(#02040a, #02040a) padding-box, var(--rainbow-gradient) border-box;
             box-shadow: 0 0 35px rgba(0, 225, 255, 0.4), inset 0 0 25px rgba(255, 0, 127, 0.15);
         }
-
         .theme-quantum-blue {
             border: 2px solid #00f0ff;
             box-shadow: 0 0 35px rgba(0, 240, 255, 0.45), inset 0 0 20px rgba(0, 240, 255, 0.2);
         }
-
         .theme-matrix-neon {
             border: 2px solid #00ff66;
             box-shadow: 0 0 35px rgba(0, 255, 102, 0.4), inset 0 0 20px rgba(0, 255, 102, 0.15);
         }
-
         .theme-cyberpunk-gold {
             border: 2px solid #ffea00;
             box-shadow: 0 0 35px rgba(255, 234, 0, 0.4), inset 0 0 20px rgba(255, 0, 85, 0.2);
         }
-
         .theme-frosted-glass {
             background: rgba(10, 15, 30, 0.6);
             backdrop-filter: blur(30px);
@@ -295,7 +283,6 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Video Box - Optimalizované hardvérové vrstvenie pre GPU */
         .video-box {
             position: relative;
             width: 100%;
@@ -346,9 +333,6 @@
             transform: scale(1.05);
         }
 
-        /* =========================================================
-           DÚHOVÁ ČIARA & KONTROLNÝ PANEL
-           ========================================================= */
         .cyber-controls {
             margin-top: 18px;
             display: flex;
@@ -534,9 +518,7 @@
             box-shadow: 0 0 12px rgba(0, 255, 128, 0.25);
         }
 
-        /* =========================================================
-           OPTIMALIZOVANÝ ZERO-LAG FULLSCREEN REŽIM
-           ========================================================= */
+        /* ==================== ZERO-LAG FULLSCREEN ==================== */
         .futuristic-player-hud:fullscreen,
         .futuristic-player-hud:-webkit-full-screen {
             width: 100vw !important;
@@ -602,7 +584,7 @@
             transform: translateY(20px);
         }
 
-        /* Tarify Grid (12 Balíčkov + 13. Promo) */
+        /* Tarify Grid */
         .tariffs-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -668,7 +650,6 @@
             color: #00ff88;
         }
 
-        /* Pokladňa */
         .checkout-box {
             max-width: 650px;
             margin: auto;
@@ -708,7 +689,6 @@
             display: block;
         }
 
-        /* Modal & Form */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -762,6 +742,71 @@
             letter-spacing: 1px;
             margin-top: 5px;
         }
+
+        /* ==================== PC LOCKSCREEN OVERLAY ==================== */
+        #pc-lockscreen-modal {
+            background: radial-gradient(circle at center, #0a1128 0%, #02040a 100%);
+            z-index: 2000;
+        }
+
+        .pc-lock-card {
+            background: rgba(10, 16, 35, 0.85);
+            border: 1px solid var(--cyber-cyan);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.35);
+        }
+
+        .pc-avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: rgba(0, 240, 255, 0.1);
+            border: 2px solid var(--cyber-cyan);
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--cyber-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .pc-steps-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+        }
+
+        .pc-step { display: flex; align-items: center; gap: 4px; }
+        .pc-step.passed { color: #00ff88; }
+        .pc-step.active { color: var(--cyber-cyan); }
+
+        .pin-input-field {
+            letter-spacing: 8px;
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .security-switch-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.03);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -775,7 +820,7 @@
         <nav>
             <button class="nav-btn active" onclick="switchTab('player-sec')"><i class="fa-solid fa-play"></i> Prehrávač</button>
             <button class="nav-btn" onclick="switchTab('tariffs-sec')"><i class="fa-solid fa-gem"></i> Tarify (13)</button>
-            <button class="nav-btn" onclick="switchTab('reviews-sec')"><i class="fa-solid fa-star"></i> Profil & Recenzie</button>
+            <button class="nav-btn" onclick="switchTab('reviews-sec')"><i class="fa-solid fa-shield-halved"></i> Profil & Bezpečnosť</button>
             <div id="auth-actions">
                 <button class="rainbow-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> Prihlásiť sa</button>
             </div>
@@ -935,7 +980,7 @@
             </div>
         </section>
 
-        <!-- SEKCIA 4: RECENZIE & PROFIL -->
+        <!-- SEKCIA 4: RECENZIE & PROFIL & BEZPEČNOSŤ -->
         <section id="reviews-sec" class="section">
             <div class="status-box">
                 <h2><i class="fa-solid fa-id-card" style="color:var(--cyber-cyan);"></i> Profil & Doba Platnosti</h2>
@@ -944,6 +989,43 @@
                     <p>Aktuálny plán: <b id="plan-display" style="color:var(--cyber-cyan);">Bezplatná verzia (3 min limit)</b></p>
                     <p style="margin-top: 10px;">Stav expirácie predplatného:</p>
                     <div class="countdown" id="expiry-countdown">Predplatné nie je aktívne</div>
+                </div>
+            </div>
+
+            <!-- NASTAVENIA 3-STUPŇOVÉHO PC OVERENIA A ZMENY HESLA -->
+            <div class="status-box" id="security-settings-box">
+                <h2><i class="fa-solid fa-shield-halved" style="color:var(--cyber-cyan);"></i> Nastavenia PC Zabezpečenia (PIN & Heslo)</h2>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">
+                    Aktivujte 3-stupňové overenie s PIN kódom alebo zmeňte svoje hlavné heslo k účtu.
+                </p>
+
+                <!-- PANEL PRE ZOBRAZENIE A KOPÍROVANIE ULOŽENÉHO PINU Z DATABÁZY -->
+                <div id="saved-pin-viewer-box" style="margin-top:15px; padding:15px; background:rgba(0, 240, 255, 0.05); border:1px dashed var(--cyber-cyan); border-radius:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <span style="font-size:0.85rem; color:var(--text-muted);"><i class="fa-solid fa-database" style="color:var(--cyber-cyan);"></i> Uložený PIN v databáze:</span>
+                            <div id="db-saved-pin-display" style="font-size:1.4rem; font-weight:900; letter-spacing:6px; color:var(--cyber-cyan); margin-top:3px;">••••</div>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="nav-btn" style="border-color:var(--cyber-cyan); color:#fff;" onclick="revealSavedPinFromDB()"><i class="fa-solid fa-eye"></i> Zobraziť PIN</button>
+                            <button class="rainbow-btn" style="padding:8px 16px; font-size:0.85rem;" onclick="copySavedPinFromDB()"><i class="fa-solid fa-copy"></i> Skopírovať PIN</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="security-switch-label">
+                    <span><b>Zapnúť 3-Stupňové PC Overenie:</b></span>
+                    <input type="checkbox" id="pin-enable-toggle" style="width:20px; height:20px; cursor:pointer;" onchange="togglePinInputs()">
+                </div>
+
+                <div id="pin-setup-inputs" style="display:none; margin-top:15px;">
+                    <label style="font-weight:700; font-size:0.9rem;">Bezpečnostný PIN (4 až 8 číslic):</label>
+                    <input type="password" id="new-security-pin" class="input-field pin-input-field" maxlength="8" placeholder="••••">
+                    
+                    <label style="font-weight:700; font-size:0.9rem; margin-top:10px; display:block;">Nové Heslo k účtu (nechajte prázdne, ak nechcete meniť heslo):</label>
+                    <input type="password" id="new-account-password" class="input-field" placeholder="Nové heslo (voliteľné)">
+
+                    <button class="rainbow-btn" style="width:100%; margin-top:5px;" onclick="saveSecuritySettings()">Uložiť PIN a Heslo do Databázy</button>
                 </div>
             </div>
 
@@ -956,7 +1038,7 @@
                 <div id="reviews-list" style="margin-top: 15px; display:grid; gap:12px;">
                     <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:10px; border:1px solid var(--border-glass);">
                         <b>Michal T. (VIP Platinum)</b> ⭐⭐⭐⭐⭐
-                        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Ten dúhový HUD dizajn a plynulá časová os sú neskutočné. Žiadne trhanie obrazu ani pri 4K 60FPS videu!</p>
+                        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Ten dúhový HUD dizajn, 3-stupňový PC PIN a plynulá časová os sú neskutočné. Žiadne trhanie obrazu ani pri 4K 60FPS videu!</p>
                     </div>
                 </div>
             </div>
@@ -977,9 +1059,58 @@
         </div>
     </div>
 
+    <!-- PC LOCKSCREEN OVERLAY -->
+    <div class="modal-overlay" id="pc-lockscreen-modal">
+        <div class="pc-lock-card">
+            <div class="pc-avatar"><i class="fa-solid fa-desktop"></i></div>
+            <h2 id="pc-lock-username" style="font-size:1.6rem; letter-spacing:1px;">Používateľ PC</h2>
+            <p style="color:var(--cyber-cyan); font-size:0.85rem; font-weight:700; margin-top:3px;">
+                <i class="fa-solid fa-lock"></i> ZABEZPEČENÉ PRIHLÁSENIE DO PC
+            </p>
+
+            <div class="pc-steps-indicator">
+                <div class="pc-step passed"><i class="fa-solid fa-circle-check"></i> 1. PC Hardvér</div>
+                <div class="pc-step passed"><i class="fa-solid fa-circle-check"></i> 2. Účet & Heslo</div>
+                <div class="pc-step active"><i class="fa-solid fa-key"></i> 3. Bezpečný PIN</div>
+            </div>
+
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:10px;">Zadajte váš bezpečnostný PIN kód:</p>
+            <input type="password" id="pc-verify-pin-input" class="input-field pin-input-field" maxlength="8" placeholder="••••" autofocus>
+
+            <button class="rainbow-btn" style="width: 100%; padding: 13px;" onclick="verifyPcPin()">Overiť a Vstúpiť</button>
+
+            <div style="margin-top:15px; display:flex; justify-content:space-between; font-size:0.85rem;">
+                <span style="color:var(--cyber-pink); cursor:pointer; font-weight:700;" onclick="openForgotPinModal()">
+                    <i class="fa-solid fa-wrench"></i> Zmeniť PIN / Zabudol som
+                </span>
+                <span style="color:var(--text-muted); cursor:pointer;" onclick="cancelPcPinAuth()">Zrušiť</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRE ZMENU PINU A HESLA -->
+    <div class="modal-overlay" id="forgot-pin-modal">
+        <div class="modal-box">
+            <h2 style="margin-bottom:10px;"><i class="fa-solid fa-key" style="color:var(--cyber-cyan);"></i> Zmeniť PIN / Heslo</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Pre zmenu zadajte aktuálne platné heslo k účtu:</p>
+            
+            <label style="font-weight:700; font-size:0.8rem; color:var(--cyber-cyan);">Aktuálne Heslo k účtu:</label>
+            <input type="password" id="forgot-pin-password" class="input-field" placeholder="Zadajte aktuálne heslo">
+            
+            <label style="font-weight:700; font-size:0.8rem; color:var(--cyber-cyan);">Nový PIN (4-8 číslic):</label>
+            <input type="password" id="forgot-pin-new" class="input-field pin-input-field" maxlength="8" placeholder="Nový PIN">
+            
+            <label style="font-weight:700; font-size:0.8rem; color:var(--cyber-cyan);">Nové Heslo (nechajte prázdne, ak nemeníte heslo):</label>
+            <input type="password" id="forgot-pin-new-pass" class="input-field" placeholder="Nové heslo (voliteľné)">
+
+            <button class="rainbow-btn" style="width: 100%; margin-top:5px;" onclick="confirmResetPin()">Uložiť Nový PIN a Heslo</button>
+            <button class="nav-btn" style="width: 100%; margin-top: 10px;" onclick="closeForgotPinModal()">Späť</button>
+        </div>
+    </div>
+
     <script>
         /* =========================================================
-           1. INDEXEDDB DATABASE (Ukladanie bez localStorage)
+           1. INDEXEDDB DATABASE
            ========================================================= */
         const DB_NAME = "QuantumStreamDB";
         const DB_VERSION = 1;
@@ -1019,11 +1150,12 @@
         }
 
         async function dbUpdateUser(user) {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 const tx = db.transaction("users", "readwrite");
                 const store = tx.objectStore("users");
-                store.put(user);
-                tx.oncomplete = () => resolve(true);
+                const req = store.put(user);
+                req.onsuccess = () => resolve(true);
+                req.onerror = () => reject(req.error);
             });
         }
 
@@ -1076,7 +1208,7 @@
         }
 
         /* =========================================================
-           3. PREHRÁVAČ, DÚHOVÁ ČASOVÁ OS & FULLSCREEN LOGIKA
+           3. PREHRÁVAČ, DÚHOVÁ ČASOVÁ OS & FULLSCREEN
            ========================================================= */
         const video = document.getElementById("video-element");
         const playBtn = document.getElementById("play-btn");
@@ -1182,7 +1314,6 @@
             }
         }
 
-        // Fullscreen sledovanie pohybu myši pre automatické skrývanie
         playerFrame.addEventListener("mousemove", () => {
             if (document.fullscreenElement || document.webkitFullscreenElement) {
                 playerFrame.classList.remove("hide-controls");
@@ -1202,7 +1333,6 @@
             }
         });
 
-        // Plynulá synchronizácia s obnovovacou frekvenciou monitora (Zero-Lag)
         function updateProgressTick() {
             if (video.duration && !video.paused) {
                 const percent = (video.currentTime / video.duration) * 100;
@@ -1247,7 +1377,6 @@
             }
         });
 
-        // Buffer indikátor
         video.addEventListener("progress", () => {
             if (video.buffered.length > 0 && video.duration) {
                 const bufferedEnd = video.buffered.end(video.buffered.length - 1);
@@ -1256,7 +1385,6 @@
             }
         });
 
-        // Kliknutie a posun na dúhovej časovej osi
         timelineContainer.addEventListener("click", (e) => {
             const rect = timelineContainer.getBoundingClientRect();
             const clickPos = (e.clientX - rect.left) / rect.width;
@@ -1275,10 +1403,12 @@
         }
 
         /* =========================================================
-           4. AUTHENTIFIKÁCIA & STAV EXPIRÁCIE
+           4. AUTHENTIFIKÁCIA, 3-STUPŇOVÉ OVERENIE & ZOBRAZENIE PINU
            ========================================================= */
         let currentUser = null;
+        let pendingPinUser = null;
         let isRegisterMode = false;
+        let isPinRevealed = false;
 
         function openAuthModal() { document.getElementById("auth-modal").style.display = "flex"; }
         function closeAuthModal() { document.getElementById("auth-modal").style.display = "none"; }
@@ -1297,18 +1427,187 @@
             if (isRegisterMode) {
                 const exists = await dbGetUser(u);
                 if (exists) return alert("Používateľ už existuje v IndexedDB.");
-                const newUser = { username: u, password: p, plan: "Bezplatná verzia", expiry: null };
+                const newUser = { 
+                    username: u, 
+                    password: p, 
+                    plan: "Bezplatná verzia", 
+                    expiry: null,
+                    pinEnabled: false,
+                    securityPin: null
+                };
                 await dbAddUser(newUser);
                 currentUser = newUser;
                 alert("Registrácia úspešná!");
+                closeAuthModal();
+                updateUI();
             } else {
                 const user = await dbGetUser(u);
                 if (!user || user.password !== p) return alert("Nesprávne meno alebo heslo.");
-                currentUser = user;
-                alert("Prihlásenie úspešné!");
+
+                if (user.pinEnabled && user.securityPin) {
+                    pendingPinUser = user;
+                    closeAuthModal();
+                    showPcLockscreen(user.username);
+                } else {
+                    currentUser = user;
+                    alert("Prihlásenie úspešné!");
+                    closeAuthModal();
+                    updateUI();
+                }
             }
-            closeAuthModal();
+        }
+
+        function showPcLockscreen(username) {
+            document.getElementById("pc-lock-username").innerText = username;
+            document.getElementById("pc-verify-pin-input").value = "";
+            document.getElementById("pc-lockscreen-modal").style.display = "flex";
+            setTimeout(() => document.getElementById("pc-verify-pin-input").focus(), 150);
+        }
+
+        function cancelPcPinAuth() {
+            pendingPinUser = null;
+            document.getElementById("pc-lockscreen-modal").style.display = "none";
+        }
+
+        async function verifyPcPin() {
+            if (!pendingPinUser) return;
+            const enteredPin = document.getElementById("pc-verify-pin-input").value.trim();
+            
+            const freshUser = await dbGetUser(pendingPinUser.username);
+            if (freshUser && enteredPin === freshUser.securityPin) {
+                currentUser = freshUser;
+                pendingPinUser = null;
+                document.getElementById("pc-lockscreen-modal").style.display = "none";
+                alert("3-Stupňové PC overenie úspešné! Vstup povolený.");
+                updateUI();
+            } else {
+                alert("Nesprávny PIN kód! Skúste znova.");
+                document.getElementById("pc-verify-pin-input").value = "";
+                document.getElementById("pc-verify-pin-input").focus();
+            }
+        }
+
+        function openForgotPinModal() {
+            document.getElementById("forgot-pin-password").value = "";
+            document.getElementById("forgot-pin-new").value = "";
+            document.getElementById("forgot-pin-new-pass").value = "";
+            document.getElementById("forgot-pin-modal").style.display = "flex";
+        }
+        function closeForgotPinModal() {
+            document.getElementById("forgot-pin-modal").style.display = "none";
+        }
+
+        async function confirmResetPin() {
+            const targetUsername = pendingPinUser ? pendingPinUser.username : (currentUser ? currentUser.username : null);
+            if (!targetUsername) return alert("Nie je vybraný žiadny používateľ.");
+
+            const freshUser = await dbGetUser(targetUsername);
+            if (!freshUser) return alert("Používateľ nebol nájdený v databáze.");
+
+            const enteredPass = document.getElementById("forgot-pin-password").value.trim();
+            const newPin = document.getElementById("forgot-pin-new").value.trim();
+            const newPass = document.getElementById("forgot-pin-new-pass").value.trim();
+
+            if (enteredPass !== freshUser.password) {
+                return alert("Nesprávne aktuálne heslo k účtu!");
+            }
+            if (newPin.length < 4) {
+                return alert("Nový PIN musí mať aspoň 4 číslice.");
+            }
+
+            freshUser.securityPin = newPin;
+            freshUser.pinEnabled = true;
+
+            if (newPass.length > 0) {
+                freshUser.password = newPass;
+            }
+
+            await dbUpdateUser(freshUser);
+
+            if (pendingPinUser) pendingPinUser = freshUser;
+            if (currentUser) currentUser = freshUser;
+
+            alert("Nový PIN kód a heslo boli úspešne uložené do databázy!");
+            closeForgotPinModal();
+
+            if (pendingPinUser) {
+                document.getElementById("pc-verify-pin-input").value = newPin;
+                verifyPcPin();
+            } else {
+                updateUI();
+            }
+        }
+
+        function togglePinInputs() {
+            const isChecked = document.getElementById("pin-enable-toggle").checked;
+            document.getElementById("pin-setup-inputs").style.display = isChecked ? "block" : "none";
+        }
+
+        async function saveSecuritySettings() {
+            if (!currentUser) return alert("Najprv sa prihláste.");
+            
+            const freshUser = await dbGetUser(currentUser.username);
+            if (!freshUser) return alert("Používateľ nebol nájdený v databáze.");
+
+            const isEnabled = document.getElementById("pin-enable-toggle").checked;
+            const pinVal = document.getElementById("new-security-pin").value.trim();
+            const newPass = document.getElementById("new-account-password").value.trim();
+
+            if (isEnabled) {
+                if (pinVal.length < 4) return alert("Zadajte bezpečný PIN (minimálne 4 číslice).");
+                freshUser.pinEnabled = true;
+                freshUser.securityPin = pinVal;
+            } else {
+                freshUser.pinEnabled = false;
+            }
+
+            if (newPass.length > 0) {
+                freshUser.password = newPass;
+                document.getElementById("new-account-password").value = "";
+            }
+
+            await dbUpdateUser(freshUser);
+            currentUser = freshUser;
+
+            alert("Bezpečnostné nastavenia, PIN a heslo boli úspešne uložené do databázy!");
             updateUI();
+        }
+
+        /* =========================================================
+           NOVÁ FUNKCIA: ZOBRAZIŤ A SKOPÍROVAŤ ULOŽENÝ PIN Z DATABÁZY
+           ========================================================= */
+        async function revealSavedPinFromDB() {
+            if (!currentUser) return alert("Najprv sa prihláste do svojho účtu.");
+            
+            const freshUser = await dbGetUser(currentUser.username);
+            if (!freshUser || !freshUser.securityPin) {
+                return alert("V databáze zatiaľ nemáte vytvorený žiadny bezpečnostný PIN.");
+            }
+
+            const pinDisp = document.getElementById("db-saved-pin-display");
+            isPinRevealed = !isPinRevealed;
+            if (isPinRevealed) {
+                pinDisp.innerText = freshUser.securityPin;
+                pinDisp.style.color = "#00ff88";
+            } else {
+                pinDisp.innerText = "••••";
+                pinDisp.style.color = "var(--cyber-cyan)";
+            }
+        }
+
+        async function copySavedPinFromDB() {
+            if (!currentUser) return alert("Najprv sa prihláste do svojho účtu.");
+            
+            const freshUser = await dbGetUser(currentUser.username);
+            if (!freshUser || !freshUser.securityPin) {
+                return alert("V databáze nie je žiadny PIN na skopírovanie.");
+            }
+
+            navigator.clipboard.writeText(freshUser.securityPin).then(() => {
+                alert(`Váš bezpečnostný PIN kód (${freshUser.securityPin}) z databázy bol úspešne skopírovaný do schránky!`);
+            }).catch(() => {
+                alert("Nepodarilo sa automaticky skopírovať PIN do schránky.");
+            });
         }
 
         function updateUI() {
@@ -1317,11 +1616,26 @@
             const userDisp = document.getElementById("user-display");
             const planDisp = document.getElementById("plan-display");
             const expiryCd = document.getElementById("expiry-countdown");
+            const secToggle = document.getElementById("pin-enable-toggle");
+            const secPinInput = document.getElementById("new-security-pin");
+            const pinDisp = document.getElementById("db-saved-pin-display");
 
             if (currentUser) {
                 authDiv.innerHTML = `<span style="margin-right:10px; font-weight:800; color:var(--cyber-cyan);">${currentUser.username}</span><button class="nav-btn" onclick="logout()">Odhlásiť</button>`;
                 userDisp.innerText = currentUser.username;
                 planDisp.innerText = currentUser.plan;
+
+                if (secToggle && secPinInput) {
+                    secToggle.checked = !!currentUser.pinEnabled;
+                    secPinInput.value = currentUser.securityPin || "";
+                    togglePinInputs();
+                }
+
+                if (pinDisp) {
+                    isPinRevealed = false;
+                    pinDisp.innerText = "••••";
+                    pinDisp.style.color = "var(--cyber-cyan)";
+                }
 
                 if (currentUser.expiry) {
                     const expDate = new Date(currentUser.expiry);
@@ -1353,6 +1667,13 @@
                 userDisp.innerText = "Neprihlásený (Hosť)";
                 planDisp.innerText = "Bezplatná verzia (3 min limit)";
                 expiryCd.innerText = "Prihláste sa pre zobrazenie stavu";
+                if (secToggle) {
+                    secToggle.checked = false;
+                    togglePinInputs();
+                }
+                if (pinDisp) {
+                    pinDisp.innerText = "••••";
+                }
             }
         }
 
