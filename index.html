@@ -206,10 +206,7 @@
             background: #02040a;
             border-radius: 20px;
             padding: 24px;
-            transition: all 0.4s;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            will-change: transform;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .hud-corner {
@@ -307,6 +304,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
+        /* Izolované a hardvérovo akcelerované video plátno */
         .video-box {
             position: relative;
             width: 100%;
@@ -319,9 +317,9 @@
             justify-content: center;
             border: 1px solid rgba(255, 255, 255, 0.08);
             cursor: pointer;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
+            isolation: isolate;
             contain: strict;
+            transform: translateZ(0);
         }
 
         video {
@@ -329,8 +327,8 @@
             height: 100%;
             object-fit: contain;
             outline: none;
-            transform: translate3d(0, 0, 0);
-            will-change: transform;
+            display: block;
+            transform: translateZ(0);
         }
 
         .video-overlay-play {
@@ -347,9 +345,10 @@
             font-size: 2rem;
             color: #fff;
             opacity: 0;
-            transition: 0.3s;
+            transition: opacity 0.2s, transform 0.2s;
             pointer-events: none;
             box-shadow: 0 0 25px var(--cyber-cyan);
+            z-index: 10;
         }
 
         .video-box:hover .video-overlay-play.visible {
@@ -357,11 +356,20 @@
             transform: scale(1.05);
         }
 
+        /* Ovládací panel - samostatná vrstva bez trhania */
         .cyber-controls {
             margin-top: 18px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            will-change: opacity, transform;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cyber-controls.fade-out {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transform: translateY(15px) !important;
         }
 
         .rainbow-timeline-container {
@@ -410,6 +418,7 @@
             animation: laserMove 4s linear infinite;
             border-radius: 6px;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.8), 0 0 30px rgba(255, 0, 127, 0.6);
+            will-change: width;
         }
 
         .rainbow-timeline-thumb {
@@ -456,7 +465,7 @@
             justify-content: center;
             cursor: pointer;
             font-size: 1rem;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
         .hud-icon-btn:hover {
@@ -553,8 +562,6 @@
             padding: 0 !important;
             background: #000 !important;
             box-shadow: none !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
@@ -588,24 +595,9 @@
             left: 0;
             width: 100%;
             padding: 20px 40px 30px 40px;
-            background: rgba(0, 0, 0, 0.75) !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9)) !important;
             z-index: 50;
             margin-top: 0;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .futuristic-player-hud:fullscreen.hide-controls,
-        .futuristic-player-hud:-webkit-full-screen.hide-controls {
-            cursor: none;
-        }
-
-        .futuristic-player-hud:fullscreen.hide-controls .cyber-controls,
-        .futuristic-player-hud:-webkit-full-screen.hide-controls .cyber-controls {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px);
         }
 
         /* Tarify Grid */
@@ -1052,7 +1044,7 @@
                         <button class="nav-btn" style="border-color:var(--cyber-cyan); color:#fff;" onclick="testAiContentCheck()"><i class="fa-solid fa-vial"></i> Otestovať AI Strážcu</button>
                     </div>
                     <p style="color:var(--text-muted); font-size:0.8rem; margin-top:8px;">
-                        * Funkcia funguje cez model <b>gemini-2.5-flash</b> a je prístupná výhradne pre predplatiteľov tarify.
+                        * Funkcia funguje cez model <b>gemini-2.5-flash</b> [cite: 3] a je prístupná výhradne pre predplatiteľov tarify.
                     </p>
                 </div>
             </div>
@@ -1294,7 +1286,7 @@
         }
 
         /* =========================================================
-           3. PREHRÁVAČ, DÚHOVÁ ČASOVÁ OS & FULLSCREEN
+           3. PLNE OPTIMALIZOVANÝ PREHRÁVAČ (BEZ SEKANIE PRI NEHYBNEJ MYŠI)
            ========================================================= */
         const video = document.getElementById("video-element");
         const playBtn = document.getElementById("play-btn");
@@ -1305,10 +1297,12 @@
         const bufferBar = document.getElementById("buffer-bar");
         const timeDisplay = document.getElementById("time-display");
         const playerFrame = document.getElementById("main-player-frame");
+        const cyberControlsPanel = document.getElementById("cyber-controls-panel");
 
         let controlsTimeout = null;
         let currentVideoBlobUrl = null;
         let animationFrameId = null;
+        let lastUpdatedSecond = -1;
 
         function setTheme(themeClass, btn) {
             playerFrame.className = "futuristic-player-hud " + themeClass;
@@ -1316,11 +1310,12 @@
             btn.classList.add("active");
         }
 
-        async function loadCustomVideo(event) {
+        function loadCustomVideo(event) {
             const file = event.target.files[0];
-            if (file) {
-                // AI Gemini Kontrola obsahu pre deti, ak je zapnutá
-                const isSafe = await analyzeContentWithGeminiAI(file.name);
+            if (!file) return;
+
+            // Asynchrónna kontrola AI Gemini bez zamŕzania načítavacieho vlákna
+            analyzeContentWithGeminiAI(file.name).then(isSafe => {
                 if (!isSafe) {
                     alert("⚠️ AI GEMINI DETSKÝ STRÁŽCA ZABLOKOVAL PREHRÁVANIE!\nTento film bol vyhodnotený ako nevhodný pre deti.");
                     event.target.value = "";
@@ -1331,18 +1326,17 @@
                     URL.revokeObjectURL(currentVideoBlobUrl);
                 }
                 currentVideoBlobUrl = URL.createObjectURL(file);
-                document.getElementById("file-name").innerText = file.name;
+                document.getElementById("file-name").textContent = file.name;
                 video.src = currentVideoBlobUrl;
                 video.load();
-                video.play();
+                video.play().catch(() => {});
                 updatePlayState(true);
-                startSmoothProgress();
-            }
+            });
         }
 
         function togglePlay() {
             if (video.paused || video.ended) {
-                video.play();
+                video.play().catch(() => {});
                 updatePlayState(true);
             } else {
                 video.pause();
@@ -1362,7 +1356,9 @@
         }
 
         function skipTime(seconds) {
-            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+            if (video.duration) {
+                video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+            }
         }
 
         function toggleMute() {
@@ -1408,44 +1404,64 @@
             }
         }
 
-        playerFrame.addEventListener("mousemove", () => {
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
-                playerFrame.classList.remove("hide-controls");
-                clearTimeout(controlsTimeout);
-                controlsTimeout = setTimeout(() => {
-                    if (!video.paused) {
-                        playerFrame.classList.add("hide-controls");
-                    }
-                }, 2500);
+        // Plynulé skrývanie ovládania pri nečinnosti myši BEZ sekania videa
+        function hideControls() {
+            if (!video.paused && (document.fullscreenElement || document.webkitFullscreenElement)) {
+                cyberControlsPanel.classList.add("fade-out");
+                playerFrame.style.cursor = "none";
             }
-        });
+        }
+
+        function showControls() {
+            cyberControlsPanel.classList.remove("fade-out");
+            playerFrame.style.cursor = "default";
+            clearTimeout(controlsTimeout);
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                controlsTimeout = setTimeout(hideControls, 2500);
+            }
+        }
+
+        playerFrame.addEventListener("mousemove", showControls);
+        playerFrame.addEventListener("click", showControls);
 
         document.addEventListener("fullscreenchange", () => {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                playerFrame.classList.remove("hide-controls");
+                cyberControlsPanel.classList.remove("fade-out");
+                playerFrame.style.cursor = "default";
                 clearTimeout(controlsTimeout);
             }
         });
 
+        // Samostatná a throttlovaná slučka prekresľovania časovej osi
         function updateProgressTick() {
-            if (video.duration && !video.paused) {
-                const percent = (video.currentTime / video.duration) * 100;
-                progressBar.style.width = percent + "%";
-                timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
-            }
+            if (!video.paused && !video.ended) {
+                const cur = video.currentTime;
+                const dur = video.duration;
 
-            const isUnlimited = currentUser && currentUser.expiry && (new Date(currentUser.expiry) > new Date());
-            if (!isUnlimited && video.currentTime > 180) {
-                video.pause();
-                video.currentTime = 0;
-                updatePlayState(false);
-                if (document.fullscreenElement) document.exitFullscreen();
-                alert("Limit bezplatnej verzie (3 minúty) vypršal! Aktivujte si tarifu alebo 13. Balíček na 1 Rok Zadarmo pre neobmedzené prehrávanie.");
-                switchTab("tariffs-sec");
-                return;
-            }
+                if (dur > 0) {
+                    const percent = (cur / dur) * 100;
+                    progressBar.style.width = percent + "%";
 
-            if (!video.paused) {
+                    // Šetrí procesor: text sa aktualizuje iba raz za sekundu
+                    const curSec = Math.floor(cur);
+                    if (curSec !== lastUpdatedSecond) {
+                        lastUpdatedSecond = curSec;
+                        timeDisplay.textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
+                    }
+                }
+
+                // Kontrola limitu bezplatnej verzie (max. 3 min / 180s)
+                const isUnlimited = currentUser && currentUser.expiry && (new Date(currentUser.expiry) > new Date());
+                if (!isUnlimited && cur > 180) {
+                    video.pause();
+                    video.currentTime = 0;
+                    updatePlayState(false);
+                    if (document.fullscreenElement) document.exitFullscreen();
+                    alert("Limit bezplatnej verzie (3 minúty) vypršal! Aktivujte si tarifu alebo 13. Balíček na 1 Rok Zadarmo pre neobmedzené prehrávanie.");
+                    switchTab("tariffs-sec");
+                    return;
+                }
+
                 if ("requestVideoFrameCallback" in video) {
                     video.requestVideoFrameCallback(updateProgressTick);
                 } else {
@@ -1455,19 +1471,25 @@
         }
 
         function startSmoothProgress() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
             if ("requestVideoFrameCallback" in video) {
                 video.requestVideoFrameCallback(updateProgressTick);
             } else {
-                cancelAnimationFrame(animationFrameId);
                 animationFrameId = requestAnimationFrame(updateProgressTick);
             }
         }
 
         video.addEventListener("play", startSmoothProgress);
         video.addEventListener("pause", () => {
-            cancelAnimationFrame(animationFrameId);
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
             if (video.duration) {
-                timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+                timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
             }
         });
 
@@ -1486,7 +1508,7 @@
                 video.currentTime = clickPos * video.duration;
                 const percent = (video.currentTime / video.duration) * 100;
                 progressBar.style.width = percent + "%";
-                timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+                timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
             }
         });
 
@@ -1704,7 +1726,7 @@
         }
 
         /* =========================================================
-           5. NOVÁ FUNKCIA: AI GEMINI DETSKÝ STRÁŽCA (PARENTAL CONTROL)
+           5. AI GEMINI DETSKÝ STRÁŽCA (PARENTAL CONTROL)
            ========================================================= */
         function isUserSubscriber() {
             return !!(currentUser && currentUser.expiry && (new Date(currentUser.expiry) > new Date()));
@@ -1713,7 +1735,6 @@
         function toggleAiParentalInputs() {
             const isChecked = document.getElementById("ai-enable-toggle").checked;
             
-            // Kontrola či je používateľ predplatiteľom
             if (isChecked && !isUserSubscriber()) {
                 alert("⚠️ AI Gemini Detský Strážca je dostupný IBA PRE PREDPLATITEĽOV tarify!\nZakúpte si balíček alebo aktivujte 13. Promo balíček na 1 Rok zadarmo.");
                 document.getElementById("ai-enable-toggle").checked = false;
@@ -1746,10 +1767,9 @@
             updateUI();
         }
 
-        // Live analýza obsahu cez Gemini 2.5 Flash API
         async function analyzeContentWithGeminiAI(filename) {
             if (!currentUser || !currentUser.aiParentalEnabled || !currentUser.geminiApiKey) {
-                return true; // Ak nie je zapnuté, povolí prehrávanie
+                return true;
             }
 
             try {
@@ -1781,7 +1801,7 @@ Odpovedz výhradne v JSON formáte:
                 return true;
             } catch (err) {
                 console.error("AI Gemini Error:", err);
-                return true; // Pri chybe siete neblokuje prehrávanie
+                return true;
             }
         }
 
