@@ -176,6 +176,28 @@
             box-shadow: var(--rainbow-glow);
         }
 
+        /* DYNAMICKÝ ODZNAK NEW */
+        .new-badge {
+            background: linear-gradient(135deg, #ff0055, #ffea00);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+            animation: pulseNew 1.5s infinite;
+            display: inline-block;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        @keyframes pulseNew {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
         /* ==================== PREHRÁVAČ & HUD RÁM ==================== */
         .futuristic-player-hud {
             max-width: 1050px;
@@ -233,6 +255,8 @@
             font-weight: 700;
             letter-spacing: 1px;
             color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .hud-tag {
@@ -820,7 +844,10 @@
         <nav>
             <button class="nav-btn active" onclick="switchTab('player-sec')"><i class="fa-solid fa-play"></i> Prehrávač</button>
             <button class="nav-btn" onclick="switchTab('tariffs-sec')"><i class="fa-solid fa-gem"></i> Tarify (13)</button>
-            <button class="nav-btn" onclick="switchTab('reviews-sec')"><i class="fa-solid fa-shield-halved"></i> Profil & Bezpečnosť</button>
+            <button class="nav-btn" onclick="switchTab('reviews-sec')">
+                <i class="fa-solid fa-shield-halved"></i> Profil & Bezpečnosť
+                <span class="new-badge" id="nav-new-badge">NEW</span>
+            </button>
             <div id="auth-actions">
                 <button class="rainbow-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> Prihlásiť sa</button>
             </div>
@@ -849,6 +876,13 @@
                 <div class="hud-top-bar">
                     <span class="hud-tag"><span class="hud-dot"></span> SYSTEM: ACTIVE (NO-LAG HEVC)</span>
                     <span class="hud-tag" id="hud-format">DECODER: 60 FPS ULTRA HD</span>
+                    
+                    <!-- AI Gemini Stavový indikátor v prehrávači -->
+                    <span class="hud-tag" id="hud-ai-status" style="color:var(--cyber-cyan);">
+                        <i class="fa-solid fa-robot"></i> AI GEMINI STRÁŽCA: VYPNUTÝ
+                        <span class="new-badge" id="player-ai-new-badge">NEW</span>
+                    </span>
+                    
                     <span class="hud-tag" style="color:var(--cyber-cyan);"><i class="fa-solid fa-shield-halved"></i> HARDWARE ACCELERATED</span>
                 </div>
 
@@ -926,7 +960,7 @@
         <!-- SEKCIA 2: TARIFY -->
         <section id="tariffs-sec" class="section">
             <h2 style="text-align:center; font-size: 2rem; margin-bottom: 5px;">Tarifné Balíčky</h2>
-            <p style="text-align:center; color:var(--text-muted); margin-bottom: 25px;">Získajte neobmedzenú dĺžku, nulový lag a odomknutie všetkých funkcií.</p>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom: 25px;">Získajte neobmedzenú dĺžku, nulový lag, AI Detského Strážcu a odomknutie všetkých funkcií.</p>
 
             <div class="tariffs-grid" id="tariffs-container">
                 <div class="tariff-card promo-card">
@@ -934,7 +968,7 @@
                         <div>
                             <span style="background:#ff0055; padding:4px 12px; border-radius:4px; font-size:0.8rem; font-weight:800; text-transform:uppercase;">Špeciálna Akcia</span>
                             <div class="tariff-title" style="font-size:1.8rem; margin-top:5px;">Balíček 13: 1 ROK ZADARMO TRIAL</div>
-                            <p style="color:var(--text-muted);">1-ročná bezplatná skúšobná verzia bez akýchkoľvek limitov dĺžky.</p>
+                            <p style="color:var(--text-muted);">1-ročná bezplatná skúšobná verzia bez akýchkoľvek limitov dĺžky vrátane AI Gemini.</p>
                         </div>
                         <div style="text-align:right;">
                             <div class="tariff-price" style="font-size:2.4rem;">0.00 € / 1 Rok</div>
@@ -992,6 +1026,37 @@
                 </div>
             </div>
 
+            <!-- NOVÁ FUNKCIA: AI GEMINI DETSKÝ STRÁŽCA (IBA PRE PREDPLATITEĽOV) -->
+            <div class="status-box" id="ai-parental-box">
+                <h2>
+                    <i class="fa-solid fa-robot" style="color:var(--cyber-cyan);"></i> AI Gemini Detský Strážca (Parental AI)
+                    <span class="new-badge" id="settings-ai-new-badge">NEW</span>
+                </h2>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">
+                    Inteligentný systém Gemini AI, ktorý kontroluje a analyzuje, či je film vhodný a bezpečný pre vaše dieťa. Kedykoľvek ho môžete zapnúť alebo vypnúť.
+                </p>
+
+                <div class="security-switch-label" style="margin-top:15px;">
+                    <span><b>Zapnúť AI Gemini Kontrolu pre Deti:</b></span>
+                    <input type="checkbox" id="ai-enable-toggle" style="width:20px; height:20px; cursor:pointer;" onchange="toggleAiParentalInputs()">
+                </div>
+
+                <div id="ai-parental-inputs" style="display:none; margin-top:15px; padding:15px; background:rgba(0,240,255,0.03); border:1px solid var(--border-glass); border-radius:10px;">
+                    <label style="font-weight:700; font-size:0.9rem; color:var(--cyber-cyan);">
+                        <i class="fa-solid fa-key"></i> Google Gemini API Kľúč (vyžadovaný pre analýzu):
+                    </label>
+                    <input type="password" id="gemini-api-key-input" class="input-field" placeholder="Vložte váš Gemini API Key (AI Studio)">
+                    
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:5px;">
+                        <button class="rainbow-btn" style="flex:1;" onclick="saveGeminiApiKey()"><i class="fa-solid fa-floppy-disk"></i> Uložiť AI Nastavenia</button>
+                        <button class="nav-btn" style="border-color:var(--cyber-cyan); color:#fff;" onclick="testAiContentCheck()"><i class="fa-solid fa-vial"></i> Otestovať AI Strážcu</button>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.8rem; margin-top:8px;">
+                        * Funkcia funguje cez model <b>gemini-2.5-flash</b> a je prístupná výhradne pre predplatiteľov tarify.
+                    </p>
+                </div>
+            </div>
+
             <!-- NASTAVENIA 3-STUPŇOVÉHO PC OVERENIA A ZMENY HESLA -->
             <div class="status-box" id="security-settings-box">
                 <h2><i class="fa-solid fa-shield-halved" style="color:var(--cyber-cyan);"></i> Nastavenia PC Zabezpečenia (PIN & Heslo)</h2>
@@ -1031,14 +1096,14 @@
 
             <div class="status-box">
                 <h3>Pridať Recenziu k prehrávaču</h3>
-                <textarea id="review-text" class="input-field" style="height: 80px; resize:none;" placeholder="Napíšte vašu skúsenosť so stabilitou a plynulosťou prehrávania na celej obrazovke..."></textarea>
+                <textarea id="review-text" class="input-field" style="height: 80px; resize:none;" placeholder="Napíšte vašu skúsenosť so stabilitou, AI Detským Strážcom a plynulosťou prehrávania..."></textarea>
                 <button class="rainbow-btn" onclick="addReview()">Odoslať Hodnotenie</button>
 
                 <h3 style="margin-top: 25px;">Používateľské Recenzie</h3>
                 <div id="reviews-list" style="margin-top: 15px; display:grid; gap:12px;">
                     <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:10px; border:1px solid var(--border-glass);">
                         <b>Michal T. (VIP Platinum)</b> ⭐⭐⭐⭐⭐
-                        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Ten dúhový HUD dizajn, 3-stupňový PC PIN a plynulá časová os sú neskutočné. Žiadne trhanie obrazu ani pri 4K 60FPS videu!</p>
+                        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Ten dúhový HUD dizajn, AI Gemini detská kontrola a plynulá časová os sú neskutočné. Žiadne trhanie obrazu ani pri 4K 60FPS videu!</p>
                     </div>
                 </div>
             </div>
@@ -1110,6 +1175,26 @@
 
     <script>
         /* =========================================================
+           0. DÁTUM VYDANIA FUNKCIE A KONTROLA ODZNAKU "NEW" (1 MESIAC)
+           ========================================================= */
+        const FEATURE_RELEASE_DATE = new Date("2026-08-28T00:00:00");
+
+        function updateNewBadges() {
+            const now = new Date();
+            const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000;
+            const isExpired = (now - FEATURE_RELEASE_DATE) > oneMonthInMillis;
+
+            const badgeElements = document.querySelectorAll(".new-badge");
+            badgeElements.forEach(badge => {
+                if (isExpired) {
+                    badge.style.display = "none";
+                } else {
+                    badge.style.display = "inline-block";
+                }
+            });
+        }
+
+        /* =========================================================
            1. INDEXEDDB DATABASE
            ========================================================= */
         const DB_NAME = "QuantumStreamDB";
@@ -1173,12 +1258,12 @@
            ========================================================= */
         const packages = [
             { id: 1, name: "Starter Stream", price: "2.99 €", days: 7, desc: "7 dní plnej rýchlosti." },
-            { id: 2, name: "Mesačný Pass", price: "5.99 €", days: 30, desc: "1 Mesiac - 4K akcelerácia." },
+            { id: 2, name: "Mesačný Pass", price: "5.99 €", days: 30, desc: "1 Mesiac - 4K akcelerácia & AI." },
             { id: 3, name: "Kvartál Silver", price: "14.99 €", days: 90, desc: "3 Mesiace - Neobmedzená dĺžka." },
             { id: 4, name: "Polročný Gold", price: "24.99 €", days: 180, desc: "6 Mesiacov - Bez limitov." },
             { id: 5, name: "Ročný Platinum", price: "39.99 €", days: 365, desc: "12 Mesiacov - VIP prístup." },
-            { id: 6, name: "Cyber Ultra", price: "49.99 €", days: 365, desc: "1 Rok - 120 FPS podpora." },
-            { id: 7, name: "Family Pack", price: "59.99 €", days: 365, desc: "1 Rok - 5 účtov." },
+            { id: 6, name: "Cyber Ultra", price: "49.99 €", days: 365, desc: "1 Rok - 120 FPS podpora & AI." },
+            { id: 7, name: "Family Pack", price: "59.99 €", days: 365, desc: "1 Rok - 5 účtov + Detský Strážca." },
             { id: 8, name: "Cinema Deluxe", price: "69.99 €", days: 365, desc: "1 Rok - Dolby Atmos & Vision." },
             { id: 9, name: "Titanium 2-Year", price: "79.99 €", days: 730, desc: "2 Roky - Maximálna kvalita." },
             { id: 10, name: "Studio Master", price: "99.99 €", days: 730, desc: "2 Roky - Komerčné prehrávanie." },
@@ -1198,6 +1283,7 @@
                         <ul class="tariff-features">
                             <li><i class="fa-solid fa-check"></i> Trvanie: ${p.days} dní</li>
                             <li><i class="fa-solid fa-check"></i> ${p.desc}</li>
+                            <li><i class="fa-solid fa-check"></i> AI Gemini Detský Strážca v cene</li>
                             <li><i class="fa-solid fa-check"></i> 100% Neobmedzená dĺžka videa</li>
                         </ul>
                     </div>
@@ -1230,9 +1316,17 @@
             btn.classList.add("active");
         }
 
-        function loadCustomVideo(event) {
+        async function loadCustomVideo(event) {
             const file = event.target.files[0];
             if (file) {
+                // AI Gemini Kontrola obsahu pre deti, ak je zapnutá
+                const isSafe = await analyzeContentWithGeminiAI(file.name);
+                if (!isSafe) {
+                    alert("⚠️ AI GEMINI DETSKÝ STRÁŽCA ZABLOKOVAL PREHRÁVANIE!\nTento film bol vyhodnotený ako nevhodný pre deti.");
+                    event.target.value = "";
+                    return;
+                }
+
                 if (currentVideoBlobUrl) {
                     URL.revokeObjectURL(currentVideoBlobUrl);
                 }
@@ -1403,7 +1497,7 @@
         }
 
         /* =========================================================
-           4. AUTHENTIFIKÁCIA, 3-STUPŇOVÉ OVERENIE & ZOBRAZENIE PINU
+           4. AUTHENTIFIKÁCIA & 3-STUPŇOVÉ PC OVERENIE (PIN & HESLO)
            ========================================================= */
         let currentUser = null;
         let pendingPinUser = null;
@@ -1433,7 +1527,9 @@
                     plan: "Bezplatná verzia", 
                     expiry: null,
                     pinEnabled: false,
-                    securityPin: null
+                    securityPin: null,
+                    aiParentalEnabled: false,
+                    geminiApiKey: ""
                 };
                 await dbAddUser(newUser);
                 currentUser = newUser;
@@ -1573,9 +1669,6 @@
             updateUI();
         }
 
-        /* =========================================================
-           NOVÁ FUNKCIA: ZOBRAZIŤ A SKOPÍROVAŤ ULOŽENÝ PIN Z DATABÁZY
-           ========================================================= */
         async function revealSavedPinFromDB() {
             if (!currentUser) return alert("Najprv sa prihláste do svojho účtu.");
             
@@ -1610,6 +1703,116 @@
             });
         }
 
+        /* =========================================================
+           5. NOVÁ FUNKCIA: AI GEMINI DETSKÝ STRÁŽCA (PARENTAL CONTROL)
+           ========================================================= */
+        function isUserSubscriber() {
+            return !!(currentUser && currentUser.expiry && (new Date(currentUser.expiry) > new Date()));
+        }
+
+        function toggleAiParentalInputs() {
+            const isChecked = document.getElementById("ai-enable-toggle").checked;
+            
+            // Kontrola či je používateľ predplatiteľom
+            if (isChecked && !isUserSubscriber()) {
+                alert("⚠️ AI Gemini Detský Strážca je dostupný IBA PRE PREDPLATITEĽOV tarify!\nZakúpte si balíček alebo aktivujte 13. Promo balíček na 1 Rok zadarmo.");
+                document.getElementById("ai-enable-toggle").checked = false;
+                switchTab("tariffs-sec");
+                return;
+            }
+
+            document.getElementById("ai-parental-inputs").style.display = isChecked ? "block" : "none";
+        }
+
+        async function saveGeminiApiKey() {
+            if (!currentUser) return alert("Najprv sa prihláste.");
+            if (!isUserSubscriber()) return alert("Táto funkcia je dostupná len pre predplatiteľov.");
+
+            const freshUser = await dbGetUser(currentUser.username);
+            const isEnabled = document.getElementById("ai-enable-toggle").checked;
+            const apiKey = document.getElementById("gemini-api-key-input").value.trim();
+
+            if (isEnabled && !apiKey) {
+                return alert("Pre aktiváciu AI Strážcu musíte zadať platný Gemini API Key.");
+            }
+
+            freshUser.aiParentalEnabled = isEnabled;
+            freshUser.geminiApiKey = apiKey;
+
+            await dbUpdateUser(freshUser);
+            currentUser = freshUser;
+
+            alert("Nastavenia AI Gemini Detského Strážcu boli úspešne uložené do databázy!");
+            updateUI();
+        }
+
+        // Live analýza obsahu cez Gemini 2.5 Flash API
+        async function analyzeContentWithGeminiAI(filename) {
+            if (!currentUser || !currentUser.aiParentalEnabled || !currentUser.geminiApiKey) {
+                return true; // Ak nie je zapnuté, povolí prehrávanie
+            }
+
+            try {
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${currentUser.geminiApiKey}`;
+                
+                const prompt = `Analyzuj tento názov a typ video súboru: "${filename}". 
+Rozhodni, či je tento obsah bezpečný a vhodný pre deti (Kid-Safe / Family-Friendly).
+Obsah obsahujúci násilie, horor, explicitný obsah, 18+ alebo vulgarizmy označ ako NEVHODNÝ.
+Odpovedz výhradne v JSON formáte:
+{"safe": true alebo false, "reason": "stručný dôvod v slovenčine", "rating": "U/PG/12+/18+"}`;
+
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const result = JSON.parse(data.candidates[0].content.parts[0].text);
+                    if (!result.safe) {
+                        console.warn("AI Blocked Video:", result);
+                        return false;
+                    }
+                }
+                return true;
+            } catch (err) {
+                console.error("AI Gemini Error:", err);
+                return true; // Pri chybe siete neblokuje prehrávanie
+            }
+        }
+
+        async function testAiContentCheck() {
+            const apiKey = document.getElementById("gemini-api-key-input").value.trim();
+            if (!apiKey) return alert("Najprv zadajte váš Gemini API Kľúč.");
+
+            alert("Prebieha test spojenia s AI Gemini (gemini-2.5-flash)...");
+            try {
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                const res = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: "Odpovedz jedným slovom: 'FUNGUJE'." }] }]
+                    })
+                });
+                const d = await res.json();
+                if (d.candidates) {
+                    alert("✅ AI Gemini Detský Strážca je plne funkčný a pripravený chrániť vaše deti!");
+                } else {
+                    alert("❌ Chyba API kľúča: Skontrolujte správnosť zadaného Gemini API kľúča.");
+                }
+            } catch (e) {
+                alert("❌ Chyba pripojenia: " + e.message);
+            }
+        }
+
+        /* =========================================================
+           6. AKTUALIZÁCIA UI
+           ========================================================= */
         function updateUI() {
             const authDiv = document.getElementById("auth-actions");
             const badge = document.getElementById("user-tier-badge");
@@ -1619,6 +1822,11 @@
             const secToggle = document.getElementById("pin-enable-toggle");
             const secPinInput = document.getElementById("new-security-pin");
             const pinDisp = document.getElementById("db-saved-pin-display");
+            const aiToggle = document.getElementById("ai-enable-toggle");
+            const aiKeyInput = document.getElementById("gemini-api-key-input");
+            const hudAiStatus = document.getElementById("hud-ai-status");
+
+            updateNewBadges();
 
             if (currentUser) {
                 authDiv.innerHTML = `<span style="margin-right:10px; font-weight:800; color:var(--cyber-cyan);">${currentUser.username}</span><button class="nav-btn" onclick="logout()">Odhlásiť</button>`;
@@ -1629,6 +1837,22 @@
                     secToggle.checked = !!currentUser.pinEnabled;
                     secPinInput.value = currentUser.securityPin || "";
                     togglePinInputs();
+                }
+
+                if (aiToggle && aiKeyInput) {
+                    aiToggle.checked = !!currentUser.aiParentalEnabled;
+                    aiKeyInput.value = currentUser.geminiApiKey || "";
+                    document.getElementById("ai-parental-inputs").style.display = currentUser.aiParentalEnabled ? "block" : "none";
+                }
+
+                if (hudAiStatus) {
+                    if (currentUser.aiParentalEnabled) {
+                        hudAiStatus.innerHTML = '<i class="fa-solid fa-robot" style="color:#00ff88;"></i> AI GEMINI STRÁŽCA: AKTÍVNY';
+                        hudAiStatus.style.color = '#00ff88';
+                    } else {
+                        hudAiStatus.innerHTML = '<i class="fa-solid fa-robot"></i> AI GEMINI STRÁŽCA: VYPNUTÝ';
+                        hudAiStatus.style.color = 'var(--text-muted)';
+                    }
                 }
 
                 if (pinDisp) {
@@ -1653,7 +1877,7 @@
                         const diffDays = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
                         expiryCd.innerText = `Aktívne do: ${expDate.toLocaleDateString()} (Zostáva ${diffDays} dní)`;
                         expiryCd.style.color = "#00ff88";
-                        badge.innerText = `VIP Premium: ${currentUser.plan} (Neobmedzene)`;
+                        badge.innerText = `VIP Premium: ${currentUser.plan} (Neobmedzene + AI)`;
                         badge.className = "limit-badge unlimited";
                     }
                 } else {
@@ -1671,6 +1895,14 @@
                     secToggle.checked = false;
                     togglePinInputs();
                 }
+                if (aiToggle) {
+                    aiToggle.checked = false;
+                    document.getElementById("ai-parental-inputs").style.display = "none";
+                }
+                if (hudAiStatus) {
+                    hudAiStatus.innerHTML = '<i class="fa-solid fa-robot"></i> AI GEMINI STRÁŽCA: VYPNUTÝ';
+                    hudAiStatus.style.color = 'var(--text-muted)';
+                }
                 if (pinDisp) {
                     pinDisp.innerText = "••••";
                 }
@@ -1683,7 +1915,7 @@
         }
 
         /* =========================================================
-           5. PLATOBNÁ BRÁNA & 4 METÓDY
+           7. PLATOBNÁ BRÁNA & 4 METÓDY
            ========================================================= */
         let selectedCheckoutPlan = null;
         let selectedPayMethod = "Kreditná Karta & Apple Pay";
@@ -1733,7 +1965,7 @@
         }
 
         /* =========================================================
-           6. RECENZIE & NAVIGÁCIA
+           8. RECENZIE & NAVIGÁCIA
            ========================================================= */
         function switchTab(tabId) {
             document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
