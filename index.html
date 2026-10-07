@@ -31,11 +31,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 0, 127, 0.4)) drop-shadow(0 0 25px rgba(0, 240, 255, 0.3)); }
-            50% { filter: drop-shadow(0 0 25px rgba(255, 123, 0, 0.6)) drop-shadow(0 0 35px rgba(112, 0, 255, 0.5)); }
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -56,7 +51,6 @@
                 radial-gradient(circle at 50% 50%, rgba(112, 0, 255, 0.05) 0%, transparent 60%);
         }
 
-        /* Hladká hardvérová akcelerácia */
         .hw-accel {
             transform: translateZ(0);
             backface-visibility: hidden;
@@ -92,20 +86,21 @@
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             background: rgba(255, 255, 255, 0.04);
             padding: 6px;
             border-radius: 40px;
             border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
         }
 
         .nav-btn {
             background: transparent;
             border: none;
             color: var(--text-dim);
-            padding: 10px 22px;
+            padding: 9px 18px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -154,7 +149,7 @@
         }
 
         .user-status {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             padding: 2px 8px;
@@ -225,7 +220,7 @@
             transition: all 0.4s ease;
         }
 
-        /* ŠTÝL 1: Dúhová Aura (Default) */
+        /* 5 ŠTÝLOV */
         .skin-aurora {
             padding: 4px;
             background: var(--rainbow-gradient);
@@ -234,26 +229,22 @@
         }
         .skin-aurora .video-inner { border-radius: calc(var(--radius-lg) - 4px); }
 
-        /* ŠTÝL 2: Cyber Neon */
         .skin-cyber {
             border: 2px solid #00f0ff;
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.2);
         }
 
-        /* ŠTÝL 3: Glassmorphism Frost */
         .skin-glass {
             border: 1px solid rgba(255, 255, 255, 0.25);
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(40px);
         }
 
-        /* ŠTÝL 4: Cinema Gold */
         .skin-cinema {
             border: 2px solid #ffb703;
             box-shadow: 0 0 40px rgba(255, 183, 3, 0.3);
         }
 
-        /* ŠTÝL 5: Retro Matrix */
         .skin-matrix {
             border: 2px solid #00ff66;
             box-shadow: 0 0 35px rgba(0, 255, 102, 0.4);
@@ -267,6 +258,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            min-height: 380px;
         }
 
         video {
@@ -279,7 +271,6 @@
             transform: translateZ(0);
         }
 
-        /* FULLSCREEN OPTIMALIZÁCIA - BEZ SEKANIE */
         .player-master-container:fullscreen {
             width: 100vw !important;
             height: 100vh !important;
@@ -316,7 +307,6 @@
             opacity: 1;
         }
 
-        /* TIMELINE BAR */
         .progress-container {
             position: relative;
             width: 100%;
@@ -405,7 +395,7 @@
             cursor: pointer;
         }
 
-        /* LIMIT OVERLAY PRE FREE VERZIU */
+        /* LIMIT OVERLAY */
         .limit-overlay {
             position: absolute;
             inset: 0;
@@ -417,7 +407,7 @@
             align-items: center;
             text-align: center;
             padding: 30px;
-            z-index: 20;
+            z-index: 30;
         }
 
         .limit-overlay.active {
@@ -436,7 +426,123 @@
             letter-spacing: 1px;
         }
 
-        /* UPLOAD ZONE */
+        /* REKLAMNÝ ENGINE */
+        .ad-container {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            z-index: 25;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ad-container.active {
+            display: flex;
+        }
+
+        #adVideo {
+            width: 100%;
+            height: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .player-master-container:fullscreen #adVideo {
+            max-height: 100vh !important;
+            height: 100vh !important;
+        }
+
+        .ad-top-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 26;
+            pointer-events: auto;
+        }
+
+        .ad-badge {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #ffea00;
+            color: #ffea00;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 8px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .ad-vip-cta {
+            background: rgba(255, 0, 128, 0.4);
+            border: 1px solid #ff007f;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .ad-vip-cta:hover {
+            background: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+        }
+
+        .ad-skip-btn {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(10, 11, 16, 0.9);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: not-allowed;
+            z-index: 26;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ad-skip-btn.can-skip {
+            background: var(--rainbow-gradient);
+            background-size: 200% 200%;
+            border-color: #00f0ff;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+            font-weight: 900;
+            animation: var(--rainbow-anim);
+        }
+
+        .ad-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: #ffea00;
+            width: 0%;
+            z-index: 27;
+            transition: width 0.1s linear;
+        }
+
+        /* UPLOAD ZONE & STORAGE PROGRESS */
         .upload-section {
             max-width: 1080px;
             margin: 25px auto 0;
@@ -455,14 +561,69 @@
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
         }
 
-        /* 13 TARIFNÝCH BALÍČKOV */
+        .storage-box-widget {
+            max-width: 1080px;
+            margin: 20px auto 0;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 20px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .storage-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .storage-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f0ff, #7000ff);
+            transition: width 0.3s ease;
+        }
+
+        /* ŠPECIÁLNE ŠTÝLY BALÍČKOV: FIALOVÝ & 3 RUŽOVÉ */
+        .tariff-card.card-purple {
+            background: linear-gradient(135deg, rgba(112, 0, 255, 0.25), rgba(18, 20, 29, 0.9));
+            border: 2px solid #9d4edd;
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.3);
+        }
+
+        .tariff-card.card-pink {
+            background: linear-gradient(135deg, rgba(255, 0, 127, 0.2), rgba(18, 20, 29, 0.9));
+            border: 2px solid #ff007f;
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+        }
+
+        .holiday-badge {
+            background: #ffea00;
+            color: #000;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 6px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* TARIFY GRID */
         .pricing-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .pricing-title {
-            font-size: 38px;
+            font-size: 36px;
             font-weight: 900;
             background: var(--rainbow-gradient);
             background-size: 200% 200%;
@@ -487,7 +648,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
         }
 
         .tariff-card:hover {
@@ -496,7 +657,6 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
-        /* 13. Balíček - Zvýraznený 1 Rok zadarmo */
         .tariff-card.trial-special {
             grid-column: 1 / -1;
             background: linear-gradient(135deg, rgba(255, 0, 128, 0.15), rgba(0, 240, 255, 0.15));
@@ -519,7 +679,7 @@
         }
 
         .tariff-price {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 900;
             margin: 10px 0;
             font-family: var(--font-mono);
@@ -529,7 +689,7 @@
         .tariff-features {
             list-style: none;
             margin: 15px 0;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-dim);
             line-height: 1.8;
         }
@@ -558,7 +718,94 @@
             box-shadow: 0 5px 25px rgba(255, 0, 128, 0.5);
         }
 
-        /* PLATOBNÁ BRÁNA (MODAL S 4 PLATOBNÝMI SYSTÉMAMI) */
+        /* PROFIL, FAKTÚRY & RECENZIE */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .invoice-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 24px;
+            margin-top: 15px;
+        }
+
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 14px;
+        }
+
+        .invoice-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            font-size: 20px;
+            font-weight: 900;
+            color: #00f0ff;
+            font-family: var(--font-mono);
+        }
+
+        .saved-movie-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-delete {
+            background: #ff0055;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #d90429;
+            transform: scale(1.05);
+        }
+
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .review-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .review-author {
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .stars { color: #ffb703; }
+
+        /* MODALY */
         .modal-backdrop {
             position: fixed;
             inset: 0;
@@ -574,7 +821,7 @@
             display: grid;
         }
 
-        .payment-modal {
+        .payment-modal, .auth-box {
             background: #10121a;
             border-radius: 28px;
             width: 100%;
@@ -652,62 +899,6 @@
             outline: none;
         }
 
-        .pay-input:focus {
-            border-color: #00f0ff;
-        }
-
-        /* RECENZIE & PROFIL */
-        .profile-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .expiry-counter {
-            font-family: var(--font-mono);
-            font-size: 22px;
-            color: #00f0ff;
-            font-weight: 700;
-            margin-top: 10px;
-        }
-
-        .reviews-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .review-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-md);
-            padding: 16px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .review-author {
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-
-        .stars { color: #ffb703; }
-
-        /* AUTH MODAL */
-        .auth-box {
-            background: #11131b;
-            border-radius: 28px;
-            max-width: 420px;
-            width: 100%;
-            padding: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        /* NOTIFIKÁCIE */
         .toast {
             position: fixed;
             bottom: 25px;
@@ -734,19 +925,18 @@
         </div>
         <div class="nav-links">
             <button class="nav-btn active" onclick="switchView('player')"><i class="fa-solid fa-film"></i> Prehrávač</button>
-            <button class="nav-btn" onclick="switchView('tariffs')"><i class="fa-solid fa-bolt"></i> Tarify (13)</button>
-            <button class="nav-btn" onclick="switchView('reviews')"><i class="fa-solid fa-star"></i> Recenzie & Predplatné</button>
+            <button class="nav-btn" onclick="switchView('tariffs')"><i class="fa-solid fa-bolt"></i> Tarify (13+Balíčky)</button>
+            <button class="nav-btn" onclick="switchView('storage')"><i class="fa-solid fa-hard-drive"></i> Pamäť Databázy</button>
+            <button class="nav-btn" onclick="switchView('invoice')"><i class="fa-solid fa-file-invoice-dollar"></i> Moja Faktúra</button>
+            <button class="nav-btn" onclick="switchView('reviews')"><i class="fa-solid fa-star"></i> Recenzie</button>
         </div>
-        <div class="auth-widget" id="authWidget">
-            <!-- Dynamicky naplnené cez JS -->
-        </div>
+        <div class="auth-widget" id="authWidget"></div>
     </header>
 
     <div class="container">
 
         <!-- ================= SEKCIJA 1: PREHRÁVAČ ================= -->
         <section id="view-player" class="view-section active">
-            <!-- 5 VLASTNÝCH ŠTÝLOV PREHRÁVAČA -->
             <div class="player-skin-switcher">
                 <span style="font-size: 13px; color: var(--text-dim); align-self: center; margin-right: 5px;">Prepínač Vzhľadu:</span>
                 <div class="skin-pill active" onclick="setPlayerSkin('aurora')"><i class="fa-solid fa-rainbow"></i> 1. Dúhová Aura</div>
@@ -759,17 +949,37 @@
             <!-- PLAYER ELEMENT -->
             <div id="playerMaster" class="player-master-container skin-aurora hw-accel">
                 <div class="video-inner" id="videoInner">
-                    <video id="mainVideo" preload="auto" playsinline>
-                        <!-- Predvolené demo video -->
+                    
+                    <!-- HLAVNÉ VIDEO -->
+                    <video id="mainVideo" preload="auto" playsinline crossorigin="anonymous">
                         <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
                     </video>
 
-                    <!-- FREE LIMIT OVERLAY (Blokovanie pri bezplatnej verzii po limite) -->
+                    <!-- REKLAMNÝ ENGINE -->
+                    <div class="ad-container" id="adContainer">
+                        <div class="ad-top-bar">
+                            <div class="ad-badge">
+                                <i class="fa-solid fa-bullhorn"></i> REKLAMA (<span id="adPositionLabel">Začiatok</span>)
+                            </div>
+                            <button class="ad-vip-cta" onclick="switchView('tariffs')">
+                                <i class="fa-solid fa-crown"></i> Odstrániť reklamy (VIP 1 Rok Free)
+                            </button>
+                        </div>
+                        
+                        <video id="adVideo" preload="auto" playsinline webkit-playsinline crossorigin="anonymous"></video>
+                        <div class="ad-progress-bar" id="adProgressBar"></div>
+                        
+                        <button class="ad-skip-btn" id="adSkipBtn" onclick="skipAdManually()">
+                            <i class="fa-solid fa-clock"></i> Preskočiť o <span id="adTimerNum">16</span>s
+                        </button>
+                    </div>
+
+                    <!-- FREE LIMIT OVERLAY -->
                     <div class="limit-overlay" id="limitOverlay">
                         <div class="limit-badge"><i class="fa-solid fa-lock"></i> Bezplatný Limit Dosiahnutý</div>
                         <h2 style="font-size: 26px; margin-bottom: 10px;">Dĺžka prehrávania bola obmedzená</h2>
                         <p style="color: var(--text-dim); max-width: 480px; margin-bottom: 20px;">
-                            Ako bezplatný používateľ máte limit 5 minút na video. Aktivujte si 13. balíček <strong>(1 Rok Zadarmo)</strong> a sledujte bez obmedzení!
+                            Ako bezplatný používateľ máte limit 5 minút na video. Aktivujte si 13. balíček <strong>(1 Rok Zadarmo)</strong> a sledujte bez obmedzení a reklám!
                         </p>
                         <button class="btn-buy" style="max-width: 250px;" onclick="switchView('tariffs')">Aktivovať VIP Neobmedzene</button>
                     </div>
@@ -800,21 +1010,36 @@
                 </div>
             </div>
 
-            <!-- UPLOAD ZÓNA PRE VLASTNÉ SÚBORY -->
+            <!-- UKAZOVATEĽ PAMÄTE PRI PREHRÁVAČI -->
+            <div class="storage-box-widget hw-accel">
+                <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700;">
+                    <span><i class="fa-solid fa-database" style="color:#00f0ff;"></i> Lokálna Pamäť Filmovej Databázy</span>
+                    <span id="quickStorageText">0.00 GB / 5.00 GB (0%)</span>
+                </div>
+                <div class="storage-bar-bg">
+                    <div class="storage-bar-fill" id="quickStorageBar"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-dim);">
+                    <span>Free verzia: 5 GB reálneho ukladacieho priestoru</span>
+                    <a href="javascript:void(0)" onclick="switchView('tariffs')" style="color: #9d4edd; font-weight: bold;">+ Rozšíriť pamäť (Fialový / Ružový balík)</a>
+                </div>
+            </div>
+
+            <!-- UPLOAD ZÓNA PRE VLASTNÉ SÚBORY (AUTOMATICKÉ UKLADANIE DO DB) -->
             <div class="upload-section hw-accel" onclick="document.getElementById('fileInput').click()">
                 <input type="file" id="fileInput" accept="video/*, .mkv, .mp4, .webm, .mov" style="display: none;">
                 <i class="fa-solid fa-cloud-arrow-up" style="font-size: 40px; color: #00f0ff; margin-bottom: 10px;"></i>
-                <h3 style="font-size: 18px; margin-bottom: 6px;">Nahrajte ľubovoľný film alebo video súbor</h3>
-                <p style="color: var(--text-dim); font-size: 14px;">Podporuje MP4, WebM, MKV a MOV bez sekania na celej obrazovke</p>
+                <h3 style="font-size: 18px; margin-bottom: 6px;">Nahrať & Uložiť film do Pamäte Databázy</h3>
+                <p style="color: var(--text-dim); font-size: 14px;">Filmy sa ukladajú priamo do pamäte. Kedykoľvek ich môžete zmazať a uvoľniť miesto.</p>
             </div>
         </section>
 
 
-        <!-- ================= SEKCIJA 2: 13 BALÍČKOV TARÍF ================= -->
+        <!-- ================= SEKCIJA 2: 13 TARÍF + FIALOVÝ + 3 RUŽOVÉ BALÍČKY ================= -->
         <section id="view-tariffs" class="view-section">
             <div class="pricing-header">
-                <h1 class="pricing-title">Vyberte si Prémiovú Tarifu</h1>
-                <p style="color: var(--text-dim); margin-top: 8px;">Využite špeciálny 13. balíček: 1 ROK ZADARMO úplne neobmedzene!</p>
+                <h1 class="pricing-title">Všetky Prémiové Tarify & Cloud Pamäte</h1>
+                <p style="color: var(--text-dim); margin-top: 8px;">VIP sledovanie bez reklám, mesačné faktúry a rozšírenie úložiska!</p>
             </div>
 
             <div class="tariffs-grid" id="tariffsContainer">
@@ -826,25 +1051,129 @@
                         <div class="tariff-price">0.00 € <span style="font-size: 15px; color: var(--text-dim);">/ 365 dní</span></div>
                         <ul class="tariff-features">
                             <li><i class="fa-solid fa-check"></i> Všetko 100% neobmedzené na celých 365 dní</li>
-                            <li><i class="fa-solid fa-check"></i> Žiadne obmedzenia dĺžky filmov ani formátov</li>
-                            <li><i class="fa-solid fa-check"></i> Prístup ku všetkým 5 ultra moderným prehrávačom</li>
-                            <li><i class="fa-solid fa-check"></i> Okamžitá aktivácia do lokálnej databázy</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Úplne bez reklám</strong></li>
+                            <li><i class="fa-solid fa-check"></i> Automatické generovanie mesačnej faktúry</li>
                         </ul>
                     </div>
                     <div>
-                        <button class="btn-buy" style="padding: 18px 30px;" onclick="openPaymentModal(13, '1 Rok Skúšobná Verzia (Zadarmo)', 0, 365)">
+                        <button class="btn-buy" style="padding: 18px 30px;" onclick="openPaymentModal(13, '1 Rok Skúšobná Verzia (Zadarmo)', 0, 365, 0)">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Aktivovať 1 Rok Zadarmo
                         </button>
                     </div>
                 </div>
 
-                <!-- 12 ŠTANDARDNÝCH BALÍČKOV -->
-                <!-- JS ich dynamicky vygeneruje s rôznymi obdobiami a cenami -->
+                <!-- DYNAMICKÝ FIALOVÝ BALÍČEK (Základ 9.99€, +4€ mesačne, Sviatok 2.49€) -->
+                <div class="tariff-card card-purple" id="purpleTariffCard">
+                    <!-- Generované cez JS -->
+                </div>
+
+                <!-- 3 RUŽOVÉ BALÍČKY PAMÄTE -->
+                <div class="tariff-card card-pink">
+                    <div>
+                        <span class="trial-badge-giant" style="background:#ff007f; color:#fff;"><i class="fa-solid fa-box"></i> RUŽOVÝ BALÍK 1</span>
+                        <h3 style="font-size: 20px;">Ružový Cloud Mini</h3>
+                        <p style="color: var(--text-dim); font-size: 13px; margin-top: 4px;">+25 GB Extra Trvalé Úložisko</p>
+                        <div class="tariff-price" style="color: #ff007f;">4.99 € <span style="font-size: 13px; color: var(--text-dim);">/ Trvalo</span></div>
+                        <ul class="tariff-features">
+                            <li><i class="fa-solid fa-check"></i> Kapacita navýšená na 30 GB</li>
+                            <li><i class="fa-solid fa-check"></i> Ukladanie filmov v plnej 4K kvalite</li>
+                            <li><i class="fa-solid fa-check"></i> Možnosť kedykoľvek premazávať databázu</li>
+                        </ul>
+                    </div>
+                    <button class="btn-buy" style="background: linear-gradient(135deg, #ff007f, #ff758c);" onclick="openPaymentModal(101, 'Ružový Cloud Mini (+25GB)', 4.99, 365, 25)">
+                        Kúpiť Ružový Mini (+25GB)
+                    </button>
+                </div>
+
+                <div class="tariff-card card-pink">
+                    <div>
+                        <span class="trial-badge-giant" style="background:#ff007f; color:#fff;"><i class="fa-solid fa-box"></i> RUŽOVÝ BALÍK 2</span>
+                        <h3 style="font-size: 20px;">Ružový Cloud Mega</h3>
+                        <p style="color: var(--text-dim); font-size: 13px; margin-top: 4px;">+100 GB Extra Trvalé Úložisko</p>
+                        <div class="tariff-price" style="color: #ff007f;">14.99 € <span style="font-size: 13px; color: var(--text-dim);">/ Trvalo</span></div>
+                        <ul class="tariff-features">
+                            <li><i class="fa-solid fa-check"></i> Kapacita navýšená na 105 GB</li>
+                            <li><i class="fa-solid fa-check"></i> Pre desiatky celovečerných filmov</li>
+                            <li><i class="fa-solid fa-check"></i> Bleskové prehrávanie bez sekania</li>
+                        </ul>
+                    </div>
+                    <button class="btn-buy" style="background: linear-gradient(135deg, #ff007f, #ff758c);" onclick="openPaymentModal(102, 'Ružový Cloud Mega (+100GB)', 14.99, 365, 100)">
+                        Kúpiť Ružový Mega (+100GB)
+                    </button>
+                </div>
+
+                <div class="tariff-card card-pink">
+                    <div>
+                        <span class="trial-badge-giant" style="background:#ff007f; color:#fff;"><i class="fa-solid fa-box"></i> RUŽOVÝ BALÍK 3</span>
+                        <h3 style="font-size: 20px;">Ružový Cloud Ultra</h3>
+                        <p style="color: var(--text-dim); font-size: 13px; margin-top: 4px;">+500 GB Extra Trvalé Úložisko</p>
+                        <div class="tariff-price" style="color: #ff007f;">34.99 € <span style="font-size: 13px; color: var(--text-dim);">/ Trvalo</span></div>
+                        <ul class="tariff-features">
+                            <li><i class="fa-solid fa-check"></i> Masívna filmotéka vo vašom prehliadači</li>
+                            <li><i class="fa-solid fa-check"></i> Doživotný priestor v IndexedDB</li>
+                            <li><i class="fa-solid fa-check"></i> VIP podpora a prednostné ukladanie</li>
+                        </ul>
+                    </div>
+                    <button class="btn-buy" style="background: linear-gradient(135deg, #ff007f, #ff758c);" onclick="openPaymentModal(103, 'Ružový Cloud Ultra (+500GB)', 34.99, 365, 500)">
+                        Kúpiť Ružový Ultra (+500GB)
+                    </button>
+                </div>
             </div>
         </section>
 
 
-        <!-- ================= SEKCIJA 3: RECENZIE & PREDPLATNÉ ================= -->
+        <!-- ================= SEKCIJA 3: SPRÁVA PAMÄTE & ULOŽENÉ FILMY ================= -->
+        <section id="view-storage" class="view-section">
+            <div class="profile-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="font-size: 24px;"><i class="fa-solid fa-hard-drive" style="color: #00f0ff;"></i> Správa Úložiska Filmov v Databáze</h2>
+                        <p style="color: var(--text-dim); margin-top: 4px;">Bezplatná verzia má 5 GB pamäte. Vymazaním filmov uvoľníte reálne miesto.</p>
+                    </div>
+                    <button class="btn-buy" style="width: auto; padding: 10px 20px;" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-plus"></i> Uložiť Nový Film
+                    </button>
+                </div>
+
+                <div class="storage-box-widget" style="margin: 0 0 25px 0; background: rgba(0,0,0,0.3);">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700;">
+                        <span>Využitie Pamäte:</span>
+                        <span id="detailedStorageText">0.00 GB / 5.00 GB (0%)</span>
+                    </div>
+                    <div class="storage-bar-bg">
+                        <div class="storage-bar-fill" id="detailedStorageBar"></div>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Uložené Filmy v Lokálnej Databáze:</h3>
+                <div id="savedMoviesList">
+                    <p style="color: var(--text-dim);">Zatiaľ nemáte uložené žiadne filmy.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SEKCIJA 4: MESAČNÁ FAKTÚRA (LEN PRE VIP) ================= -->
+        <section id="view-invoice" class="view-section">
+            <div class="profile-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="font-size: 24px;"><i class="fa-solid fa-file-invoice-dollar" style="color: #00f0ff;"></i> Mesačná Faktúra za Služby</h2>
+                        <p style="color: var(--text-dim); margin-top: 4px;">Faktúra je dostupná výhradne pre aktívnych VIP predplatiteľov.</p>
+                    </div>
+                    <button class="btn-buy" id="btnPrintInvoice" style="width: auto; padding: 10px 20px; display: none;" onclick="window.print()">
+                        <i class="fa-solid fa-print"></i> Tlačiť / PDF Faktúru
+                    </button>
+                </div>
+
+                <div id="invoiceContainer">
+                    <!-- Dynamicky generovaná faktúra -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SEKCIJA 5: RECENZIE ================= -->
         <section id="view-reviews" class="view-section">
             <div class="profile-card">
                 <h2 style="font-size: 24px; margin-bottom: 15px;"><i class="fa-solid fa-shield-halved" style="color: #00f0ff;"></i> Stav Vášho Predplatného</h2>
@@ -874,7 +1203,7 @@
 
     </div>
 
-    <!-- ================= PLATOBNÁ BRÁNA MODAL (4 PLATOBNÉ SYSTÉMY) ================= -->
+    <!-- ================= PLATOBNÁ BRÁNA MODAL ================= -->
     <div class="modal-backdrop" id="paymentModal">
         <div class="payment-modal hw-accel">
             <button class="close-modal" onclick="closePaymentModal()">&times;</button>
@@ -883,21 +1212,12 @@
 
             <label style="font-size: 13px; color: var(--text-dim);">Vyberte 1 zo 4 platobných systémov:</label>
             <div class="payment-tabs">
-                <div class="pay-tab active" onclick="selectPaySystem('card', this)">
-                    <i class="fa-regular fa-credit-card"></i> Karta
-                </div>
-                <div class="pay-tab" onclick="selectPaySystem('paypal', this)">
-                    <i class="fa-brands fa-paypal"></i> PayPal
-                </div>
-                <div class="pay-tab" onclick="selectPaySystem('crypto', this)">
-                    <i class="fa-brands fa-bitcoin"></i> Krypto
-                </div>
-                <div class="pay-tab" onclick="selectPaySystem('instant', this)">
-                    <i class="fa-solid fa-building-columns"></i> Prevod
-                </div>
+                <div class="pay-tab active" onclick="selectPaySystem('card', this)"><i class="fa-regular fa-credit-card"></i> Karta</div>
+                <div class="pay-tab" onclick="selectPaySystem('paypal', this)"><i class="fa-brands fa-paypal"></i> PayPal</div>
+                <div class="pay-tab" onclick="selectPaySystem('crypto', this)"><i class="fa-brands fa-bitcoin"></i> Krypto</div>
+                <div class="pay-tab" onclick="selectPaySystem('instant', this)"><i class="fa-solid fa-building-columns"></i> Prevod</div>
             </div>
 
-            <!-- Platobné formuláre -->
             <div id="payFormCard">
                 <div class="pay-input-group">
                     <label>Číslo Platobnej Karty</label>
@@ -951,7 +1271,7 @@
         </div>
     </div>
 
-    <!-- ================= AUTH MODAL (REGISTRÁCIA / PRIHLÁSENIE) ================= -->
+    <!-- ================= AUTH MODAL ================= -->
     <div class="modal-backdrop" id="authModal">
         <div class="auth-box hw-accel">
             <button class="close-modal" onclick="closeAuthModal()">&times;</button>
@@ -984,10 +1304,10 @@
     <!-- ================= JAVASCRIPT & INDEXEDDB SYSTEM ================= -->
     <script>
         /* -------------------------------------------------------------
-           1. INDEXEDDB - VLASTNÁ LOKÁLNA DATABÁZA (Nie localStorage)
+           1. INDEXEDDB - VLASTNÁ LOKÁLNA DATABÁZA & UKLADANIE FILMOV
         ------------------------------------------------------------- */
         const DB_NAME = "RainbowPlayerDB";
-        const DB_VERSION = 1;
+        const DB_VERSION = 2;
         let db;
 
         function initDatabase() {
@@ -996,7 +1316,6 @@
 
                 request.onupgradeneeded = (e) => {
                     const database = e.target.result;
-                    // Vytvorenie tabuliek
                     if (!database.objectStoreNames.contains("users")) {
                         database.createObjectStore("users", { keyPath: "id", autoIncrement: true });
                     }
@@ -1009,6 +1328,13 @@
                     if (!database.objectStoreNames.contains("activeSession")) {
                         database.createObjectStore("activeSession", { keyPath: "key" });
                     }
+                    // NOVÉ TABUĽKY: Uložené filmy a História pozerania na faktúru
+                    if (!database.objectStoreNames.contains("movies")) {
+                        database.createObjectStore("movies", { keyPath: "id", autoIncrement: true });
+                    }
+                    if (!database.objectStoreNames.contains("watchHistory")) {
+                        database.createObjectStore("watchHistory", { keyPath: "id", autoIncrement: true });
+                    }
                 };
 
                 request.onsuccess = (e) => {
@@ -1020,7 +1346,6 @@
             });
         }
 
-        // Pomocné funkcie pre prácu s IndexedDB
         function dbSave(storeName, data) {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(storeName, "readwrite");
@@ -1051,18 +1376,95 @@
             });
         }
 
+        function dbDelete(storeName, key) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readwrite");
+                const store = tx.objectStore(storeName);
+                const req = store.delete(key);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
         /* -------------------------------------------------------------
-           2. 12 ŠTANDARDNÝCH BALÍČKOV + DÁTA
+           2. SVIATKOVÝ ENGINE & DYNAMICKÝ FIALOVÝ BALÍČEK
+        ------------------------------------------------------------- */
+        // Kontrola štátnych sviatkov (Slovensko / Svet)
+        function isHolidayToday() {
+            const now = new Date();
+            const month = now.getMonth() + 1; // 1-12
+            const day = now.getDate();
+
+            const holidays = [
+                "1-1",   // Nový rok
+                "1-6",   // Traja králi
+                "5-1",   // Sviatok práce
+                "5-8",   // Deň víťazstva
+                "7-5",   // Cyril a Metod
+                "8-29",  // SNP
+                "9-1",   // Deň Ústavy SR
+                "9-15",  // Sedembolestná Panna Mária
+                "11-1",  // Sviatok všetkých svätých
+                "11-17", // Deň boja za slobodu
+                "12-24", // Štedrý deň
+                "12-25", // 1. sviatok vianočný
+                "12-26"  // 2. sviatok vianočný
+            ];
+
+            return holidays.includes(`${month}-${day}`);
+        }
+
+        // Výpočet ceny fialového balíčka (+4€ každý mesiac od referenčného dátumu, alebo 2.49€ na sviatok)
+        function calculatePurpleTariffPrice() {
+            const isHoliday = isHolidayToday();
+            if (isHoliday) {
+                return { price: 2.49, isHoliday: true };
+            }
+
+            // Výpočet mesiacov (každý mesiac + 4€)
+            const refDate = new Date(2026, 0, 1);
+            const now = new Date();
+            const monthsPassed = Math.max(0, (now.getFullYear() - refDate.getFullYear()) * 12 + (now.getMonth() - refDate.getMonth()));
+            const price = 9.99 + (monthsPassed * 4.00);
+
+            return { price: parseFloat(price.toFixed(2)), isHoliday: false };
+        }
+
+        function renderPurpleTariff() {
+            const card = document.getElementById("purpleTariffCard");
+            const data = calculatePurpleTariffPrice();
+
+            card.innerHTML = `
+                <div>
+                    ${data.isHoliday ? '<span class="holiday-badge"><i class="fa-solid fa-cake-candles"></i> DNES JE SVIATOK • ZĽAVA NA 2.49 €!</span><br>' : ''}
+                    <span class="trial-badge-giant" style="background:#9d4edd; color:#fff;"><i class="fa-solid fa-cloud-bolt"></i> FIALOVÝ BALÍK • CLOUD EXPANSION</span>
+                    <h2 style="font-size: 22px; color: #fff;">Fialový Cloud Master (+50 GB)</h2>
+                    <p style="color: var(--text-dim); font-size: 13px; margin-top: 4px;">Každý mesiac +4€ / Počas sviatku vždy za 2.49€</p>
+                    <div class="tariff-price" style="color: #9d4edd;">${data.price.toFixed(2)} € <span style="font-size: 13px; color: var(--text-dim);">/ 30 dní</span></div>
+                    <ul class="tariff-features">
+                        <li><i class="fa-solid fa-check"></i> <strong>+50 GB</strong> dodatočného miesta do pamäte</li>
+                        <li><i class="fa-solid fa-check"></i> Sviatková garancia ceny (2.49 € na každý sviatok)</li>
+                        <li><i class="fa-solid fa-check"></i> VIP status & žiadne reklamy</li>
+                    </ul>
+                </div>
+                <button class="btn-buy" style="background: linear-gradient(135deg, #7000ff, #9d4edd);" onclick="openPaymentModal(99, 'Fialový Cloud Master (+50GB)', ${data.price}, 30, 50)">
+                    Aktivovať Fialový Balík (${data.price.toFixed(2)} €)
+                </button>
+            `;
+        }
+
+        /* -------------------------------------------------------------
+           3. 12 ŠTANDARDNÝCH BALÍČKOV
         ------------------------------------------------------------- */
         const standardTariffs = [
             { id: 1, name: "1. Denný Mini Pass", days: 1, price: 1.99, desc: "Rýchly prístup na 24 hodín" },
             { id: 2, name: "2. Víkendový Špeciál", days: 3, price: 3.99, desc: "Ideálne na filmový víkend" },
-            { id: 3, name: "3. Týždenný Štandard", days: 7, price: 6.99, desc: "7 dní plnej 4K podpory" },
-            { id: 4, name: "4. Mesačný Bronze", days: 30, price: 9.99, desc: "30 dní bez akýchkoľvek limitov" },
+            { id: 3, name: "3. Týždenný Štandard", days: 7, price: 6.99, desc: "7 dní plnej 4K podpory bez reklám" },
+            { id: 4, name: "4. Mesačný Bronze", days: 30, price: 9.99, desc: "30 dní bez akýchkoľvek limitov a reklám" },
             { id: 5, name: "5. Mesačný Silver 4K", days: 30, price: 12.99, desc: "30 dní + prednostné renderovanie" },
             { id: 6, name: "6. Kvartálny Gold", days: 90, price: 24.99, desc: "3 mesiace neobmedzeného kina" },
             { id: 7, name: "7. Polročný Platinum", days: 180, price: 44.99, desc: "6 mesiacov s maximálnym výkonom" },
-            { id: 8, name: "8. Ročný Diamond", days: 365, price: 79.99, desc: "Celý rok najvyššej kvality" },
+            { id: 8, name: "8. Ročný Diamond", days: 365, price: 79.99, desc: "Celý rok najvyššej kvality bez prerušení" },
             { id: 9, name: "9. Dvojročný Cinema Pass", days: 730, price: 129.99, desc: "2 roky filmového zážitku" },
             { id: 10, name: "10. Rodinný Master", days: 365, price: 99.99, desc: "Pre celú rodinu na všetkých zariadeniach" },
             { id: 11, name: "11. Streamer & Gamer VIP", days: 180, price: 59.99, desc: "Optimalizované pre 120fps plynulosť" },
@@ -1081,20 +1483,21 @@
                         <div class="tariff-price">${t.price.toFixed(2)} € <span style="font-size: 13px; color: var(--text-dim);">/ ${t.days} dní</span></div>
                         <ul class="tariff-features">
                             <li><i class="fa-solid fa-check"></i> Plynulé hardvérové prehrávanie</li>
-                            <li><i class="fa-solid fa-check"></i> Žiadne obmedzenie dĺžky filmu</li>
-                            <li><i class="fa-solid fa-check"></i> 5 moderných štýlov prehrávača</li>
+                            <li><i class="fa-solid fa-check"></i> Úplne BEZ REKLÁM</li>
+                            <li><i class="fa-solid fa-check"></i> Mesačná faktúra & 5€ / pozretý film</li>
                         </ul>
                     </div>
-                    <button class="btn-buy" onclick="openPaymentModal(${t.id}, '${t.name}', ${t.price}, ${t.days})">
+                    <button class="btn-buy" onclick="openPaymentModal(${t.id}, '${t.name}', ${t.price}, ${t.days}, 0)">
                         Kúpiť ${t.name}
                     </button>
                 `;
                 container.appendChild(card);
             });
+            renderPurpleTariff();
         }
 
         /* -------------------------------------------------------------
-           3. AUTH SYSTÉM & SPRÁVA POUŽÍVATEĽA
+           4. AUTH & SPRÁVA POUŽÍVATEĽA & PAMÄŤ (5 GB FREE)
         ------------------------------------------------------------- */
         let currentUser = null;
         let isLoginMode = false;
@@ -1103,24 +1506,31 @@
             const session = await dbGet("activeSession", "current");
             if (session && session.user) {
                 currentUser = session.user;
+                if (!currentUser.storageMaxGB) currentUser.storageMaxGB = 5.0; // Predvolená 5GB pamäť
             } else {
-                // Vytvorenie predvoleného anonymného profilu v DB
                 currentUser = {
                     id: 1,
                     username: "Hosť",
                     email: "host@lokalny.sk",
                     isVip: false,
-                    vipUntil: null
+                    vipUntil: null,
+                    storageMaxGB: 5.0 // 5 GB Zadarmo
                 };
                 await dbSave("activeSession", { key: "current", user: currentUser });
             }
             updateUserUI();
             checkSubscriptionEnforcement();
+            updateStorageDisplay();
+            renderInvoice();
+        }
+
+        function isUserVip() {
+            return currentUser && currentUser.isVip && new Date(currentUser.vipUntil) > new Date();
         }
 
         function updateUserUI() {
             const widget = document.getElementById("authWidget");
-            const isVipActive = currentUser.isVip && new Date(currentUser.vipUntil) > new Date();
+            const isVipActive = isUserVip();
 
             widget.innerHTML = `
                 <div class="user-badge hw-accel">
@@ -1128,7 +1538,7 @@
                     <div>
                         <div style="font-size: 13px; font-weight: 700;">${currentUser.username}</div>
                         <span class="user-status ${isVipActive ? 'status-vip' : 'status-free'}">
-                            ${isVipActive ? 'VIP AKTÍVNY' : 'FREE VERZIA'}
+                            ${isVipActive ? 'VIP AKTÍVNY' : 'FREE (5 GB PAMÄŤ)'}
                         </span>
                     </div>
                 </div>
@@ -1139,12 +1549,8 @@
             updateSubscriptionPage();
         }
 
-        function openAuthModal() {
-            document.getElementById("authModal").classList.add("open");
-        }
-        function closeAuthModal() {
-            document.getElementById("authModal").classList.remove("open");
-        }
+        function openAuthModal() { document.getElementById("authModal").classList.add("open"); }
+        function closeAuthModal() { document.getElementById("authModal").classList.remove("open"); }
 
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
@@ -1174,6 +1580,8 @@
                     closeAuthModal();
                     updateUserUI();
                     checkSubscriptionEnforcement();
+                    updateStorageDisplay();
+                    renderInvoice();
                 } else {
                     showToast("Nesprávne meno alebo heslo v databáze!");
                 }
@@ -1183,7 +1591,8 @@
                     email: email || `${username}@lokalny.sk`,
                     password,
                     isVip: false,
-                    vipUntil: null
+                    vipUntil: null,
+                    storageMaxGB: 5.0
                 };
                 const id = await dbSave("users", newUser);
                 newUser.id = id;
@@ -1192,16 +1601,18 @@
                 showToast("Účet úspešne uložený do IndexedDB databázy!");
                 closeAuthModal();
                 updateUserUI();
+                updateStorageDisplay();
+                renderInvoice();
             }
         }
 
         /* -------------------------------------------------------------
-           4. PLATOBNÁ BRÁNA & KONTROLA EXPIRÁCIE
+           5. PLATOBNÁ BRÁNA S NAVÝŠENÍM PAMÄTE & EXPIRÁCIA
         ------------------------------------------------------------- */
         let activeCheckout = null;
 
-        function openPaymentModal(tariffId, name, price, days) {
-            activeCheckout = { tariffId, name, price, days };
+        function openPaymentModal(tariffId, name, price, days, extraStorageGB = 0) {
+            activeCheckout = { tariffId, name, price, days, extraStorageGB };
             document.getElementById("modalTariffTitle").innerText = name;
             document.getElementById("modalTariffPrice").innerText = price === 0 ? "ZADARMO (0.00 €)" : `${price.toFixed(2)} €`;
             document.getElementById("paymentModal").classList.add("open");
@@ -1224,11 +1635,9 @@
         async function processPayment() {
             if (!activeCheckout) return;
 
-            // Výpočet expirácie predplatného
             const now = new Date();
             const expiryDate = new Date(now.getTime() + activeCheckout.days * 24 * 60 * 60 * 1000);
 
-            // Zápis platby do IndexedDB
             const paymentRecord = {
                 userId: currentUser.id,
                 username: currentUser.username,
@@ -1241,9 +1650,12 @@
 
             await dbSave("payments", paymentRecord);
 
-            // Aktualizácia užívateľa na VIP
             currentUser.isVip = true;
             currentUser.vipUntil = expiryDate.toISOString();
+            if (activeCheckout.extraStorageGB > 0) {
+                currentUser.storageMaxGB = (currentUser.storageMaxGB || 5.0) + activeCheckout.extraStorageGB;
+            }
+
             await dbSave("users", currentUser);
             await dbSave("activeSession", { key: "current", user: currentUser });
 
@@ -1251,21 +1663,22 @@
             showToast(`🎉 Platba úspešná! Predplatné je aktívne do: ${expiryDate.toLocaleDateString('sk-SK')}`);
             updateUserUI();
             checkSubscriptionEnforcement();
+            updateStorageDisplay();
+            renderInvoice();
         }
 
         function checkSubscriptionEnforcement() {
-            const isVipActive = currentUser.isVip && new Date(currentUser.vipUntil) > new Date();
+            const isVipActive = isUserVip();
             const limitOverlay = document.getElementById("limitOverlay");
 
-            // Ak vypršal, prepnúť späť na free
             if (currentUser.isVip && !isVipActive) {
                 currentUser.isVip = false;
                 dbSave("users", currentUser);
                 dbSave("activeSession", { key: "current", user: currentUser });
-                showToast("Vaše VIP predplatné vypršalo.");
+                showToast("Vaše VIP predplatné vypršalo. Faktúry sú uzamknuté.");
+                renderInvoice();
             }
 
-            // Kontrola dĺžky videa (Free limit = 5 minút)
             const video = document.getElementById("mainVideo");
             if (!isVipActive && video.currentTime > 300) {
                 video.pause();
@@ -1277,7 +1690,7 @@
 
         function updateSubscriptionPage() {
             const box = document.getElementById("subscriptionStatusBox");
-            const isVipActive = currentUser.isVip && new Date(currentUser.vipUntil) > new Date();
+            const isVipActive = isUserVip();
 
             if (isVipActive) {
                 const exp = new Date(currentUser.vipUntil);
@@ -1286,7 +1699,7 @@
                         <div>
                             <span class="user-status status-vip">VIP PREMIUM AKTÍVNE</span>
                             <div class="expiry-counter">Platné do: ${exp.toLocaleDateString('sk-SK')} o ${exp.toLocaleTimeString('sk-SK')}</div>
-                            <p style="color: var(--text-dim); margin-top: 6px; font-size: 14px;">Máte neobmedzený prístup ku všetkým funkciám bez obmedzení.</p>
+                            <p style="color: var(--text-dim); margin-top: 6px; font-size: 14px;">Máte neobmedzený prístup ku všetkým funkciám a sledovanie úplne BEZ REKLÁM.</p>
                         </div>
                         <i class="fa-solid fa-circle-check" style="font-size: 45px; color: #00f0ff;"></i>
                     </div>
@@ -1295,8 +1708,8 @@
                 box.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <span class="user-status status-free">BEZPLATNÁ VERZIA (OBMEDZENÉ)</span>
-                            <p style="color: var(--text-dim); margin-top: 8px;">Dĺžka prehrávania je obmedzená na 5 minút na video.</p>
+                            <span class="user-status status-free">BEZPLATNÁ VERZIA (5 GB PAMÄŤ)</span>
+                            <p style="color: var(--text-dim); margin-top: 8px;">Dĺžka prehrávania 5 minút. Reklamy na začiatku, v strede a na konci.</p>
                         </div>
                         <button class="btn-buy" style="width: auto; padding: 10px 20px;" onclick="switchView('tariffs')">Aktivovať 1 Rok Zadarmo</button>
                     </div>
@@ -1305,7 +1718,203 @@
         }
 
         /* -------------------------------------------------------------
-           5. RECENZIE - UKLADANIE DO INDEXEDDB
+           6. SPRÁVA REÁLNEHO ÚLOŽISKA FILMŮ (INDEXEDDB BLOBS & VYMAZÁVANIE)
+        ------------------------------------------------------------- */
+        async function updateStorageDisplay() {
+            const movies = await dbGetAll("movies");
+            let totalBytes = 0;
+            movies.forEach(m => totalBytes += (m.size || 0));
+
+            const usedGB = totalBytes / (1024 * 1024 * 1024);
+            const maxGB = currentUser.storageMaxGB || 5.0;
+            const percentage = Math.min(100, (usedGB / maxGB) * 100).toFixed(1);
+
+            const textStr = `${usedGB.toFixed(2)} GB / ${maxGB.toFixed(2)} GB (${percentage}%)`;
+            
+            document.getElementById("quickStorageText").innerText = textStr;
+            document.getElementById("quickStorageBar").style.width = `${percentage}%`;
+            
+            document.getElementById("detailedStorageText").innerText = textStr;
+            document.getElementById("detailedStorageBar").style.width = `${percentage}%`;
+
+            renderSavedMoviesList(movies);
+        }
+
+        function renderSavedMoviesList(movies) {
+            const listContainer = document.getElementById("savedMoviesList");
+            listContainer.innerHTML = "";
+
+            if (movies.length === 0) {
+                listContainer.innerHTML = `<p style="color: var(--text-dim); font-size: 14px;">V pamäti nie sú žiadne filmy. Nahrajte súbor vyššie.</p>`;
+                return;
+            }
+
+            movies.forEach(m => {
+                const sizeMB = (m.size / (1024 * 1024)).toFixed(1);
+                const item = document.createElement("div");
+                item.className = "saved-movie-item hw-accel";
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fa-solid fa-file-video" style="font-size: 24px; color: #00f0ff;"></i>
+                        <div>
+                            <div style="font-weight: 700; font-size: 15px;">${m.name}</div>
+                            <div style="font-size: 12px; color: var(--text-dim);">Veľkosť: ${sizeMB} MB • Uložené: ${m.date}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-buy" style="padding: 6px 14px; font-size: 12px; width: auto;" onclick="playSavedMovie(${m.id})">
+                            <i class="fa-solid fa-play"></i> Prehrať
+                        </button>
+                        <button class="btn-delete" onclick="deleteSavedMovie(${m.id})">
+                            <i class="fa-solid fa-trash"></i> Vymazať z Databázy
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        async function saveMovieToDatabase(file) {
+            const maxBytes = (currentUser.storageMaxGB || 5.0) * 1024 * 1024 * 1024;
+            const movies = await dbGetAll("movies");
+            let currentBytes = 0;
+            movies.forEach(m => currentBytes += (m.size || 0));
+
+            if (currentBytes + file.size > maxBytes) {
+                showToast("⚠️ Nedostatok miesta v pamäti! Vymažte staré filmy alebo si kúpte Fialový/Ružový balík.");
+                return false;
+            }
+
+            const movieRecord = {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                blob: file,
+                date: new Date().toLocaleDateString('sk-SK')
+            };
+
+            await dbSave("movies", movieRecord);
+            showToast(`Film "${file.name}" úspešne uložený do IndexedDB pamäte!`);
+            await updateStorageDisplay();
+            return true;
+        }
+
+        async function deleteSavedMovie(id) {
+            await dbDelete("movies", id);
+            showToast("🗑️ Film bol vymazaný a miesto v pamäti sa uvoľnilo.");
+            await updateStorageDisplay();
+        }
+
+        async function playSavedMovie(id) {
+            const movie = await dbGet("movies", id);
+            if (movie && movie.blob) {
+                resetAdTriggers();
+                const url = URL.createObjectURL(movie.blob);
+                video.src = url;
+                video.play();
+                btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                switchView('player');
+                showToast(`🎬 Prehrávam z databázy: ${movie.name}`);
+                logMovieWatch(movie.name);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           7. MESAČNÝ FAKTURAČNÝ SYSTÉM (5€ ZA POZRETÝ FILM PRE VIP)
+        ------------------------------------------------------------- */
+        async function logMovieWatch(movieTitle) {
+            if (!isUserVip()) return;
+
+            const watchRecord = {
+                userId: currentUser.id,
+                username: currentUser.username,
+                title: movieTitle,
+                watchedAt: new Date().toISOString(),
+                cost: 5.00
+            };
+
+            await dbSave("watchHistory", watchRecord);
+            renderInvoice();
+        }
+
+        async function renderInvoice() {
+            const container = document.getElementById("invoiceContainer");
+            const btnPrint = document.getElementById("btnPrintInvoice");
+            const isVipActive = isUserVip();
+
+            if (!isVipActive) {
+                btnPrint.style.display = "none";
+                container.innerHTML = `
+                    <div class="invoice-box" style="text-align: center; border-color: rgba(255, 0, 85, 0.4);">
+                        <i class="fa-solid fa-lock" style="font-size: 40px; color: #ff0055; margin-bottom: 15px;"></i>
+                        <h3 style="font-size: 20px;">Faktúry sú pre neplatiacich/neaktívnych používateľov uzamknuté</h3>
+                        <p style="color: var(--text-dim); font-size: 14px; margin-top: 6px;">
+                            Keď vám skončí tarifa, faktúra sa nevystavuje. Aktivujte si VIP tarifu a sledujte svoje mesačné vyúčtovanie.
+                        </p>
+                        <button class="btn-buy" style="max-width: 250px; margin: 20px auto 0;" onclick="switchView('tariffs')">
+                            Aktivovať VIP Tarifu
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            btnPrint.style.display = "block";
+
+            // Získanie filmov za posledných 30 dní
+            const allWatches = await dbGetAll("watchHistory");
+            const now = new Date();
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            
+            const userWatches = allWatches.filter(w => w.userId === currentUser.id && new Date(w.watchedAt) >= monthAgo);
+            const watchedCount = userWatches.length;
+            const watchedTotalCost = watchedCount * 5.00;
+            const baseSubCost = 0.00; // Základné predplatné (napr. Trial / Balíček)
+            const finalTotal = baseSubCost + watchedTotalCost;
+
+            const invoiceNumber = `INV-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}-${currentUser.id}`;
+
+            container.innerHTML = `
+                <div class="invoice-box">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">
+                        <div>
+                            <h3 style="font-size: 18px; color: #00f0ff;">Faktúra č. ${invoiceNumber}</h3>
+                            <div style="font-size: 13px; color: var(--text-dim);">Dátum vystavenia: ${now.toLocaleDateString('sk-SK')}</div>
+                            <div style="font-size: 13px; color: var(--text-dim);">Odberateľ: <strong>${currentUser.username}</strong> (${currentUser.email})</div>
+                        </div>
+                        <span class="user-status status-vip">VIP MESAČNÉ VYÚČTOVANIE</span>
+                    </div>
+
+                    <div class="invoice-row">
+                        <span>Základná VIP Tarifa (Mesačný Paušál)</span>
+                        <span>${baseSubCost.toFixed(2)} €</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Počet pozretých filmov za posledný mesiac (<strong>${watchedCount} filmov × 5.00 €</strong>)</span>
+                        <span style="color: #00f0ff; font-weight: bold;">+${watchedTotalCost.toFixed(2)} €</span>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: var(--text-dim);">Zoznam pozretých filmov za posledný mesiac:</div>
+                        ${watchedCount === 0 ? '<p style="font-size: 13px; color: var(--text-dim);">Za posledný mesiac nebol zaznamenaný žiadny pozretý film.</p>' : ''}
+                        ${userWatches.map((w, idx) => `
+                            <div style="font-size: 13px; display: flex; justify-content: space-between; padding: 4px 0; color: #ccc;">
+                                <span>${idx+1}. ${w.title} (${new Date(w.watchedAt).toLocaleDateString('sk-SK')})</span>
+                                <span>5.00 €</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="invoice-total">
+                        <span>CELKOVÁ SUMA NA FAKTÚRE:</span>
+                        <span>${finalTotal.toFixed(2)} €</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* -------------------------------------------------------------
+           8. RECENZIE - UKLADANIE DO INDEXEDDB
         ------------------------------------------------------------- */
         async function loadReviews() {
             const reviews = await dbGetAll("reviews");
@@ -1313,10 +1922,9 @@
             container.innerHTML = "";
 
             if (reviews.length === 0) {
-                // Predvolené ukážkové recenzie
                 const defaultReviews = [
-                    { name: "Marek K.", rating: 5, text: "Neuveriteľne plynulý prehrávač! Ani na celej obrazovke v 4K nič neseká.", date: "Dnes" },
-                    { name: "Lucia S.", rating: 5, text: "13. balíček na rok zadarmo funguje okamžite a bez problémov. Odporúčam!", date: "Včera" }
+                    { name: "Marek K.", rating: 5, text: "Neuveriteľne plynulý prehrávač! Pamäť a vymazávanie filmov funguje dokonale.", date: "Dnes" },
+                    { name: "Lucia S.", rating: 5, text: "Fialový balík na sviatok za 2.49€ je skvelý nápad a faktúra je prehľadná.", date: "Včera" }
                 ];
                 for (let r of defaultReviews) {
                     await dbSave("reviews", r);
@@ -1362,7 +1970,119 @@
         }
 
         /* -------------------------------------------------------------
-           6. ULTRA-PLYnulÝ PREHRÁVAČ & KONTROLY (HARDVÉROVÝ VÝKON)
+           9. REKLAMNÝ ENGINE (3 FUNKČNÉ ONLINE REKLAMY + 16S PRESKOČENIE)
+        ------------------------------------------------------------- */
+        const INTERNET_AD_STREAMS = [
+            "https://media.w3.org/2010/05/sintel/trailer.mp4",
+            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+        ];
+
+        let adState = {
+            isPlaying: false,
+            preRollDone: false,
+            midRollDone: false,
+            postRollDone: false,
+            canSkip: false,
+            skipCounter: 16,
+            timerInterval: null,
+            resumeCallback: null
+        };
+
+        const adContainer = document.getElementById("adContainer");
+        const adVideo = document.getElementById("adVideo");
+        const adSkipBtn = document.getElementById("adSkipBtn");
+        const adTimerNum = document.getElementById("adTimerNum");
+        const adPositionLabel = document.getElementById("adPositionLabel");
+        const adProgressBar = document.getElementById("adProgressBar");
+
+        function resetAdTriggers() {
+            adState.preRollDone = false;
+            adState.midRollDone = false;
+            adState.postRollDone = false;
+        }
+
+        function triggerAd(positionLabel, onFinishCallback) {
+            if (isUserVip()) {
+                if (onFinishCallback) onFinishCallback();
+                return;
+            }
+
+            adState.isPlaying = true;
+            adState.resumeCallback = onFinishCallback;
+            adState.canSkip = false;
+            adState.skipCounter = 16;
+
+            video.pause();
+
+            const chosenAdUrl = INTERNET_AD_STREAMS[Math.floor(Math.random() * INTERNET_AD_STREAMS.length)];
+            adVideo.src = chosenAdUrl;
+            adVideo.load();
+            adVideo.volume = video.volume;
+            adVideo.muted = video.muted;
+
+            adPositionLabel.innerText = positionLabel;
+            adContainer.classList.add("active");
+
+            adSkipBtn.className = "ad-skip-btn";
+            adSkipBtn.innerHTML = `<i class="fa-solid fa-clock"></i> Preskočiť o <span id="adTimerNum">${adState.skipCounter}</span>s`;
+
+            const playPromise = adVideo.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    adVideo.muted = true;
+                    adVideo.play();
+                });
+            }
+
+            clearInterval(adState.timerInterval);
+            adState.timerInterval = setInterval(() => {
+                adState.skipCounter--;
+                const numElem = document.getElementById("adTimerNum");
+                if (numElem) numElem.innerText = adState.skipCounter;
+
+                if (adState.skipCounter <= 0) {
+                    clearInterval(adState.timerInterval);
+                    adState.canSkip = true;
+                    adSkipBtn.classList.add("can-skip");
+                    adSkipBtn.innerHTML = `<i class="fa-solid fa-forward-step"></i> Preskočiť reklamu ❯❯`;
+                }
+            }, 1000);
+        }
+
+        function endAdPlayback() {
+            clearInterval(adState.timerInterval);
+            adState.isPlaying = false;
+            adVideo.pause();
+            adVideo.removeAttribute('src');
+            adContainer.classList.remove("active");
+            adProgressBar.style.width = "0%";
+
+            if (typeof adState.resumeCallback === "function") {
+                adState.resumeCallback();
+                adState.resumeCallback = null;
+            }
+        }
+
+        function skipAdManually() {
+            if (adState.canSkip) {
+                endAdPlayback();
+                showToast("Reklama úspešne preskočená.");
+            }
+        }
+
+        adVideo.addEventListener("timeupdate", () => {
+            if (adVideo.duration) {
+                const p = (adVideo.currentTime / adVideo.duration) * 100;
+                adProgressBar.style.width = `${p}%`;
+            }
+        });
+
+        adVideo.addEventListener("ended", endAdPlayback);
+        adVideo.addEventListener("error", endAdPlayback);
+
+        /* -------------------------------------------------------------
+           10. ULTRA-PLYnulÝ PREHRÁVAČ & KONTROLY
         ------------------------------------------------------------- */
         const video = document.getElementById("mainVideo");
         const playerMaster = document.getElementById("playerMaster");
@@ -1376,7 +2096,6 @@
         const btnPip = document.getElementById("btnPip");
         const btnFullscreen = document.getElementById("btnFullscreen");
 
-        // Prepínanie skinov
         function setPlayerSkin(skinName) {
             playerMaster.className = `player-master-container skin-${skinName} hw-accel`;
             document.querySelectorAll(".skin-pill").forEach(p => p.classList.remove("active"));
@@ -1384,11 +2103,23 @@
             showToast(`Prehrávač zmenený na: ${skinName.toUpperCase()}`);
         }
 
-        // Play/Pause
         function togglePlay() {
+            if (adState.isPlaying) return;
+
             if (video.paused) {
+                if (!isUserVip() && !adState.preRollDone) {
+                    adState.preRollDone = true;
+                    triggerAd("Začiatok Videa", () => {
+                        video.play();
+                        btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                        logMovieWatch("Hlavné Demo Video");
+                    });
+                    return;
+                }
+
                 video.play();
                 btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                logMovieWatch("Hlavné Demo Video");
             } else {
                 video.pause();
                 btnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
@@ -1397,8 +2128,9 @@
         btnPlay.addEventListener("click", togglePlay);
         video.addEventListener("click", togglePlay);
 
-        // Čas a Progress bar
         video.addEventListener("timeupdate", () => {
+            if (adState.isPlaying) return;
+
             const percent = (video.currentTime / video.duration) * 100;
             progressBar.style.width = `${percent}%`;
 
@@ -1409,30 +2141,49 @@
 
             timeDisplay.innerText = `${curMins.toString().padStart(2, '0')}:${curSecs.toString().padStart(2, '0')} / ${durMins.toString().padStart(2, '0')}:${durSecs.toString().padStart(2, '0')}`;
 
-            // Pravidelná kontrola limitov pri prehrávaní
+            if (!isUserVip() && video.duration > 20 && video.currentTime >= (video.duration / 2) && !adState.midRollDone) {
+                adState.midRollDone = true;
+                triggerAd("Stred Videa", () => {
+                    video.play();
+                });
+            }
+
             checkSubscriptionEnforcement();
         });
 
-        // Seekovanie kliknutím
+        video.addEventListener("ended", () => {
+            if (!isUserVip() && !adState.postRollDone) {
+                adState.postRollDone = true;
+                triggerAd("Koniec Videa", () => {
+                    btnPlay.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+                });
+            } else {
+                btnPlay.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+            }
+        });
+
         progressBarContainer.addEventListener("click", (e) => {
+            if (adState.isPlaying) return;
             const rect = progressBarContainer.getBoundingClientRect();
             const clickPos = (e.clientX - rect.left) / rect.width;
             video.currentTime = clickPos * video.duration;
         });
 
         function skipTime(secs) {
+            if (adState.isPlaying) return;
             video.currentTime = Math.min(Math.max(video.currentTime + secs, 0), video.duration);
         }
 
-        // Hlasitosť
         volumeSlider.addEventListener("input", (e) => {
             video.volume = e.target.value;
+            adVideo.volume = e.target.value;
             video.muted = false;
             updateVolumeIcon();
         });
 
         btnMute.addEventListener("click", () => {
             video.muted = !video.muted;
+            adVideo.muted = video.muted;
             updateVolumeIcon();
         });
 
@@ -1444,7 +2195,6 @@
             }
         }
 
-        // Rýchlosť
         const speeds = [1, 1.25, 1.5, 2, 0.5];
         let speedIdx = 0;
         btnSpeed.addEventListener("click", () => {
@@ -1453,7 +2203,6 @@
             btnSpeed.innerHTML = `<span style="font-size: 13px; font-weight: bold;">${speeds[speedIdx]}x</span>`;
         });
 
-        // Picture-in-Picture
         btnPip.addEventListener("click", async () => {
             try {
                 if (document.pictureInPictureElement) {
@@ -1466,42 +2215,58 @@
             }
         });
 
-        // Plynulá Celá Obrazovka (Hardware Fullscreen bez trhania)
-        btnFullscreen.addEventListener("click", toggleFullScreen);
-
-        function toggleFullScreen() {
+        btnFullscreen.addEventListener("click", () => {
             if (!document.fullscreenElement) {
-                playerMaster.requestFullscreen().catch(err => {
-                    alert(`Chyba celej obrazovky: ${err.message}`);
-                });
+                playerMaster.requestFullscreen().catch(err => alert(err.message));
                 btnFullscreen.innerHTML = '<i class="fa-solid fa-compress"></i>';
             } else {
                 document.exitFullscreen();
                 btnFullscreen.innerHTML = '<i class="fa-solid fa-expand"></i>';
             }
-        }
+        });
 
-        // Nahrávanie vlastného súboru bez zásekov (Blob Streaming)
-        document.getElementById("fileInput").addEventListener("change", function(e) {
+        // NAHRÁVANIE SÚBORU & AUTOMATICKÉ ULOŽENIE DO PAMÄTE DB
+        document.getElementById("fileInput").addEventListener("change", async function(e) {
             const file = e.target.files[0];
             if (file) {
-                const fileURL = URL.createObjectURL(file);
-                video.src = fileURL;
-                video.play();
-                btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                showToast(`🎬 Súbor "${file.name}" úspešne načítaný`);
+                const saved = await saveMovieToDatabase(file);
+                if (saved) {
+                    resetAdTriggers();
+                    const fileURL = URL.createObjectURL(file);
+                    video.src = fileURL;
+                    
+                    if (!isUserVip() && !adState.preRollDone) {
+                        adState.preRollDone = true;
+                        triggerAd("Začiatok Videa", () => {
+                            video.play();
+                            btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                            logMovieWatch(file.name);
+                        });
+                    } else {
+                        video.play();
+                        btnPlay.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                        logMovieWatch(file.name);
+                    }
+                }
             }
         });
 
         /* -------------------------------------------------------------
-           7. POMOCNÉ FUNKCIE (NAVIGÁCIA, TOASTY)
+           11. POMOCNÉ FUNKCIE (NAVIGÁCIA, TOASTY)
         ------------------------------------------------------------- */
         function switchView(viewName) {
             document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
             document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
 
-            document.getElementById(`view-${viewName}`).classList.add("active");
-            event.currentTarget.classList.add("active");
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.add("active");
+
+            if (event && event.currentTarget && event.currentTarget.classList) {
+                event.currentTarget.classList.add("active");
+            }
+
+            if (viewName === 'invoice') renderInvoice();
+            if (viewName === 'storage') updateStorageDisplay();
         }
 
         function showToast(msg) {
@@ -1511,7 +2276,6 @@
             setTimeout(() => toast.classList.remove("show"), 3500);
         }
 
-        // Spustenie pri štarte aplikácie
         window.addEventListener("DOMContentLoaded", async () => {
             await initDatabase();
             await checkCurrentSession();
